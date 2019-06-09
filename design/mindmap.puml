@@ -1,0 +1,17 @@
+@startmindmap
+* Injection
+	* Dependency
+		* Provisioning
+			* Scan
+		* Identification
+			* Annotations
+			* Types
+			* Equality
+	* Graph
+		* Circularity
+left side
+	* Resolvance
+		* Algorithm
+	* Parameters
+		* Callable 
+@endmainmap

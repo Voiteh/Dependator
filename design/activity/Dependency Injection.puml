@@ -1,0 +1,10 @@
+@startuml
+title Dependency Injection
+
+(*) --> Resolve injections 
+--> Provide dependencies
+--> Inject callable parameters
+--> (*)
+@enduml
+
+

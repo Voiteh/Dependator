@@ -1,0 +1,7 @@
+title Provide dependencies
+(*) --> Take Provider 
+--> Scan dependencies
+if "Has more providers ?" then 
+-->[Yes] Take Provider 
+else 
+-->[No] (*)

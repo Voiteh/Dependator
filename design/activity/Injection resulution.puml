@@ -1,0 +1,9 @@
+@startuml
+title Injection resolution
+(*) --> Take resolver
+--> Resolve Injections
+if "Has more resolvers?" then
+-->[Yes] Take resolver
+else 
+-->[No] (*)
+@enduml
