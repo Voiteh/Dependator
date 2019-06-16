@@ -1,0 +1,31 @@
+@startuml
+title Scan scopes
+
+(*) --> "Obtain scopes"
+--> ==RECURECE==
+-->[for each scope] Extract scope 
+if "scope is module?" then 
+-->[YES] Extract clases declarations
+--> Extract valid function declarations
+--> Extract valid value declarations
+--> ==RECURECE==
+else
+if "scope is valid class declaration? " then
+note left
+Type params are ignored for now
+end note 
+-->[YES] Extract valid constructor declarations 
+--> Extract valid function declarations
+--> Extract valid value declarations 
+--> ==RECURECE==
+else
+if "scope is a function decalaration ? " then
+-->[Yes] Validate and return 
+--> ==END==
+else
+if "scope is a value function decalaration ? " then
+-->[Yes] Validate and return 
+--> ==END==
+-->(*)
+endif
+@enduml

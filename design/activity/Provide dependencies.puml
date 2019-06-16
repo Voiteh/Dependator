@@ -1,7 +1,11 @@
 title Provide dependencies
-(*) --> Take Provider 
---> Scan dependencies
-if "Has more providers ?" then 
--->[Yes] Take Provider 
+(*) --> Scan
+-->[Declarations] Group 
+-->[Groups] Bind dependencies
+if "Bindings are correct?" then
+-->[Yes] return bidnings
+--> ==END==
 else 
--->[No] (*)
+-->[No] throw Exception
+--> ==END==
+-->(*)
