@@ -10,10 +10,10 @@ shared object prototype extends Provision() {}
 
 shared final annotation class DependencyAnnotation(
 	shared Provision provision)
-		satisfies OptionalAnnotation<DependencyAnnotation,FunctionOrValueDeclaration> {
+		satisfies OptionalAnnotation<DependencyAnnotation,FunctionOrValueDeclaration|ClassDeclaration|CallableConstructorDeclaration> {
 }
 
 shared annotation DependencyAnnotation dependency(Provision provision=singleton) => DependencyAnnotation(provision);
 
 shared final annotation class TargetAnnotation() satisfies OptionalAnnotation<TargetAnnotation,ClassDeclaration|CallableConstructorDeclaration>{}
-shared TargetAnnotation target() => TargetAnnotation();
+shared annotation TargetAnnotation target() => TargetAnnotation();

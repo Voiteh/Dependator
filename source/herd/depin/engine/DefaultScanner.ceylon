@@ -1,6 +1,7 @@
 import herd.depin.api {
 	Scope,
-	Scanner
+	Scanner,
+	Registry
 }
 import ceylon.language.meta.declaration {
 	Declaration,
@@ -12,13 +13,13 @@ import ceylon.language.meta.declaration {
 }
 
 shared class DefaultScanner() extends Scanner() {
-	
-	shared actual {Declaration*} scan(Scope element) {
+		
+	 {Declaration*} single(Scope element) {
 		switch(element)
 		case (is ClassDeclaration) {
 			return element.constructorDeclarations()
 					.filter((ConstructorDeclaration element) => !element.annotations<TargetAnnotation>().empty)
-					.chain(element.memberDeclarations<FunctionOrValueDeclaration>().flatMap((FunctionOrValueDeclaration element) => scan(element)));	
+					.chain(element.memberDeclarations<FunctionOrValueDeclaration>().flatMap((FunctionOrValueDeclaration element) => single(element)));	
 		}
 		case (is FunctionOrValueDeclaration){
 			value annotations = element.annotations<DependencyAnnotation>();
@@ -29,13 +30,20 @@ shared class DefaultScanner() extends Scanner() {
 		}
 		case (is Package){
 			return element.members<ClassDeclaration|FunctionOrValueDeclaration>()
-					.flatMap((ClassDeclaration|FunctionOrValueDeclaration element) => scan(element));
+					.flatMap((ClassDeclaration|FunctionOrValueDeclaration element) => single(element));
 		}
 		case (is Module){
-			return element.members.flatMap((Package element) => scan(element));
+			return element.members.flatMap((Package element) => single(element));
 		}
 	}
 
+	
+	shared actual {Declaration*} scan({Scope*} inclusions, {Scope*} exclusions) {
+		value excluded = exclusions.flatMap((Scope element) => single(element)).sequence();
+		return inclusions.flatMap((Scope element) => single(element))
+			.filter((Declaration element) => !excluded.contains(element));
+	}
+	
 	
 		
 }
