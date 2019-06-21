@@ -1,7 +1,4 @@
 
-import ceylon.language.meta.model {
-	Type
-}
 import ceylon.language.meta.declaration {
 	Declaration
 }

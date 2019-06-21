@@ -1,6 +1,3 @@
-import ceylon.language.meta.model {
-	Type
-}
 import ceylon.language.meta.declaration {
 	Declaration
 }
@@ -12,8 +9,17 @@ shared abstract class Injectable(Declaration declaration){
 	
 	
 	
-	shared class Error(Declaration declaration,Type<> type,Dependency description,Throwable? cause=null)
-		extends Exception("Can't inject ``declaration`` of type ``type`` described as ``description``",cause){}
+	shared class Error extends Exception{
+		shared new member(Throwable? cause=null,Anything container=null,{Anything*} parameters={}) 
+				extends Exception("Can't inject into ``container else "null"`` ``declaration`` with available parameters: ``parameters``",cause){}
+		shared new (Throwable? cause=null,{Anything*} parameters={}) 
+				extends Exception("Can't inject ``declaration`` with available parameters: ``parameters``",cause){}
+		
+		
+		
+	}
+	
+	
 	
 	string => declaration.string;
 }
