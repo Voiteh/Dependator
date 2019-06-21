@@ -9,9 +9,10 @@ import herd.depin.engine {
 import test.herd.depin.engine.integration.model {
 	Person,
 	fixture,
-	DataSource
+	DataSource,
+	DefaultParametersModel
 }
-shared class ClassSimpleInjections() {
+shared class ClassInjectionTest() {
 	
 	Depin depin=Depin().include{
 		 inclusions = {`package test.herd.depin.engine.integration.dependencies`};
@@ -23,6 +24,9 @@ shared class ClassSimpleInjections() {
 	
 	shared test void shouldInjectMysqlDataSource(){
 		assert(depin.inject(`DataSource`)==fixture.dataSouce.mysqlDataSource);
+	}
+	shared test void shouldInjectNonDefaultParameters(){
+		assert(depin.inject(`DefaultParametersModel`)==fixture.defaultParameter.instance);
 	}
 	
 }

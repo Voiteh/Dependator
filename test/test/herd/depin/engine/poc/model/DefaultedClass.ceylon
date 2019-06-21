@@ -1,0 +1,1 @@
+shared class DefaultedClass(shared String defaulted="abc") {}

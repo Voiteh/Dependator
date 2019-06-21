@@ -1,7 +1,9 @@
 import ceylon.test {
 	test
 }
-import test.herd.depin.engine.model {
+
+import test.herd.depin.engine.poc.model {
+	parametrizedReturnType,
 	Parametrized,
 	fixtures
 }

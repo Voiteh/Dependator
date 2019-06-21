@@ -1,11 +1,13 @@
-import test.herd.depin.engine.model {
-	Parametrized
+import ceylon.language.meta.model {
+	Type
 }
 import ceylon.test {
 	test
 }
-import ceylon.language.meta.model {
-	Type
+
+import test.herd.depin.engine.poc.model {
+	parametrizedReturnType,
+	Parametrized
 }
 
 
