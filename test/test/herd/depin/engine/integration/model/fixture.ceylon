@@ -14,6 +14,13 @@ shared object fixture {
 	shared object defaultParameter{
 		shared String nonDefault="Abc";
 		shared String text="abc";
-		shared DefaultParametersModel instance=DefaultParametersModel(nonDefault,text) ;
+		shared DefaultParametersConstructor instance=DefaultParametersConstructor(nonDefault,text) ;
+	}
+	shared object defaultedParameterByFunction{
+		shared String param="abc";
+		shared DefaultedParametersByFunction instance= DefaultedParametersByFunction(param);
+	}
+	shared object defaultedParameterFunction {
+		shared String param = "abc";
 	}
 }

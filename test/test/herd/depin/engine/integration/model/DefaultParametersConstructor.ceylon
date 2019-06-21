@@ -1,8 +1,8 @@
-shared class DefaultParametersModel(shared String nonDefault,shared String defaultedParameter=fixture.defaultParameter.text) {
+shared class DefaultParametersConstructor(shared String nonDefault,shared String defaultedParameter=fixture.defaultParameter.text) {
 	
 
 	shared actual Boolean equals(Object that) {
-		if (is DefaultParametersModel that) {
+		if (is DefaultParametersConstructor that) {
 			return nonDefault==that.nonDefault && 
 				defaultedParameter==that.defaultedParameter;
 		}
