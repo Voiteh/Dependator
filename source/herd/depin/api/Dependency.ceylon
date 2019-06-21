@@ -1,7 +1,7 @@
 import ceylon.language.meta.declaration {
 	OpenType
 }
-shared abstract class Dependency(
+shared class Dependency(
 	shared OpenType type,
 	shared Identification identification
 	
@@ -10,7 +10,7 @@ shared abstract class Dependency(
 	shared actual Boolean equals(Object that) {
 		if (is Dependency that) {
 			return type==that.type && 
-				identification.containsEvery(that.identification);
+				identification==that.identification;
 		}
 		else {
 			return false;
@@ -23,8 +23,9 @@ shared abstract class Dependency(
 		hash = 31*hash + identification.hash;
 		return hash;
 	}
+
 	
-	string => identification.fold("")((String start, Annotation annotation) => "``start`` ``annotation``").plus(" ``type``");
+	string =>"``type`` ``identification``";
 		
 	
 }

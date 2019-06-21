@@ -1,8 +1,7 @@
 import herd.depin.api {
 	Registry,
 	Injectable,
-	Dependency,
-	Register
+	Dependency
 }
 import ceylon.collection {
 	MutableMap,
@@ -15,13 +14,13 @@ import ceylon.language.meta.declaration {
 import ceylon.language.meta.model {
 	Type
 }
-shared class DefaultRegistry(MutableMap<OpenType,Register> registries= HashMap<OpenType,Register>(),shared actual Type<Annotation>[] controls=[]) satisfies Registry{
+shared class DefaultRegistry(shared actual Type<Annotation>[] controls=[`NamedAnnotation`],MutableMap<OpenType,Register> registries= HashMap<OpenType,Register>()) satisfies Registry{
 	shared actual Injectable? add(Dependency description, Injectable injectable) {
 		value get = registries.get(description.type);
 		if (exists get) {
 			return get.add(description,injectable);
 		}
-		value register=DefaultRegister();
+		value register=Register();
 		registries.put(description.type,register);
 		return register.add(description, injectable);
 		
@@ -33,9 +32,9 @@ shared class DefaultRegistry(MutableMap<OpenType,Register> registries= HashMap<O
 		if (exists get = registries.get(description.type)) {
 			return get.get(description);
 		}
-		value newRegister=DefaultRegister();
+		value newRegister=Register();
 		registries.put(description.type,newRegister);
 		return null;
 	}
-	
+	string => registries.fold("")((String initial, OpenType type -> Register register) => initial + "``type``: ``register``\n\r" );
 }
