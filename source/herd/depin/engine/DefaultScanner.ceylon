@@ -1,7 +1,6 @@
 import herd.depin.api {
 	Scope,
-	Scanner,
-	Dependency
+	Scanner
 }
 import ceylon.language.meta.declaration {
 	Declaration,

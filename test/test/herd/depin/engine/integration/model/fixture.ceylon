@@ -11,4 +11,16 @@ shared object fixture {
 			url = "jdbc:mysql://localhost:3306/myDb?createDatabaseIfNotExist=true";
 		};
 	}
+	shared object defaultParameter{
+		shared String nonDefault="Abc";
+		shared String text="abc";
+		shared DefaultParametersConstructor instance=DefaultParametersConstructor(nonDefault,text) ;
+	}
+	shared object defaultedParameterByFunction{
+		shared String param="abc";
+		shared DefaultedParametersByFunction instance= DefaultedParametersByFunction(param);
+	}
+	shared object defaultedParameterFunction {
+		shared String param = "abc";
+	}
 }
