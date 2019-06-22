@@ -23,4 +23,8 @@ shared object fixture {
 	shared object defaultedParameterFunction {
 		shared String param = "abc";
 	}
+	shared object targetWithTwoCallableConstructors{
+		shared String param ="abc";
+		shared TargetWithTwoCallableConstructors instance= TargetWithTwoCallableConstructors(param);
+	}
 }
