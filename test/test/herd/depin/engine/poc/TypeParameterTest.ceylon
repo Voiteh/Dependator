@@ -1,13 +1,11 @@
+import ceylon.language.meta.declaration {
+	ClassDeclaration
+}
 import ceylon.language.meta.model {
 	Class
 }
 import ceylon.test {
 	test
-}
-import ceylon.language.meta.declaration {
-	ValueDeclaration,
-	NestableDeclaration,
-	ClassDeclaration
 }
 
 shared class Dependency(String bleh,String obleh){

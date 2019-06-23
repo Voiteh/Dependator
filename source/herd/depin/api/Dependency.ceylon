@@ -1,31 +1,40 @@
 import ceylon.language.meta.declaration {
-	OpenType
+	Declaration
 }
-shared class Dependency(
-	shared OpenType type,
-	shared Identification identification
-	
-){
 
-	shared actual Boolean equals(Object that) {
-		if (is Dependency that) {
-			return type==that.type && 
-				identification==that.identification;
-		}
-		else {
-			return false;
-		}
-	}
+
+shared abstract class Dependency extends Injection{
 	
-	shared actual Integer hash {
-		variable value hash = 1;
-		hash = 31*hash + type.hash;
-		hash = 31*hash + identification.hash;
-		return hash;
+	
+	shared static interface Factory{
+		shared formal Dependency create(Declaration declaration);
+	}
+	shared static interface Provider{
+		shared formal Anything provide(Declaration declaration);
+	}
+	shared static interface Registry{
+		shared formal Dependency? add(Dependency dependency);
+		shared formal Dependency? get(Definition definition);
 	}
 
 	
-	string =>"``type`` ``identification``";
-		
+	shared Declaration declaration;
+	shared Definition definition;
+	shared new (Declaration declaration,Definition definition) extends Injection(){
+		this.declaration=declaration;
+		this.definition=definition;
+	}
 	
+	
+	throws (`class Error`)
+	shared formal Anything provide(Provider provider);
+	
+	
+	
+	
+	
+	
+	
+	string => declaration.string;
 }
+
