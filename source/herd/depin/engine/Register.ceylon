@@ -4,18 +4,18 @@ import ceylon.collection {
 }
 
 import herd.depin.api {
-	Dependency,
-	Injectable
+	Definition,
+	Dependency
 }
 
-shared class Register(MutableMap<Dependency,Injectable> map=HashMap<Dependency, Injectable>()) {
-	shared  Injectable? add(Dependency description, Injectable injectable) {
+shared class Register(MutableMap<Definition,Dependency> map=HashMap<Definition, Dependency>()) {
+	shared  Dependency? add(Definition description, Dependency injectable) {
 		return map.put(description,injectable);
 	}
 	
 
 	
-	shared  Injectable? get(Dependency description) => map.get(description);
+	shared  Dependency? get(Definition description) => map.get(description);
 
-	string=> map.fold("")((String initial, Dependency dependency -> Injectable injectable) => initial + ",``dependency.identification``" )	;
+	string=> map.fold("")((String initial, Definition dependency -> Dependency injectable) => initial + ",``dependency.identification``" )	;
 }

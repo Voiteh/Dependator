@@ -14,7 +14,8 @@ import test.herd.depin.engine.integration.model {
 	DefaultParametersConstructor,
 	DefaultedParametersByFunction,
 	DefaultedParameterFunction,
-	TargetWithTwoCallableConstructors
+	TargetWithTwoCallableConstructors,
+	Nesting
 }
 shared class ClassInjectionTest() {
 	
@@ -26,6 +27,8 @@ shared class ClassInjectionTest() {
 			assert(depin.inject(`Person`)==fixture.person.john);
 	}
 	
+	
+	
 	shared test void shouldInjectMysqlDataSource(){
 		assert(depin.inject(`DataSource`)==fixture.dataSouce.mysqlDataSource);
 	}
@@ -36,10 +39,15 @@ shared class ClassInjectionTest() {
 		assert(depin.inject(`DefaultedParametersByFunction`)==fixture.defaultedParameterByFunction.instance);
 	}
 	shared test void shouldInjectDefaultedParameterClassFunction(){
-		assert(depin.inject(`DefaultedParameterFunction`).fun()==fixture.defaultedParameterFunction.param);
+		assert(depin.inject(`DefaultedParameterFunction`).defaultedFunction()==fixture.defaultedParameterFunction.param);
 	}
 	ignore("until https://github.com/eclipse/ceylon/issues/7448 fixed")
 	shared test void shouldInjectTargetedConstructor(){
 		assert(depin.inject(`TargetWithTwoCallableConstructors`).something==fixture.targetWithTwoCallableConstructors.param.reversed);
 	}
+	
+	shared test void shouldInjectNestedClass(){
+		assert(depin.inject(`Nesting.Nested`)==fixture.nesting.instance);
+	}
+	
 }

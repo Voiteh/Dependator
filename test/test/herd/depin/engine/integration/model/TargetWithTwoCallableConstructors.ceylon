@@ -1,4 +1,5 @@
-import herd.depin.engine {
+
+import herd.depin.api {
 	target,
 	named
 }

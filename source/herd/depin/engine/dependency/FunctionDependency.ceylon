@@ -3,28 +3,29 @@ import ceylon.language.meta.declaration {
 	FunctionOrValueDeclaration,
 	FunctionDeclaration
 }
+
 import herd.depin.api {
-	Injectable,
-	Creator
+	Dependency,
+	Definition
 }
-shared class FunctionInjectable(FunctionDeclaration declaration) extends Injectable(declaration){
-	shared actual Anything inject(Creator injector) {
+shared class FunctionDependency(FunctionDeclaration declaration,Definition definition) extends Dependency(declaration,definition){
+	shared actual Anything provide(Provider provider) {
 		value parameters = declaration.parameterDeclarations
-				.map((FunctionOrValueDeclaration element) => element->injector.create(element))
+				.map((FunctionOrValueDeclaration element) => element->provider.provide(element))
 				.filter((FunctionOrValueDeclaration elementKey -> Anything elementItem) => !elementKey.defaulted || elementItem exists)
 				.collect((FunctionOrValueDeclaration elementKey -> Anything elementItem) => elementItem);
 		if(is NestableDeclaration containerDeclaration=declaration.container){
-			assert(exists container = injector.create(containerDeclaration));
+			assert(exists container = provider.provide(containerDeclaration));
 			try{
-				return declaration.memberInvoke(container,[],parameters);
+				return declaration.memberInvoke(container,[],*parameters);
 			}catch(Exception x){
-				throw Error.member(x,container,parameters);
+				throw Error.memberParameters(declaration,container,parameters,x);
 			}
 		}else{
 			try{
 				return declaration.invoke([],*parameters);
 			}catch(Exception x){
-				throw Error(x,parameters);
+				throw Error.parameters(declaration,parameters,x);
 			}
 		}
 	}

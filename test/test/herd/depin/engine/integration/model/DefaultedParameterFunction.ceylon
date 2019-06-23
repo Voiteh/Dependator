@@ -1,4 +1,4 @@
-shared class DefaultedParameterFunction(shared String fun()=> fixture.defaultedParameterFunction.param) {
+shared class DefaultedParameterFunction(shared String defaultedFunction()=> fixture.defaultedParameterFunction.param) {
 
 	shared actual Boolean equals(Object that) {
 		if (is DefaultedParameterFunction that) {

@@ -20,11 +20,16 @@ shared object fixture {
 		shared String param="abc";
 		shared DefaultedParametersByFunction instance= DefaultedParametersByFunction(param);
 	}
-	shared object defaultedParameterFunction {
+	shared object  defaultedParameterFunction {
 		shared String param = "abc";
 	}
 	shared object targetWithTwoCallableConstructors{
 		shared String param ="abc";
 		shared TargetWithTwoCallableConstructors instance= TargetWithTwoCallableConstructors(param);
+	}
+	shared object nesting{
+		shared Integer nesting =4;
+		shared Integer nested=5;
+		shared Nesting.Nested instance=Nesting(nesting).Nested(nested) ;
 	}
 }

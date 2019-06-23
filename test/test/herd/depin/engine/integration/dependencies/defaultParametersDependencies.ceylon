@@ -1,7 +1,8 @@
 import test.herd.depin.engine.integration.model {
 	fixture
 }
-import herd.depin.engine {
+
+import herd.depin.api {
 	dependency
 }
 shared dependency String nonDefault=fixture.defaultParameter.nonDefault;

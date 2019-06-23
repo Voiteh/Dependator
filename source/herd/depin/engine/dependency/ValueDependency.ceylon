@@ -2,24 +2,25 @@ import ceylon.language.meta.declaration {
 	NestableDeclaration,
 	ValueDeclaration
 }
+
 import herd.depin.api {
-	Injectable,
-	Creator
+	Dependency,
+	Definition
 }
-shared class ValueInjectable(ValueDeclaration declaration) extends Injectable(declaration){
-	shared actual Anything inject(Creator injector) {
+shared class ValueDependency(ValueDeclaration declaration,Definition definition) extends Dependency(declaration,definition){
+	shared actual Anything provide(Provider provider) {
 		if(is NestableDeclaration containerDeclaration=declaration.container){
-			assert(exists container = injector.create(containerDeclaration));
+			assert(exists container = provider.provide(containerDeclaration));
 			try{
 				return declaration.memberGet(container);
 			}catch(Exception x){
-				throw Error.member(x,container);
+				throw Error.member(declaration,container,x);
 			}
 		}else{
 			try{
 				return declaration.get();
 			}catch(Exception x){
-				throw Error(x);
+				throw Error(declaration,x);
 			}
 		}
 	}
