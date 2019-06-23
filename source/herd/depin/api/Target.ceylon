@@ -3,9 +3,6 @@ import ceylon.language.meta.model {
 	FunctionModel,
 	ValueModel
 }
-import ceylon.language.meta.declaration {
-	FunctionOrValueDeclaration
-}
 
 
 
@@ -25,10 +22,7 @@ shared abstract class Target extends Injection {
 		this.model=model;
 	}
 	
-	shared {Anything*} declarationParameters(FunctionOrValueDeclaration[] parameters,Dependency.Provider provider) => parameters
-			.map((FunctionOrValueDeclaration element) => element->provider.provide(element))
-			.filter((FunctionOrValueDeclaration declaration -> Anything val) => !declaration.defaulted||val exists)
-			.map((FunctionOrValueDeclaration declaration -> Anything val) => val);
+	
 	
 	shared FunctionModel<Object>|ValueModel<Object> targetConstructor {
 		value chain = model.getCallableConstructors(`TargetAnnotation`)

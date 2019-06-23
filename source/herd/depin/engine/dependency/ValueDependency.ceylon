@@ -11,18 +11,14 @@ shared class ValueDependency(ValueDeclaration declaration,Definition definition)
 	shared actual Anything provide(Provider provider) {
 		if(is NestableDeclaration containerDeclaration=declaration.container){
 			assert(exists container = provider.provide(containerDeclaration));
-			try{
-				return declaration.memberGet(container);
-			}catch(Exception x){
-				throw Error.member(declaration,container,x);
-			}
-		}else{
-			try{
-				return declaration.get();
-			}catch(Exception x){
-				throw Error(declaration,x);
-			}
+			return safe(declaration.memberGet)([container])
+			((Exception cause)=>Error.member(declaration,container,cause));
+
 		}
+		return safe(declaration.get)([])
+		((Exception cause)=> Error(declaration,cause));
+		
+		
 	}
 	
 	

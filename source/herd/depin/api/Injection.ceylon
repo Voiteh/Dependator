@@ -1,5 +1,6 @@
 import ceylon.language.meta.declaration {
-	Declaration
+	Declaration,
+	FunctionOrValueDeclaration
 }
 
 shared abstract class Injection() of Target|Dependency {
@@ -12,6 +13,10 @@ shared abstract class Injection() of Target|Dependency {
 			throw handler(x);
 		}
 	}
+	shared {Anything*} declarationParameters(FunctionOrValueDeclaration[] parameters,Dependency.Provider provider) => parameters
+			.map((FunctionOrValueDeclaration element) => element->provider.provide(element))
+			.filter((FunctionOrValueDeclaration declaration -> Anything val) => !declaration.defaulted||val exists)
+			.map((FunctionOrValueDeclaration declaration -> Anything val) => val);
 	
 	
 	shared class Error extends Exception{

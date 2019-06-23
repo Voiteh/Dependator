@@ -16,8 +16,7 @@ class ClassTarget(Class<Object> clazz) extends Target(clazz) {
 		case (is CallableConstructor<Object>) {
 			value parameters=declarationParameters(constructor.declaration.parameterDeclarations,provider);
 			return safe(constructor.apply)([*parameters])
-			((Exception cause) => Error.parameters(constructor.declaration,parameters,cause))
-			;
+			((Exception cause) => Error.parameters(constructor.declaration,parameters,cause));
 		}
 		case (is ValueConstructor<Object>) {
 			return safe(constructor.get)([])((Exception cause) => Error(constructor.declaration,cause));

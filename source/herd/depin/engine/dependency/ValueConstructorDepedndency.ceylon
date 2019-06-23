@@ -11,18 +11,11 @@ shared class ValueConstructorDepedndency(ValueConstructorDeclaration declaration
 	shared actual Anything provide(Dependency.Provider provider){
 		if(is NestableDeclaration containerDeclaration=declaration.container.container){
 			assert(exists container = provider.provide(containerDeclaration));
-			try{
-				return declaration.memberGet(container);
-			}catch(Exception x){
-				throw Error.member(declaration,container,x);
-			}
-		}else{
-			try{
-				return declaration.get();
-			}catch(Exception x){
-				throw Error(declaration,x);
-			}
+			return safe(declaration.memberGet)([container])
+			((Exception cause)=>Error.member(declaration,container,cause));
 		}
+		return safe(declaration.get)([])
+		((Exception cause)=>Error(declaration,cause));
 	}
 	
 	
