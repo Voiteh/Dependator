@@ -11,7 +11,7 @@ shared class TargetWithTwoCallableConstructors {
 		
 	}
 	
-	shared target new targetedConstructor(named("Abc") String something){
+	shared target new targetedConstructor(named("I will be ignored any way! Bug, bug, bug") String something){
 		this.something=something.reversed;
 	}
 	

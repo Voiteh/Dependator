@@ -1,3 +1,4 @@
+
 import ceylon.language.meta {
 	type
 }
@@ -19,8 +20,8 @@ shared class DefinitionFactory(Identification.Holder holder) satisfies Definitio
 			try{
 				annotations = declaration.annotations<Annotation>()
 						.select((Annotation element) => holder.types.contains(type(element)));
-			}catch(Exception x){
-				//Ceylon BUG!!! We can't identifiy parameter by annotations but for now we can use name of the parameter.
+			}catch(Throwable x){
+				//Ceylon BUG (https://github.com/eclipse/ceylon/issues/7448)!!! We can't identifiy parameter by annotations but for now we can use name of the parameter.
 				//This will be enough for most of cases. 
 				annotations={NamedAnnotation(declaration.name)};
 			}

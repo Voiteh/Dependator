@@ -25,7 +25,7 @@ shared abstract class Target extends Injection {
 	
 	
 	shared FunctionModel<Object>|ValueModel<Object> targetConstructor {
-		value chain = model.getCallableConstructors(`TargetAnnotation`)
+		value chain = model.getCallableConstructors<>(`TargetAnnotation`)
 				.chain(model.getValueConstructors(`TargetAnnotation`));
 		if (!model.defaultConstructor exists) {
 			if (chain.empty) {
