@@ -1,6 +1,5 @@
 import ceylon.test {
-	test,
-	ignore
+	test
 }
 
 import herd.depin.engine {
@@ -41,7 +40,6 @@ shared class ClassInjectionTest() {
 	shared test void shouldInjectDefaultedParameterClassFunction(){
 		assert(depin.inject(`DefaultedParameterFunction`).defaultedFunction()==fixture.defaultedParameterFunction.param);
 	}
-	ignore("until https://github.com/eclipse/ceylon/issues/7448 fixed")
 	shared test void shouldInjectTargetedConstructor(){
 		assert(depin.inject(`TargetWithTwoCallableConstructors`).something==fixture.targetWithTwoCallableConstructors.param.reversed);
 	}
