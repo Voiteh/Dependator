@@ -6,7 +6,7 @@ import herd.depin.engine {
 	Depin
 }
 
-import test.herd.depin.engine.integration.model {
+import test.herd.depin.engine.integration.target {
 	Person,
 	fixture,
 	DataSource,
@@ -14,12 +14,13 @@ import test.herd.depin.engine.integration.model {
 	DefaultedParametersByFunction,
 	DefaultedParameterFunction,
 	TargetWithTwoCallableConstructors,
-	Nesting
+	Nesting,
+	ObjectDependency
 }
 shared class ClassInjectionTest() {
 	
 	Depin depin=Depin().include{
-		 inclusions = {`package test.herd.depin.engine.integration.dependencies`};
+		 inclusions = {`package test.herd.depin.engine.integration.dependency`};
 	};
 		
 	shared test void shouldInjectJohnPerson(){
@@ -47,5 +48,7 @@ shared class ClassInjectionTest() {
 	shared test void shouldInjectNestedClass(){
 		assert(depin.inject(`Nesting.Nested`)==fixture.nesting.instance);
 	}
-	
+	shared test void shouldInjectObjectContainedDependencies(){
+		assert(depin.inject(`ObjectDependency`).innerObjectDependency==fixture.objectDependencies.innerObjectDependency);
+	}
 }
