@@ -1,0 +1,1 @@
+shared class ObjectDependency(shared String innerObjectDependency) {}

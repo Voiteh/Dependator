@@ -1,4 +1,4 @@
-import test.herd.depin.engine.integration.model {
+import test.herd.depin.engine.integration.target {
 	fixture
 }
 

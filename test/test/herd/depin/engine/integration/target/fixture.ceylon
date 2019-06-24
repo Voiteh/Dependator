@@ -32,4 +32,7 @@ shared object fixture {
 		shared Integer nested=5;
 		shared Nesting.Nested instance=Nesting(nesting).Nested(nested) ;
 	}
+	shared object objectDependencies{
+		shared String innerObjectDependency="abc";
+	}
 }
