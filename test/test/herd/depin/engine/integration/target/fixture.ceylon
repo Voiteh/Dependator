@@ -35,4 +35,8 @@ shared object fixture {
 	shared object objectDependencies{
 		shared String innerObjectDependency="abc";
 	}
+	shared object changing{
+		shared Boolean initial=true;
+		shared Boolean final=false;
+	}
 }
