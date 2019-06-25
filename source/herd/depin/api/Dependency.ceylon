@@ -35,6 +35,6 @@ shared abstract class Dependency extends Injection{
 	
 	
 	
-	string => declaration.string;
+	shared actual default String string => declaration.string;
 }
 

@@ -15,7 +15,12 @@ import test.herd.depin.engine.integration.target {
 	DefaultedParameterFunction,
 	TargetWithTwoCallableConstructors,
 	Nesting,
-	ObjectDependency
+	ObjectDependency,
+	SingletonTarget,
+	PrototypeTarget
+}
+import test.herd.depin.engine.integration.dependency {
+	change
 }
 shared class ClassInjectionTest() {
 	
@@ -51,4 +56,16 @@ shared class ClassInjectionTest() {
 	shared test void shouldInjectObjectContainedDependencies(){
 		assert(depin.inject(`ObjectDependency`).innerObjectDependency==fixture.objectDependencies.innerObjectDependency);
 	}
+	
+	shared test void shouldInjectSingleton(){
+		assert(depin.inject(`SingletonTarget`).singletonDependency==fixture.changing.initial);
+		change=fixture.changing.final;
+		assert(depin.inject(`SingletonTarget`).singletonDependency==fixture.changing.initial);
+	}
+	shared test void shouldInjectPrototype(){
+		assert(depin.inject(`PrototypeTarget`).prototypeDependency==fixture.changing.initial);
+		change=fixture.changing.final;
+		assert(depin.inject(`PrototypeTarget`).prototypeDependency==fixture.changing.final);
+	}
+	
 }

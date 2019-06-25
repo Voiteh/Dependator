@@ -1,0 +1,1 @@
+shared class PrototypeTarget(shared Boolean prototypeDependency) {}
