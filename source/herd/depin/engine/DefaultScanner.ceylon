@@ -14,16 +14,23 @@ import ceylon.language.meta.declaration {
 
 shared class DefaultScanner() extends Scanner() {
 	
-	{Declaration*} single(Scope element) {
+	{Declaration*} single(Scope element) {	
 		switch (element)
 		case (is ClassDeclaration) {
-			if(element.annotated<DependencyAnnotation>() || element.constructorDeclarations()
-					.filter((ConstructorDeclaration element) => element.annotated<DependencyAnnotation>()).first exists){
+			if(exists anonymousObject=element.objectValue,exists anonymousClass = anonymousObject.objectClass){
 				value members = element.memberDeclarations<ClassDeclaration|FunctionOrValueDeclaration>()
 						.flatMap((Scope element) => single(element));
-				return members.follow(element);
+				return if(!members.empty) then members.follow(anonymousObject) else empty;
 			}
-			return empty;		
+			else if(element.annotated<DependencyAnnotation>()|| !element.constructorDeclarations().filter((ConstructorDeclaration element) => element.annotated<DependencyAnnotation>()).empty){
+				return element.memberDeclarations<ClassDeclaration|FunctionOrValueDeclaration>()
+						.flatMap((Scope element) => single(element)).follow(element);
+			}else{
+				value members = element.memberDeclarations<ClassDeclaration|FunctionOrValueDeclaration>()
+						.flatMap((Scope element) => single(element));
+				return if(!members.empty) then members.follow(element) else empty;
+			}
+				
 		}
 		case (is FunctionOrValueDeclaration) {
 			return if (element.annotated<DependencyAnnotation>()) then { element } else empty;
