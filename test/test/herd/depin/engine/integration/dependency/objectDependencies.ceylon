@@ -4,6 +4,6 @@ import herd.depin.api {
 import test.herd.depin.engine.integration.target {
 	fixture
 }
-shared dependency object dependencyHolder{
+shared object dependencyHolder{
 	shared dependency String innerObjectDependency=fixture.objectDependencies.innerObjectDependency;
 }

@@ -1,1 +1,1 @@
-shared class ObjectDependency(shared String innerObjectDependency) {}
+shared class AnonymousObjectTarget(shared String innerObjectDependency) {}

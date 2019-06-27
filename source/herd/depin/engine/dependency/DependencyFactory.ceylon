@@ -25,6 +25,7 @@ shared class DependencyFactory(Definition.Factory factory) satisfies Dependency.
 			throw Exception("Type parameters are not supported yet in dependency: ``declaration``");
 		}
 		value dependency = prepare(declaration);
+
 		if (is AnnotatedDeclaration declaration, exists dependencyAnnotation = declaration.annotations<DependencyAnnotation>().first) {
 			switch(provision=dependencyAnnotation.provision)
 			case(singleton){
@@ -34,8 +35,9 @@ shared class DependencyFactory(Definition.Factory factory) satisfies Dependency.
 				return dependency;
 			}
 
+		}else{
+			return SingletonDecorator(dependency);
 		}
-		return dependency;
 	}
 	
 	Dependency prepare(Declaration declaration) {
@@ -48,24 +50,32 @@ shared class DependencyFactory(Definition.Factory factory) satisfies Dependency.
 			return ValueDependency(declaration, definition);
 		}
 		case (is ClassDeclaration) {
+			variable ConstructorDeclaration constructor;
 			if (declaration.annotated<DependencyAnnotation>()) {
 				if (declaration.constructorDeclarations().find((ConstructorDeclaration elem) => elem.annotated<DependencyAnnotation>()) exists) {
-					throw Exception("Either class (for initializer definition) or single constructor must be annotatated with `` `class DependencyAnnotation` ``, never both!");
+					throw Exception("Either class (for initializer definition) or single constructor may be annotatated with `` `class DependencyAnnotation` ``, never both!");
 				}
 				assert (exists defaultConstructor = declaration.defaultConstructor);
-				return CallableConstructorDependency(defaultConstructor, definition);
+				constructor=defaultConstructor;
 			}
-			value constructors = declaration.constructorDeclarations().filter((ConstructorDeclaration elem) => elem.annotated<DependencyAnnotation>());
-			if (!constructors.rest.empty) {
-				throw Exception("Only one constructor may be annotated `` `class DependencyAnnotation` ``");
+			else if(exists singleConstructor=declaration.constructorDeclarations().first,declaration.constructorDeclarations().rest.empty){
+				constructor=singleConstructor;
 			}
-			assert (exists constructor = constructors.first);
-			switch (constructor)
+			else{
+				value constructors = declaration.constructorDeclarations().filter((ConstructorDeclaration elem) => elem.annotated<DependencyAnnotation>());
+				if (!constructors.rest.empty) {
+					throw Exception("Only one constructor may be annotated `` `class DependencyAnnotation` ``");
+				}
+				assert (exists annotatedConstructor= constructors.first);
+				constructor=annotatedConstructor;
+				
+			}	
+			switch (constructorDeclaration = constructor)
 			case (is CallableConstructorDeclaration) {
-				return CallableConstructorDependency(constructor, definition);
+				return CallableConstructorDependency(constructorDeclaration, definition);
 			}
 			case (is ValueConstructorDeclaration) {
-				return ValueConstructorDepedndency(constructor, definition);
+				return ValueConstructorDepedndency(constructorDeclaration, definition);
 			}
 		}
 		else {
