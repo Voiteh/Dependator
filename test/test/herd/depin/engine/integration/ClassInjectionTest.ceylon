@@ -20,7 +20,8 @@ import test.herd.depin.engine.integration.target {
 	Nesting,
 	AnonymousObjectTarget,
 	SingletonTarget,
-	PrototypeTarget
+	PrototypeTarget,
+	ExposedTarget
 }
 shared class ClassInjectionTest() {
 	
@@ -68,6 +69,9 @@ shared class ClassInjectionTest() {
 		assert(depin.inject(`PrototypeTarget`).prototypeDependency==fixture.changing.initial);
 		change=fixture.changing.final;
 		assert(depin.inject(`PrototypeTarget`).prototypeDependency==fixture.changing.final);
+	}
+	shared test void shouldInjectExposedInterface(){
+		assert(depin.inject(`ExposedTarget`).exposing.exposed==fixture.unshared.exposed);
 	}
 	
 }
