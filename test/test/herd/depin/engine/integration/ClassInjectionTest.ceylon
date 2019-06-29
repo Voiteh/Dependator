@@ -3,7 +3,8 @@ import ceylon.test {
 }
 
 import herd.depin.engine {
-	Depin
+	Depin,
+	DefaultScanner
 }
 
 import test.herd.depin.engine.integration.dependency {
@@ -23,7 +24,11 @@ import test.herd.depin.engine.integration.target {
 	ExposedTarget
 }
 import ceylon.language.meta.declaration {
-	ValueDeclaration
+	ValueDeclaration,
+	FunctionOrValueDeclaration
+}
+import herd.depin.api {
+	DependencyAnnotation
 }
 shared class ClassInjectionTest() {
 	
@@ -33,45 +38,55 @@ shared class ClassInjectionTest() {
 			assert(Depin({`value name`,`value age`}).inject(`Person`)==fixture.person.john);
 	}
 	
-	
-	
 	shared test void shouldInjectMysqlDataSource(){
-		assert(Depin({`class DataSourceConfiguration`,*`class DataSourceConfiguration`.memberDeclarations<ValueDeclaration>() }).inject(`DataSource`)==fixture.dataSouce.mysqlDataSource);
+		value select = `class DataSourceConfiguration`.memberDeclarations<ValueDeclaration>()
+				.select((ValueDeclaration element) => element.annotated<DependencyAnnotation>());
+		assert(Depin(select).inject(`DataSource`)==fixture.dataSouce.mysqlDataSource);
 	}
 	shared test void shouldInjectNonDefaultParameters(){
-		assert(Depin({`value nonDefault`}).inject(`DefaultParametersConstructor`)==fixture.defaultParameter.instance);
+		assert(Depin({`value nonDefault`}).inject(`DefaultParametersConstructor`)
+			==fixture.defaultParameter.instance);
 	}
 	shared test void shouldInjectDefaultedParameterFromFunction(){
-		assert(Depin({`function defaultedByFunction`}).inject(`DefaultedParametersByFunction`)==fixture.defaultedParameterByFunction.instance);
+		assert(Depin({`function defaultedByFunction`}).inject(`DefaultedParametersByFunction`)
+			==fixture.defaultedParameterByFunction.instance);
 	}
 	shared test void shouldInjectDefaultedParameterClassFunction(){
-		assert(Depin().inject(`DefaultedParameterFunction`).defaultedFunction()==fixture.defaultedParameterFunction.param);
+		assert(Depin().inject(`DefaultedParameterFunction`).defaultedFunction()
+			==fixture.defaultedParameterFunction.param);
 	}
 	shared test void shouldInjectTargetedConstructor(){
-		assert(Depin({`value something`}).inject(`TargetWithTwoCallableConstructors`).something==fixture.targetWithTwoCallableConstructors.param.reversed);
+		assert(Depin({`value something`}).inject(`TargetWithTwoCallableConstructors`).something
+			==fixture.targetWithTwoCallableConstructors.param.reversed);
 	}
 	
 	shared test void shouldInjectNestedClass(){
 		assert(Depin({`value nesting`,`value nested`}).inject(`Nesting.Nested`)==fixture.nesting.instance);
 	}
 	shared test void shouldInjectObjectContainedDependencies(){
-		assert(Depin({`class dependencyHolder`}).inject(`AnonymousObjectTarget`).innerObjectDependency==fixture.objectDependencies.innerObjectDependency);
+		value select = `class dependencyHolder`.memberDeclarations<FunctionOrValueDeclaration>()
+				.select((FunctionOrValueDeclaration element) => element.annotated<DependencyAnnotation>());
+		assert(Depin(select).inject(`AnonymousObjectTarget`).innerObjectDependency
+			==fixture.objectDependencies.innerObjectDependency);
 	}
 	
 	shared test void shouldInjectSingleton(){
 		change=fixture.changing.initial;
-		assert(Depin({`function singletonDependency`}).inject(`SingletonTarget`).singletonDependency==fixture.changing.initial);
+		value depin=Depin({`function singletonDependency`});
+		assert(depin.inject(`SingletonTarget`).singletonDependency==fixture.changing.initial);
 		change=fixture.changing.final;
-		assert(Depin({`function singletonDependency`}).inject(`SingletonTarget`).singletonDependency==fixture.changing.initial);
+		assert(depin.inject(`SingletonTarget`).singletonDependency==fixture.changing.initial);
 	}
 	shared test void shouldInjectPrototype(){
 		change=fixture.changing.initial;
-		assert(Depin({`function prototypeDependency`}).inject(`PrototypeTarget`).prototypeDependency==fixture.changing.initial);
+		value depin=Depin({`function prototypeDependency`});
+		assert(depin.inject(`PrototypeTarget`).prototypeDependency==fixture.changing.initial);
 		change=fixture.changing.final;
-		assert(Depin({`function prototypeDependency`}).inject(`PrototypeTarget`).prototypeDependency==fixture.changing.final);
+		assert(depin.inject(`PrototypeTarget`).prototypeDependency==fixture.changing.final);
 	}
 	shared test void shouldInjectExposedInterface(){
-		assert(depin.inject(`ExposedTarget`).exposing.exposed==fixture.unshared.exposed);
+		value declarations=DefaultScanner().scan({`package test.herd.depin.engine.integration.dependency.unshared`});
+		assert(Depin(declarations).inject(`ExposedTarget`).exposing.exposed==fixture.unshared.exposed);
 	}
 	
 }
