@@ -9,12 +9,13 @@ import ceylon.language.meta.declaration {
 	Package,
 	Module,
 	ClassDeclaration,
-	ConstructorDeclaration
+	ConstructorDeclaration,
+	AnnotatedDeclaration
 }
 
 shared class DefaultScanner() extends Scanner() {
 	
-	{Declaration*} single(Scope element) {	
+	{AnnotatedDeclaration*} single(Scope element) {	
 		switch (element)
 		case (is ClassDeclaration) {
 			if(exists anonymousObject=element.objectValue,exists anonymousClass = anonymousObject.objectClass){
@@ -44,7 +45,7 @@ shared class DefaultScanner() extends Scanner() {
 		}
 	}
 	
-	shared actual {Declaration*} scan({Scope*} inclusions, {Scope*} exclusions) {
+	shared actual {AnnotatedDeclaration*} scan({Scope*} inclusions, {Scope*} exclusions) {
 		value excluded = exclusions.flatMap((Scope element) => single(element)).sequence();
 		return inclusions.flatMap((Scope element) => single(element))
 			.filter((Declaration element) => !excluded.contains(element));
