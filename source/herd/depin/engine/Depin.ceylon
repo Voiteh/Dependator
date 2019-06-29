@@ -1,5 +1,5 @@
 import ceylon.language.meta.declaration {
-	AnnotatedDeclaration
+	FunctionOrValueDeclaration
 }
 import ceylon.language.meta.model {
 	ClassModel,
@@ -32,7 +32,7 @@ shared class Depin {
 	Dependency.Provider dependencyProvider;
 	Target.Injector injector; 
 	
-	shared new({AnnotatedDeclaration*} declarations={},Type<Annotation>[] identificationTypes=[`NamedAnnotation`] ){
+	shared new({FunctionOrValueDeclaration*} dependencies={},Type<Annotation>[] identificationTypes=[`NamedAnnotation`] ){
 		
 		holder=Identification.Holder(identificationTypes);
 		definitionFactory=DefinitionFactory(holder);
@@ -41,7 +41,8 @@ shared class Depin {
 		dependencyProvider=DependencyProvider(definitionFactory,registry);
 		injector =TargetInjector(TargetFactory(), dependencyProvider);
 		
-		declarations.map((AnnotatedDeclaration element) => dependencyFactory.create(element))
+		dependencies.flatMap((FunctionOrValueDeclaration element) => dependencyFactory.create(element))
+				.distinct
 				.map((Dependency element) => registry.add(element))
 				.narrow<Dependency>()
 				.group((Dependency element) => element.definition)
@@ -56,6 +57,7 @@ shared new custom(Identification.Holder holder,
 	Dependency.Factory dependencyFactory,
 	Dependency.Provider dependencyProvider,
 	Target.Injector injector )	{
+	
 	this.injector = injector;
 	this.dependencyProvider = dependencyProvider;
 	this.dependencyFactory = dependencyFactory;

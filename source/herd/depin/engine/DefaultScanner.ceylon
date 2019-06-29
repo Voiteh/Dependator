@@ -1,37 +1,26 @@
-import herd.depin.api {
-	Scope,
-	Scanner,
-	DependencyAnnotation
-}
 import ceylon.language.meta.declaration {
 	Declaration,
 	FunctionOrValueDeclaration,
 	Package,
 	Module,
-	ClassDeclaration,
-	ConstructorDeclaration,
-	AnnotatedDeclaration
+	ClassDeclaration
+}
+
+import herd.depin.api {
+	Scope,
+	Scanner,
+	DependencyAnnotation
 }
 
 shared class DefaultScanner() extends Scanner() {
 	
-	{AnnotatedDeclaration*} single(Scope element) {	
+	{FunctionOrValueDeclaration*} single(Scope element) {
 		switch (element)
 		case (is ClassDeclaration) {
-			if(exists anonymousObject=element.objectValue,exists anonymousClass = anonymousObject.objectClass){
-				value members = element.memberDeclarations<ClassDeclaration|FunctionOrValueDeclaration>()
-						.flatMap((Scope element) => single(element));
-				return if(!members.empty) then members.follow(anonymousObject) else empty;
-			}
-			else if(element.annotated<DependencyAnnotation>()|| !element.constructorDeclarations().filter((ConstructorDeclaration element) => element.annotated<DependencyAnnotation>()).empty){
-				return element.memberDeclarations<ClassDeclaration|FunctionOrValueDeclaration>()
-						.flatMap((Scope element) => single(element)).follow(element);
-			}else{
-				value members = element.memberDeclarations<ClassDeclaration|FunctionOrValueDeclaration>()
-						.flatMap((Scope element) => single(element));
-				return if(!members.empty) then members.follow(element) else empty;
-			}
-				
+			
+			{FunctionOrValueDeclaration*} members = element.memberDeclarations<ClassDeclaration|FunctionOrValueDeclaration>()
+				.flatMap((Scope element) => single(element));
+			return members;
 		}
 		case (is FunctionOrValueDeclaration) {
 			return if (element.annotated<DependencyAnnotation>()) then { element } else empty;
@@ -45,8 +34,8 @@ shared class DefaultScanner() extends Scanner() {
 		}
 	}
 	
-	shared actual {AnnotatedDeclaration*} scan({Scope*} inclusions, {Scope*} exclusions) {
-		value excluded = exclusions.flatMap((Scope element) => single(element)).sequence();
+	shared actual {FunctionOrValueDeclaration*} scan({Scope*} inclusions, {Scope*} exclusions) {
+		[FunctionOrValueDeclaration+]|[] excluded = exclusions.flatMap((Scope element) => single(element)).sequence();
 		return inclusions.flatMap((Scope element) => single(element))
 			.filter((Declaration element) => !excluded.contains(element));
 	}

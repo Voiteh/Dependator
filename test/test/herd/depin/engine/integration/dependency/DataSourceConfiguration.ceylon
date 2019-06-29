@@ -2,7 +2,7 @@
 import herd.depin.api {
 	dependency
 }
-shared dependency class DataSourceConfiguration() {
+shared class DataSourceConfiguration() {
 	
 	shared dependency String driverClassName="com.mysql.cj.jdbc.Driver";
 	shared dependency String userName="mysqluser";

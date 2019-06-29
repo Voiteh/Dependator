@@ -1,3 +1,6 @@
+import herd.depin.api {
+	target
+}
 shared class DefaultedParametersByFunction(shared String defaultedByFunction) {
 	
 
