@@ -47,4 +47,7 @@ shared object fixture {
 		shared Boolean initial=true;
 		shared Boolean final=false;
 	}
+	shared object unshared{
+		shared String exposed="expooooseeed";
+	}
 }

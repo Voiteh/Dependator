@@ -19,7 +19,8 @@ import test.herd.depin.engine.integration.target {
 	Nesting,
 	AnonymousObjectTarget,
 	SingletonTarget,
-	PrototypeTarget
+	PrototypeTarget,
+	ExposedTarget
 }
 import ceylon.language.meta.declaration {
 	ValueDeclaration
@@ -68,6 +69,9 @@ shared class ClassInjectionTest() {
 		assert(Depin({`function prototypeDependency`}).inject(`PrototypeTarget`).prototypeDependency==fixture.changing.initial);
 		change=fixture.changing.final;
 		assert(Depin({`function prototypeDependency`}).inject(`PrototypeTarget`).prototypeDependency==fixture.changing.final);
+	}
+	shared test void shouldInjectExposedInterface(){
+		assert(depin.inject(`ExposedTarget`).exposing.exposed==fixture.unshared.exposed);
 	}
 	
 }
