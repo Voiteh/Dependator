@@ -2,7 +2,8 @@ import herd.depin.api {
 	dependency,
 	prototype
 }
-import test.herd.depin.engine.integration.target {
+
+import test.herd.depin.engine.integration {
 	fixture
 }
 shared variable Boolean change=fixture.changing.initial;

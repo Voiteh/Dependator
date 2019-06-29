@@ -1,3 +1,6 @@
+import test.herd.depin.engine.integration {
+	fixture
+}
 shared class DefaultParametersConstructor(shared String nonDefault,shared String defaultedParameter=fixture.defaultParameter.text) {
 	
 

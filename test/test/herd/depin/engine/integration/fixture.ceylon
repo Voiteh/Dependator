@@ -1,3 +1,11 @@
+import test.herd.depin.engine.integration.target {
+	DefaultedParametersByFunction,
+	Nesting,
+	TargetWithTwoCallableConstructors,
+	DefaultParametersConstructor,
+	DataSource,
+	Person
+}
 
 shared object fixture {
 	shared object person {
