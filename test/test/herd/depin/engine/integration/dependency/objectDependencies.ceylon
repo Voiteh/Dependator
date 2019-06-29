@@ -1,7 +1,8 @@
 import herd.depin.api {
 	dependency
 }
-import test.herd.depin.engine.integration.target {
+
+import test.herd.depin.engine.integration {
 	fixture
 }
 shared object dependencyHolder{

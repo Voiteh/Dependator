@@ -1,3 +1,6 @@
+import test.herd.depin.engine.integration {
+	fixture
+}
 shared class DefaultedParameterFunction(shared String defaultedFunction()=> fixture.defaultedParameterFunction.param) {
 
 	shared actual Boolean equals(Object that) {
