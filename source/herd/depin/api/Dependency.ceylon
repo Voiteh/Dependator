@@ -1,56 +1,53 @@
 import ceylon.language.meta.declaration {
-	Declaration,
-	FunctionOrValueDeclaration
+	OpenType
 }
 
-
-shared abstract class Dependency extends Injection{
+shared abstract class Dependency {
 	
-	
-	shared static interface Factory{
-		throws(`class FactorizationError`)
-		shared formal {Dependency+} create(FunctionOrValueDeclaration declaration);
-		
-		shared class FactorizationError(Declaration declaration,String message,Throwable? cause=null) 
-				extends Exception("[``declaration``] ``message``",cause){}
-	}
-	shared static interface Provider{
-		shared formal Anything provide(Declaration declaration);
-	}
-	shared static interface Registry{
-		shared formal Dependency? add(Dependency dependency);
+	shared static
+	interface Tree {
 		shared formal Dependency? get(Definition definition);
+		shared formal class Mutator() {
+			shared formal Dependency? add(Dependency dependency);
+		}
 	}
-
 	
-	shared Declaration declaration;
+	shared static
+	class Definition(shared OpenType type, shared Identification identification) {
+		shared actual Boolean equals(Object that) {
+			if (is Definition that) {
+				return type==that.type &&
+						identification==that.identification;
+			} else {
+				return false;
+			}
+		}
+		
+		shared actual Integer hash {
+			variable Integer hash = 1;
+			hash = 31*hash + type.hash;
+			hash = 31*hash + identification.hash;
+			return hash;
+		}
+		
+		string => "``type`` ``identification``";
+	}
+	
 	shared Definition definition;
-	shared new (Declaration declaration,Definition definition) extends Injection(){
-		this.declaration=declaration;
-		this.definition=definition;
+	shared {Dependency*} parameters;
+	shared Dependency? container;
+	shared new (Definition definition, Dependency? container = null, {Dependency*} parameters = empty) {
+		this.container = container;
+		this.parameters = parameters;
+		this.definition = definition;
 	}
 	
+	shared formal Anything resolve;
 	
-	throws (`class Error`)
-	shared formal Anything provide(Provider provider);
-	
-	shared actual Integer hash {
-	variable value hash = 1;
-	hash = 31*hash + declaration.hash;
-	return hash;
-}
-	
-	
-	shared actual Boolean equals(Object that) {
-	if (is Dependency that) {
-		return declaration==that.declaration ;
-	}
-	else {
-		return false;
+	shared actual String string {
+		if (exists container) {
+			return "``container``::``definition`` ``parameters``";
+		}
+		return "``definition`` ``parameters``";
 	}
 }
-	
-	
-	shared actual default String string => declaration.string;
-}
-

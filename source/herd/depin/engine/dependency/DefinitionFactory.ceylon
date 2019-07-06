@@ -1,20 +1,20 @@
-
 import ceylon.language.meta {
 	type
 }
 import ceylon.language.meta.declaration {
-	Declaration,
 	AnnotatedDeclaration,
-	TypedDeclaration
+	TypedDeclaration,
+	Declaration
 }
 
 import herd.depin.api {
-	Definition,
-	Identification,
-	NamedAnnotation
+	Dependency,
+	NamedAnnotation,
+	Identification
 }
-shared class DefinitionFactory(Identification.Holder holder) satisfies Definition.Factory{
-	shared actual Definition create(Declaration declaration) {
+shared class DefinitionFactory(Identification.Holder holder) {
+	
+	shared Dependency.Definition create(Declaration declaration) {
 		if(is TypedDeclaration&AnnotatedDeclaration declaration){
 			variable {Annotation*} annotations;
 			try{
@@ -25,7 +25,7 @@ shared class DefinitionFactory(Identification.Holder holder) satisfies Definitio
 				//This will be enough for most of cases. 
 				annotations={NamedAnnotation(declaration.name)};
 			}
-			return Definition{ 
+			return Dependency.Definition{ 
 				type = declaration.openType; 
 				identification = if (annotations.empty && holder.types.contains(`NamedAnnotation`)) 
 				then Identification(NamedAnnotation(declaration.name)) 

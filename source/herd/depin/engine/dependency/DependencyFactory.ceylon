@@ -1,101 +1,75 @@
 import ceylon.language.meta.declaration {
-	Declaration,
-	CallableConstructorDeclaration,
-	GenericDeclaration,
-	FunctionDeclaration,
 	ValueDeclaration,
-	ClassDeclaration,
-	ConstructorDeclaration,
-	ValueConstructorDeclaration,
-	AnnotatedDeclaration,
 	NestableDeclaration,
+	CallableConstructorDeclaration,
+	ValueConstructorDeclaration,
+	ClassDeclaration,
+	FunctionalDeclaration,
+	Declaration,
 	FunctionOrValueDeclaration
 }
 
 import herd.depin.api {
-	Dependency,
-	Definition,
-	DependencyAnnotation,
-	singleton,
-	prototype,
-	TargetAnnotation
+	Dependency
+}
+import herd.depin.engine {
+	TargetSelector
 }
 
-shared class DependencyFactory(Definition.Factory factory) satisfies Dependency.Factory {
-	shared actual {Dependency+} create(FunctionOrValueDeclaration declaration) {
-		
-		if (is GenericDeclaration declaration, !declaration.typeParameterDeclarations.empty) {
-			throw Exception("Type parameters are not supported yet in dependency: ``declaration``");
-		}
-		return nestableDeclarations(declaration)
-				.map(prepare)
-				.map(decorate);
-	}
-	Dependency decorate(Dependency dependency) {
-		if (is AnnotatedDeclaration declaration = dependency.declaration, exists dependencyAnnotation = declaration.annotations<DependencyAnnotation>().first) {
-			switch (provision = dependencyAnnotation.provision)
-			case (singleton) {
-				return SingletonDecorator(dependency);
-			}
-			case (prototype) {
-				return dependency;
-			}
-		} else {
-			return SingletonDecorator(dependency);
-		}
-	}
+
+shared class DependencyFactory(DefinitionFactory definitionFactory,TargetSelector targetSelector,Dependency.Tree tree)  {
 	
-	{NestableDeclaration+} nestableDeclarations(NestableDeclaration declaration) {
-		if (is NestableDeclaration container = declaration.container) {
-			return { declaration, *nestableDeclarations(container) };
-		}
-		return { declaration };
-	}
 	
-	Dependency prepare(Declaration declaration) {
-		Definition definition = factory.create(declaration);
+	shared Dependency create(NestableDeclaration declaration,Boolean parameter) {
+		Dependency.Definition definition =  definitionFactory.create(declaration);
+		if(parameter){
+			assert(is FunctionOrValueDeclaration declaration);
+			if(declaration.defaulted){
+				return DefaultedParameterDependency(definition, tree);
+			}
+			return ParameterDependency(definition, tree);
+		}
+		variable {Dependency*} parameterDependencies;
+		Dependency? containerDependency ;
+		if (is NestableDeclaration containerDeclaration = declaration.container) {
+			 containerDependency=create(containerDeclaration,false);
+		}else{
+			containerDependency=null;
+		}
+
 		switch (declaration)
-		case (is FunctionDeclaration) {
-			return FunctionDependency(declaration, definition);
+		case (is FunctionalDeclaration) {
+			parameterDependencies = declaration.parameterDeclarations
+					.map((FunctionOrValueDeclaration element) => create(element,true));
+			return FunctionalDependency(declaration, definition, containerDependency, parameterDependencies);
+			
 		}
-		case (is ValueDeclaration) {
-			return ValueDependency(declaration, definition);
+		else case (is ValueDeclaration) {
+			return ValueDependency(declaration, definition, containerDependency);
+
 		}
-		case (is ClassDeclaration) {
-			if(exists anonymousObject= declaration.objectValue){
-				return prepare(anonymousObject);
-			}
-			variable ConstructorDeclaration constructor;
-			value annotated = declaration.constructorDeclarations().select((ConstructorDeclaration element) => element.annotated<TargetAnnotation>());
-			if (exists selected = annotated.first) {
-				if (annotated.rest.empty) {
-					constructor = selected;
-				} else {
-					throw FactorizationError {
-						declaration = declaration;
-						message = "Only one constructor may be annotated `` `class TargetAnnotation` ``, found: ``annotated``";
-					};
-				}
-			} else if (exists default = declaration.defaultConstructor) {
-				constructor = default;
+		else case (is ClassDeclaration) {
+			if (exists anonymousObject = declaration.objectValue) {
+				return ValueDependency(anonymousObject,definition,containerDependency) ;
 			} else {
-				throw FactorizationError { 
-					declaration = declaration;
-					message = "Either single constructor must be annotated with `` `class TargetAnnotation` ``
-					            or default constructor must be defined, not both! Found: ``annotated``"; };
-	
+				switch(constructor=targetSelector.select(declaration)) 
+				case(is CallableConstructorDeclaration ){
+					parameterDependencies = constructor.parameterDeclarations
+							.map((FunctionOrValueDeclaration element) => ParameterDependency(definitionFactory.create(element), tree));
+					return FunctionalDependency(constructor, definition, containerDependency, parameterDependencies);
+
 				}
-				
-				switch (constructorDeclaration = constructor)
-				case (is CallableConstructorDeclaration) {
-					return CallableConstructorDependency(constructorDeclaration, definition);
-				}
-				case (is ValueConstructorDeclaration) {
-					return ValueConstructorDepedndency(constructorDeclaration, definition);
+				case(is ValueConstructorDeclaration){
+					return ValueDependency(constructor,definition,containerDependency) ;
 				}
 			}
-			else {
-				throw FactorizationError(declaration, "not supported ");
-			}
+			
+		}
+		else {
+			throw FactorizationError(declaration, "Not supported");
 		}
 	}
+	
+	shared class FactorizationError(Declaration declaration,String message,Throwable? cause=null) 
+			extends Exception("[``declaration``] ``message``",cause){}
+}

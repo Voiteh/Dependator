@@ -8,70 +8,50 @@ import ceylon.language.meta.model {
 
 import herd.depin.api {
 	Dependency,
-	Definition,
-	Target,
+	Injection,
 	Identification,
 	NamedAnnotation
 }
 import herd.depin.engine.dependency {
-	DependencyProvider,
-	DependencyFactory
+	DependencyFactory,
+	DefinitionFactory,
+	DependencyTree
 }
-import herd.depin.engine.target {
-	TargetFactory
+import herd.depin.engine.injection {
+	InjectionFactory
 }
 
 
 
-shared class Depin {
+shared class Depin satisfies Injection.Injector{
 	
-	Identification.Holder holder;
-	Definition.Factory definitionFactory;
-	Dependency.Registry registry; 
-	Dependency.Factory dependencyFactory;
-	Dependency.Provider dependencyProvider;
-	Target.Injector injector; 
+
+	InjectionFactory factory;
+	Dependency.Tree tree;
 	
 	shared new({FunctionOrValueDeclaration*} dependencies={},Type<Annotation>[] identificationTypes=[`NamedAnnotation`] ){
+		tree=DependencyTree();
+		value mutator=tree.Mutator();
+		value definitionFactory=DefinitionFactory(Identification.Holder(identificationTypes));
+		value targetSelector=TargetSelector();
+		value dependencyFactory=DependencyFactory(definitionFactory,targetSelector,tree);
+		factory=InjectionFactory(dependencyFactory,targetSelector);
 		
-		holder=Identification.Holder(identificationTypes);
-		definitionFactory=DefinitionFactory(holder);
-		registry =DependencyRegistry();
-		dependencyFactory=DependencyFactory(definitionFactory);
-		dependencyProvider=DependencyProvider(definitionFactory,registry);
-		injector =TargetInjector(TargetFactory(), dependencyProvider);
-		
-		dependencies.flatMap((FunctionOrValueDeclaration element) => dependencyFactory.create(element))
-				.distinct
-				.map((Dependency element) => registry.add(element))
+		dependencies.map((FunctionOrValueDeclaration element) => dependencyFactory.create(element,false))
+				.map((Dependency element) => mutator.add(element))
 				.narrow<Dependency>()
 				.group((Dependency element) => element.definition)
-				.each((Definition elementKey -> [Dependency+] elementItem) {
+				.each((Dependency.Definition elementKey -> [Dependency+] elementItem) {
 			throw Exception("Multiple dependencies found for single definition: ``elementKey``-> ``elementItem`` ");
 		});
 	}
 
-shared new custom(Identification.Holder holder,
-	Definition.Factory definitionFactory,
-	Dependency.Registry registry,
-	Dependency.Factory dependencyFactory,
-	Dependency.Provider dependencyProvider,
-	Target.Injector injector )	{
-	
-	this.injector = injector;
-	this.dependencyProvider = dependencyProvider;
-	this.dependencyFactory = dependencyFactory;
-	this.registry = registry;
-	this.definitionFactory = definitionFactory;
-	this.holder = holder;
+
 
 	
-}
-
-	
-	shared Type inject<Type>(ClassModel<Type> model)given Type satisfies Object {
-		return injector.inject<Type>(model);
-	
+	shared actual Type inject<Type>(ClassModel<Type> model)given Type satisfies Object {
+		assert(is Type result= factory.create(model).inject);
+		return result;
 	}
 	
 	
