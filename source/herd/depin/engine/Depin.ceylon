@@ -15,7 +15,8 @@ import herd.depin.api {
 import herd.depin.engine.dependency {
 	DependencyFactory,
 	DefinitionFactory,
-	DependencyTree
+	DependencyTree,
+	MasterDecorator
 }
 import herd.depin.engine.injection {
 	InjectionFactory
@@ -35,9 +36,11 @@ shared class Depin satisfies Injection.Injector{
 		value definitionFactory=DefinitionFactory(Identification.Holder(identificationTypes));
 		value targetSelector=TargetSelector();
 		value dependencyFactory=DependencyFactory(definitionFactory,targetSelector,tree);
+		value masterDecorator=MasterDecorator();
 		factory=InjectionFactory(dependencyFactory,targetSelector);
 		
-		dependencies.map((FunctionOrValueDeclaration element) => dependencyFactory.create(element,false))
+		dependencies.map((FunctionOrValueDeclaration element) => [element,dependencyFactory.create(element,false)])
+				.map(([FunctionOrValueDeclaration,Dependency] element) => masterDecorator.decorate(*element))
 				.map((Dependency element) => mutator.add(element))
 				.narrow<Dependency>()
 				.group((Dependency element) => element.definition)

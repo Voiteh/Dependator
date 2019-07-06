@@ -1,11 +1,11 @@
 import herd.depin.api {
 	dependency,
-	prototype
+	singleton
 }
 
 import test.herd.depin.engine.integration {
 	fixture
 }
 shared variable Boolean change=fixture.changing.initial;
-shared dependency Boolean singletonDependency() => change;
-shared dependency(prototype) Boolean prototypeDependency()=>change;
+shared singleton dependency Boolean singletonDependency() => change;
+shared dependency Boolean prototypeDependency()=>change;

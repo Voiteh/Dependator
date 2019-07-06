@@ -3,16 +3,33 @@ import ceylon.language.meta.declaration {
 	ConstructorDeclaration
 }
 
-shared abstract class Provision() of singleton | prototype {}
-shared object singleton extends Provision() {}
-shared object prototype extends Provision() {}
+shared final annotation class SingletonAnnotation() satisfies Dependency.Decorator &
+	OptionalAnnotation<SingletonAnnotation,FunctionOrValueDeclaration>{
 
-shared final annotation class DependencyAnnotation(
-	shared Provision provision)
+	shared actual Dependency decorate(Dependency dependency) => object extends Dependency.decorated(dependency){
+		
+		late Anything data;
+		
+		shared actual Anything resolve {
+			try{
+				return data;
+			}catch(InitializationError ignored){
+				data=dependency.resolve;
+				return data;
+			}
+		}
+		
+		
+	};
+	
+	
+}
+shared annotation SingletonAnnotation singleton() => SingletonAnnotation();
+shared final annotation class DependencyAnnotation()
 		satisfies OptionalAnnotation<DependencyAnnotation,FunctionOrValueDeclaration> {
 }
 
-shared annotation DependencyAnnotation dependency(Provision provision=singleton) => DependencyAnnotation(provision);
+shared annotation DependencyAnnotation dependency() => DependencyAnnotation();
 
 shared final annotation class TargetAnnotation() satisfies OptionalAnnotation<TargetAnnotation,ConstructorDeclaration>{}
 shared annotation TargetAnnotation target() => TargetAnnotation();
