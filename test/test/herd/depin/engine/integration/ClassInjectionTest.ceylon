@@ -10,7 +10,7 @@ import herd.depin.engine {
 import test.herd.depin.engine.integration.dependency {
 	...
 }
-import test.herd.depin.engine.integration.target {
+import test.herd.depin.engine.integration.injection {
 	Person,
 	DataSource,
 	DefaultParametersConstructor,
@@ -70,23 +70,12 @@ shared class ClassInjectionTest() {
 			==fixture.objectDependencies.innerObjectDependency);
 	}
 	
-	shared test void shouldInjectSingleton(){
-		change=fixture.changing.initial;
-		value depin=Depin({`function singletonDependency`});
-		assert(depin.inject(`SingletonTarget`).singletonDependency==fixture.changing.initial);
-		change=fixture.changing.final;
-		assert(depin.inject(`SingletonTarget`).singletonDependency==fixture.changing.initial);
-	}
-	shared test void shouldInjectPrototype(){
-		change=fixture.changing.initial;
-		value depin=Depin({`function prototypeDependency`});
-		assert(depin.inject(`PrototypeTarget`).prototypeDependency==fixture.changing.initial);
-		change=fixture.changing.final;
-		assert(depin.inject(`PrototypeTarget`).prototypeDependency==fixture.changing.final);
-	}
+
+	
 	shared test void shouldInjectExposedInterface(){
 		value declarations=DefaultScanner().scan({`package test.herd.depin.engine.integration.dependency.unshared`});
 		assert(Depin(declarations).inject(`ExposedTarget`).exposing.exposed==fixture.unshared.exposed);
 	}
+	
 	
 }

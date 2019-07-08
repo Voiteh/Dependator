@@ -1,4 +1,4 @@
-import test.herd.depin.engine.integration.target {
+import test.herd.depin.engine.integration.injection {
 	DefaultedParametersByFunction,
 	Nesting,
 	TargetWithTwoCallableConstructors,
