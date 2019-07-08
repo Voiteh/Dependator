@@ -30,6 +30,7 @@ shared class MasterDecorator(Handlers handlers) satisfies Dependency.Decorator {
 	
 	void register(Handler<> handler) {
 		flat.types(type(handler))
+			.rest
 			.filter((Type<Anything> element) => element.subtypeOf(`Handler<>`))
 			.each((Type<Anything> element) {
 				assert (is Interface<Handler<>> element);

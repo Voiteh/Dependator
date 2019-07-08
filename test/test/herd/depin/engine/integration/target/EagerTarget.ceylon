@@ -1,1 +1,0 @@
-shared class EagerTarget(shared Boolean eagerDependency) {}

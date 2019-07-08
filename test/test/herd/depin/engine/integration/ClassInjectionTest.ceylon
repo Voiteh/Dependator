@@ -10,7 +10,7 @@ import herd.depin.engine {
 import test.herd.depin.engine.integration.dependency {
 	...
 }
-import test.herd.depin.engine.integration.target {
+import test.herd.depin.engine.integration.injection {
 	Person,
 	DataSource,
 	DefaultParametersConstructor,

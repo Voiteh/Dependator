@@ -6,12 +6,14 @@ import test.herd.depin.engine.integration.dependency {
 	change,
 	singletonDependency,
 	prototypeDependency,
-	eagerDependency
+	eagerDependency,
+	notifiedDependency
 }
-import test.herd.depin.engine.integration.target {
+import test.herd.depin.engine.integration.injection {
 	PrototypeTarget,
 	SingletonTarget,
-	EagerTarget
+	EagerTarget,
+	NotifiedTarget
 }
 import herd.depin.engine {
 	Depin
@@ -40,5 +42,10 @@ shared class DecoratorIntegrationTests() {
 		change=fixture.changing.final;
 		assert(depin.inject(`EagerTarget`).eagerDependency==fixture.changing.initial);
 	}
-	
+	shared test void shouldInjectNotified(){
+		value depin=Depin({`value notifiedDependency`});
+		assert(depin.inject(`NotifiedTarget`).notifiedDependency==fixture.changing.initial);
+		depin.notify(fixture.changing.final);
+		assert(depin.inject(`NotifiedTarget`).notifiedDependency==fixture.changing.final);
+	}
 }
