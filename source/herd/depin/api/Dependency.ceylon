@@ -3,17 +3,10 @@ import ceylon.language.meta.declaration {
 }
 
 shared abstract class Dependency {
-		
-	shared static interface Decorator{
-		shared formal Dependency decorate(Dependency dependency);
-	}
 	
 	shared static
-	interface Tree {
-		shared formal Dependency? get(Definition definition);
-		shared formal class Mutator() {
-			shared formal Dependency? add(Dependency dependency);
-		}
+	interface Decorator {
+		shared formal Dependency decorate(Dependency dependency);
 	}
 	
 	shared static
@@ -40,15 +33,18 @@ shared abstract class Dependency {
 	shared Definition definition;
 	shared {Dependency*} parameters;
 	shared Dependency? container;
-	shared new (Definition definition, Dependency? container = null, {Dependency*} parameters = empty) {
+	shared {Decorator*} decorators;
+	shared new (Definition definition, Dependency? container = null, {Dependency*} parameters = empty, {Decorator*} decorators = empty) {
 		this.container = container;
 		this.parameters = parameters;
 		this.definition = definition;
+		this.decorators = decorators;
 	}
-	shared new decorated(Dependency decorating){
+	shared new decorated(Dependency decorating) {
 		this.container = decorating.container;
 		this.parameters = decorating.parameters;
 		this.definition = decorating.definition;
+		this.decorators = decorating.decorators;
 	}
 	
 	shared formal Anything resolve;

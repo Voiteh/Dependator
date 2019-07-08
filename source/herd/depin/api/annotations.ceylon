@@ -3,6 +3,17 @@ import ceylon.language.meta.declaration {
 	ConstructorDeclaration
 }
 
+shared final annotation class EagerAnnotation() satisfies Dependency.Decorator &
+		OptionalAnnotation<EagerAnnotation,FunctionOrValueDeclaration>{
+	shared actual Dependency decorate(Dependency dependency) => object extends Dependency.decorated(dependency){
+		Anything data=dependency.resolve;
+		shared actual Anything resolve=> data;
+		
+	};
+
+}
+shared annotation EagerAnnotation eager() => EagerAnnotation();
+
 shared final annotation class SingletonAnnotation() satisfies Dependency.Decorator &
 	OptionalAnnotation<SingletonAnnotation,FunctionOrValueDeclaration>{
 

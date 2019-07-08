@@ -6,7 +6,8 @@ import ceylon.language.meta.declaration {
 	ClassDeclaration,
 	FunctionalDeclaration,
 	Declaration,
-	FunctionOrValueDeclaration
+	FunctionOrValueDeclaration,
+	AnnotatedDeclaration
 }
 
 import herd.depin.api {
@@ -17,8 +18,12 @@ import herd.depin.engine {
 }
 
 
-shared class DependencyFactory(DefinitionFactory definitionFactory,TargetSelector targetSelector,Dependency.Tree tree)  {
+shared class DependencyFactory(DefinitionFactory definitionFactory,TargetSelector targetSelector,Dependencies tree)  {
 	
+	{Dependency.Decorator*} decorators(AnnotatedDeclaration declaration){
+		return declaration.annotations<Annotation>()
+				.narrow<Dependency.Decorator>();
+	}
 	
 	shared Dependency create(NestableDeclaration declaration,Boolean parameter) {
 		Dependency.Definition definition =  definitionFactory.create(declaration);
@@ -29,38 +34,38 @@ shared class DependencyFactory(DefinitionFactory definitionFactory,TargetSelecto
 			}
 			return ParameterDependency(definition, tree);
 		}
-		variable {Dependency*} parameterDependencies;
+		
 		Dependency? containerDependency ;
 		if (is NestableDeclaration containerDeclaration = declaration.container) {
 			 containerDependency=create(containerDeclaration,false);
 		}else{
 			containerDependency=null;
 		}
-
+		
 		switch (declaration)
 		case (is FunctionalDeclaration) {
-			parameterDependencies = declaration.parameterDeclarations
+			value parameterDependencies = declaration.parameterDeclarations
 					.map((FunctionOrValueDeclaration element) => create(element,true));
-			return FunctionalDependency(declaration, definition, containerDependency, parameterDependencies);
+			return FunctionalDependency(declaration, definition, containerDependency, parameterDependencies,decorators(declaration));
 			
 		}
 		else case (is ValueDeclaration) {
-			return ValueDependency(declaration, definition, containerDependency);
+			return ValueDependency(declaration, definition, containerDependency,decorators(declaration));
 
 		}
 		else case (is ClassDeclaration) {
 			if (exists anonymousObject = declaration.objectValue) {
-				return ValueDependency(anonymousObject,definition,containerDependency) ;
+				return ValueDependency(anonymousObject,definition,containerDependency,decorators(declaration)) ;
 			} else {
 				switch(constructor=targetSelector.select(declaration)) 
 				case(is CallableConstructorDeclaration ){
-					parameterDependencies = constructor.parameterDeclarations
+					value parameterDependencies = constructor.parameterDeclarations
 							.map((FunctionOrValueDeclaration element) => ParameterDependency(definitionFactory.create(element), tree));
-					return FunctionalDependency(constructor, definition, containerDependency, parameterDependencies);
+					return FunctionalDependency(constructor, definition, containerDependency, parameterDependencies,decorators(declaration));
 
 				}
 				case(is ValueConstructorDeclaration){
-					return ValueDependency(constructor,definition,containerDependency) ;
+					return ValueDependency(constructor,definition,containerDependency,decorators(declaration)) ;
 				}
 			}
 			

@@ -5,7 +5,11 @@ import ceylon.language.meta.declaration {
 import herd.depin.api {
 	Dependency
 }
-shared class ValueDependency(GettableDeclaration declaration,Dependency.Definition definition,Dependency? container) extends Dependency(definition,container){
+shared class ValueDependency(GettableDeclaration declaration,
+	Dependency.Definition definition,
+	Dependency? container,
+	{Dependency.Decorator*} decorators
+) extends Dependency(definition,container,empty,decorators){
 	shared actual Anything resolve {
 		if(exists container, exists resolved=container.resolve){
 			return declaration.memberGet(resolved);

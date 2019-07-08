@@ -7,8 +7,9 @@ import ceylon.language.meta.declaration {
 shared class FunctionalDependency(FunctionalDeclaration declaration,
 	Dependency.Definition definition,
 	Dependency? container,
-	{Dependency*} parameters
-) extends Dependency(definition,container,parameters){
+	{Dependency*} parameters,
+	{Dependency.Decorator*} decorators
+) extends Dependency(definition,container,parameters,decorators){
 	shared actual Anything resolve{
 		value resolvedParameters = parameters.map((Dependency element) => element.resolve).filter((Anything element) =>!element is Defaulted);
 		if(exists resolved=container?.resolve){

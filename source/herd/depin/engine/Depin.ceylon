@@ -10,13 +10,16 @@ import herd.depin.api {
 	Dependency,
 	Injection,
 	Identification,
-	NamedAnnotation
+	NamedAnnotation,
+	Notifier
 }
 import herd.depin.engine.dependency {
 	DependencyFactory,
 	DefinitionFactory,
-	DependencyTree,
-	MasterDecorator
+	Dependencies,
+	MasterDecorator,
+	Handlers,
+	MasterNotifier
 }
 import herd.depin.engine.injection {
 	InjectionFactory
@@ -24,29 +27,31 @@ import herd.depin.engine.injection {
 
 
 
-shared class Depin satisfies Injection.Injector{
-	
+shared class Depin satisfies Injection.Injector& Notifier{
+	shared static abstract class State() of ready{}
+	shared static object ready extends State(){}
 
 	InjectionFactory factory;
-	Dependency.Tree tree;
-	
+	Dependencies tree;
+	Notifier masterNotifier;
 	shared new({FunctionOrValueDeclaration*} dependencies={},Type<Annotation>[] identificationTypes=[`NamedAnnotation`] ){
-		tree=DependencyTree();
-		value mutator=tree.Mutator();
+		tree=Dependencies();
+		value handlers=Handlers();
 		value definitionFactory=DefinitionFactory(Identification.Holder(identificationTypes));
 		value targetSelector=TargetSelector();
 		value dependencyFactory=DependencyFactory(definitionFactory,targetSelector,tree);
-		value masterDecorator=MasterDecorator();
+		value masterDecorator=MasterDecorator(handlers);
+		masterNotifier=MasterNotifier(handlers);
 		factory=InjectionFactory(dependencyFactory,targetSelector);
 		
-		dependencies.map((FunctionOrValueDeclaration element) => [element,dependencyFactory.create(element,false)])
-				.map(([FunctionOrValueDeclaration,Dependency] element) => masterDecorator.decorate(*element))
-				.map((Dependency element) => mutator.add(element))
+		dependencies.map((FunctionOrValueDeclaration element) => dependencyFactory.create(element,false))
+				.map((Dependency element) => tree.add(element))
 				.narrow<Dependency>()
 				.group((Dependency element) => element.definition)
 				.each((Dependency.Definition elementKey -> [Dependency+] elementItem) {
 			throw Exception("Multiple dependencies found for single definition: ``elementKey``-> ``elementItem`` ");
 		});
+		tree.replace(masterDecorator.decorate);	
 	}
 
 
@@ -56,6 +61,10 @@ shared class Depin satisfies Injection.Injector{
 		assert(is Type result= factory.create(model).inject);
 		return result;
 	}
+	shared actual void notify<Event>(Event event) {
+		masterNotifier.notify(event);
+	}
+	
 	
 	
 	

@@ -1,3 +1,3 @@
-shared interface Handler<Event> {
+shared interface Handler<in Event=Nothing> {
 	shared formal void onEvent(Event event);
 }
