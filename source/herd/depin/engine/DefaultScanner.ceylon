@@ -11,26 +11,29 @@ import herd.depin.api {
 	Scanner,
 	DependencyAnnotation
 }
+import ceylon.logging {
+	logger
+}
 
 shared class DefaultScanner() extends Scanner() {
-	
-	{FunctionOrValueDeclaration*} single(Scope element) {
-		switch (element)
+	value log=logger(`module`);
+	{FunctionOrValueDeclaration*} single(Scope scope) {
+		log.trace("Scanning scope ``scope``");
+		switch (scope)
 		case (is ClassDeclaration) {
-			
-			{FunctionOrValueDeclaration*} members = element.memberDeclarations<ClassDeclaration|FunctionOrValueDeclaration>()
+			{FunctionOrValueDeclaration*} members = scope.memberDeclarations<ClassDeclaration|FunctionOrValueDeclaration>()
 				.flatMap((Scope element) => single(element));
 			return members;
 		}
 		case (is FunctionOrValueDeclaration) {
-			return if (element.annotated<DependencyAnnotation>()) then { element } else empty;
+			return if (scope.annotated<DependencyAnnotation>()) then { scope } else empty;
 		}
 		case (is Package) {
-			return element.members<ClassDeclaration|FunctionOrValueDeclaration>()
+			return scope.members<ClassDeclaration|FunctionOrValueDeclaration>()
 				.flatMap((Scope element) => single(element));
 		}
 		case (is Module) {
-			return element.members.flatMap((Package element) => single(element));
+			return scope.members.flatMap((Package element) => single(element));
 		}
 	}
 	
