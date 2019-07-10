@@ -1,13 +1,13 @@
 # Depin
 Dependency injection framework for Ceylon
 
-This mimimalistic is framework which should allow, injection of declared dependencies into provided model. There are two main concets which needs to be understood. 
+This is mimimalistic framework which should allow, injection of declared dependencies into provided model. There are two main concets which needs to be understood. 
 
-## Target and dependency
+## Injection and dependency
 
-Theese two concepts are strongly connected and one can't be explained withouth another. Target is an object, which will be retreived after injection of it's dependencies. Dependency is required data which needs to be provided to be injected into target. For some targets, some other previously used targets becomes dependencies. 
+Injection is execution of resolvance of declared dependencies, into values and functions and providing them into constructors or initializers, used as target for the injection. The resolvance of dependency is process of making declaration fully initialized object. Dependency is an object included into `Depin` identified by declaration of value or function and it's annotations
 
 ### Definition
 
-To define a depedency `DepndencyAnnotation` is used. Class or constructor declaration and class members may be marked with this annotation. Also classes and anonymous objects, which are not annotated but their members are, are treated as dependencies. A Dependecy has it's definition. This object is comosed of `OpenType` of declared dependency and it's control annotations. Control annotations provides ability to identify an annotation uniquely. By default dependency is identified by name of it's declaration. Two dependencies with different type and the same name are treated as unique. 
+To define a depedency `DepndencyAnnotation` is used. Function or value declaration can be annotated with this annotation. A Dependecy has it's declaration and definition. Declaration is a Ceylon declartion (location of specific dependecy in class graph), and definition is is an object comosed of `OpenType`, of declared dependency and it's control annotations. Control annotations provides ability to identify an annotation uniquely. By default dependency is identified by name of it's declaration. Two dependencies with different type and the same name are treated as unique. 
 
