@@ -4,18 +4,27 @@ import herd.depin.api {
 import ceylon.language.meta.declaration {
 	FunctionalDeclaration
 }
-shared class FunctionalDependency(FunctionalDeclaration declaration,
+shared class FunctionalDependency(
+	FunctionalDeclaration declaration,
 	Dependency.Definition definition,
 	Dependency? container,
 	{Dependency*} parameters,
 	{Dependency.Decorator*} decorators
 ) extends Dependency(definition,container,parameters,decorators){
 	shared actual Anything resolve{
-		value resolvedParameters = parameters.map((Dependency element) => element.resolve).filter((Anything element) =>!element is Defaulted);
+		log.trace("Resolving functional dependency: ``definition``");
+		value resolvedParameters = parameters.collect((Dependency element) => element.resolve)
+				.filter((Anything element) =>!element is Defaulted);
+		log.trace("Resolved functional parameters:``resolvedParameters`` for definition: ``definition``");
 		if(exists resolved=container?.resolve){
-			return declaration.memberInvoke(resolved,[], *resolvedParameters);
+			log.trace("Resolved functional dependency for definition: ``definition`` container: ``resolved``");
+			value resolvedMember = declaration.memberInvoke(resolved,[], *resolvedParameters);
+			log.debug("Resolved functional member dependency ``resolvedMember else "null"`` for definition``definition``");
+			return resolvedMember;
 		}
-		return declaration.invoke([],*resolvedParameters);
+		 value invoke = declaration.invoke([],*resolvedParameters);
+		 log.debug("Resolved functional dependency ``invoke else "null"`` for definition``definition``");
+		 return invoke;
 	}
 	
 	

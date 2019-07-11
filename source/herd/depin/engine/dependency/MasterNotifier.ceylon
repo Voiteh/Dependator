@@ -11,13 +11,15 @@ import herd.type.support {
 import ceylon.language.meta.model {
 	Type
 }
-shared class MasterNotifier(Handlers handlers) satisfies Notifier{
+
+shared class MasterNotifier(Handlers handlers) satisfies Notifier {
 	shared actual void notify<Event>(Event event) {
-		value types = flat.types( type(event));
+		value types = flat.types(type(event));
 		types.flatMap((Type<Anything> element) => handlers.get(element))
 			.narrow<Handler<Event>>()
-			.each((Handler<Event> element) => element.onEvent(event));
-		
+			.each((Handler<Event> element) {
+				log.debug("Notifng ``element`` for `` event else "null" ``");
+				element.onEvent(event);
+			});
 	}
-
 }

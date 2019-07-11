@@ -37,6 +37,7 @@ shared class Handlers(MutableMap<Type<>,LinkedList<Handler<>>> map=HashMap<Type<
 			log.trace("Getting handlers ``list`` for type``type``");
 			return list;
 		}
+		log.trace("No handler for given type ``type``");
 		return empty;
 	}
 }
