@@ -9,11 +9,17 @@ import herd.depin.api {
 import herd.depin.engine.dependency {
 	Defaulted
 }
+import herd.depin.engine {
+
+	log
+}
 shared class CallableConstructorInjection(CallableConstructor<Object> model,{Dependency*} parameters) extends Injection(){
 	shared actual Object inject {
-		value resolved=parameters.map((Dependency element) => element.resolve)
+		log.debug("Injecting into: ``model``, parameters: ``parameters`` `");
+		value resolvedParameters=parameters.map((Dependency element) => element.resolve)
 				.filter((Anything element) => !element is Defaulted);
-		return model.apply(*resolved);
+		log.trace("Resolved parameters: ``resolvedParameters`` for injecting into:``model`` ");
+		return model.apply(*resolvedParameters);
 	}
 	
 }

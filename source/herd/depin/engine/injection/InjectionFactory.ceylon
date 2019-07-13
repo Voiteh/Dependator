@@ -15,7 +15,8 @@ import herd.depin.api {
 	Dependency
 }
 import herd.depin.engine {
-	TargetSelector
+	TargetSelector,
+	log
 }
 import herd.depin.engine.dependency {
 	DependencyFactory
@@ -31,10 +32,14 @@ shared class InjectionFactory(DependencyFactory dependencyFactory,TargetSelector
 				assert(is Type<Object> containerType=model.container);
 				value constructor=constructorDeclaration.memberApply<Nothing,Object>(containerType);
 				value containerDependency=dependencyFactory.create(containerDeclaration, false);
-				return MemberValueInjection(constructor, containerDependency);
+				 value memberValueInjection = MemberValueInjection(constructor, containerDependency);
+				 log.debug("Created member value injection: ``memberValueInjection`` with container dependency:``containerDependency``");
+				 return memberValueInjection;
 			}
 			value constructor=constructorDeclaration.apply<Object>();
-			return ValueConstructorInjection(constructor);
+			value valueConstructorInjection = ValueConstructorInjection(constructor);
+			log.debug("Created  value constructor injection: ``valueConstructorInjection``");
+			return valueConstructorInjection;
 		}
 		case(is CallableConstructorDeclaration){
 			if(is NestableDeclaration containerDeclaration=model.declaration.container){
@@ -42,12 +47,15 @@ shared class InjectionFactory(DependencyFactory dependencyFactory,TargetSelector
 				value constructor=constructorDeclaration.memberApply<>(containerType, *model.typeArgumentList);
 				value containerDependency=dependencyFactory.create(containerDeclaration, false);
 				{Dependency*} parameters=constructor.declaration.parameterDeclarations.collect((FunctionOrValueDeclaration element) => dependencyFactory.create(element,true));
-				return MemberCallableConstructorInjection(constructor, containerDependency,parameters);
+				 value memberCallableConstructorInjection = MemberCallableConstructorInjection(constructor, containerDependency,parameters);
+				 log.debug("Created member  callable constructor injection: ``memberCallableConstructorInjection`` with container dependency: ``containerDependency``, using parameters: ``parameters``");
+				 return memberCallableConstructorInjection;
 			}
 			value constructor=constructorDeclaration.apply<Object>(*model.typeArgumentList);
 			{Dependency*} parameters=constructor.declaration.parameterDeclarations.collect((FunctionOrValueDeclaration element) => dependencyFactory.create(element,true));
-			return CallableConstructorInjection(constructor, parameters);
-			
+			value callableConstructorInjection = CallableConstructorInjection(constructor, parameters);
+			log.debug("Created  callable constructor injection: ``callableConstructorInjection``, using parameters: ``parameters``");
+			return callableConstructorInjection;
 		}
 	
 		else{
