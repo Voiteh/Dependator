@@ -14,6 +14,10 @@ import herd.depin.api {
 import herd.type.support {
 	flat
 }
+import herd.depin.engine {
+
+	log
+}
 
 shared class MasterDecorator(Handlers handlers) satisfies Dependency.Decorator {
 	shared actual Dependency decorate(Dependency dependency) {

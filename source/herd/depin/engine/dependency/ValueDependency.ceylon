@@ -5,6 +5,10 @@ import ceylon.language.meta.declaration {
 import herd.depin.api {
 	Dependency
 }
+import herd.depin.engine {
+
+	log
+}
 shared class ValueDependency(GettableDeclaration declaration,
 	Dependency.Definition definition,
 	Dependency? container,

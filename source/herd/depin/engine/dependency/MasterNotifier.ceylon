@@ -11,6 +11,10 @@ import herd.type.support {
 import ceylon.language.meta.model {
 	Type
 }
+import herd.depin.engine {
+
+	log
+}
 
 shared class MasterNotifier(Handlers handlers) satisfies Notifier {
 	shared actual void notify<Event>(Event event) {

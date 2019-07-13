@@ -4,6 +4,10 @@ import herd.depin.api {
 import ceylon.language.meta.declaration {
 	FunctionalDeclaration
 }
+import herd.depin.engine {
+
+	log
+}
 shared class FunctionalDependency(
 	FunctionalDeclaration declaration,
 	Dependency.Definition definition,

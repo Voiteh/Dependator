@@ -13,6 +13,10 @@ import ceylon.logging {
 	Logger,
 	createLogger=logger
 }
+import herd.depin.engine {
+
+	log
+}
 shared class Branch(MutableMap<Dependency.Definition,Dependency> map=HashMap<Dependency.Definition, Dependency>()) {
 	shared  Dependency? add(Dependency dependency) {
 		log.trace("Adding dependency to old branch ``dependency``");

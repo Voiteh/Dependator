@@ -14,7 +14,8 @@ import herd.depin.api {
 	Dependency
 }
 import herd.depin.engine {
-	TargetSelector
+	TargetSelector,
+	log
 }
 import ceylon.logging {
 

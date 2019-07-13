@@ -17,6 +17,10 @@ import ceylon.logging {
 	createLogger=logger,
 	Logger
 }
+import herd.depin.engine {
+
+	log
+}
 shared class DefinitionFactory(Identification.Holder holder) {
 	shared Dependency.Definition create(Declaration declaration) {
 	
