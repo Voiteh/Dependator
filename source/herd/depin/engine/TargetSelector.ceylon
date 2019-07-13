@@ -7,11 +7,12 @@ import ceylon.language.meta.declaration {
 import herd.depin.api {
 	TargetAnnotation
 }
-shared class TargetSelector() {
+shared  class TargetSelector() {
 	shared ConstructorDeclaration select(ClassDeclaration declaration) {
 		ConstructorDeclaration[] annotated = declaration.constructorDeclarations().select((ConstructorDeclaration element) => element.annotated<TargetAnnotation>());
 		if (exists selected = annotated.first) {
 			if (annotated.rest.empty) {
+				log.debug("Selected ``selected``, for declaration: ``declaration``");
 				return selected;
 			} else {
 				throw Error {
@@ -20,6 +21,7 @@ shared class TargetSelector() {
 				};
 			}
 		} else if (exists default = declaration.defaultConstructor) {
+			log.debug("Selected ``default``, for declaration: ``declaration``");
 			return default;
 		} else {
 			throw Error {

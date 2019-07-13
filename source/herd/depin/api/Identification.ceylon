@@ -24,5 +24,6 @@ shared class Identification{
 	
 	shared actual Integer hash => annotations.hash;
 	
-	string => annotations.string;
+
+	string => " ".join(annotations);
 }

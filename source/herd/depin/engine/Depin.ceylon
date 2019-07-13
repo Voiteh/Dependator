@@ -34,10 +34,10 @@ shared class Depin satisfies Injection.Injector& Notifier{
 	InjectionFactory factory;
 	Dependencies tree;
 	Notifier masterNotifier;
-	shared new({FunctionOrValueDeclaration*} dependencies={},Type<Annotation>[] identificationTypes=[`NamedAnnotation`] ){
+	shared new({FunctionOrValueDeclaration*} dependencies={},Configuration configuration=Configuration()){
 		tree=Dependencies();
 		value handlers=Handlers();
-		value definitionFactory=DefinitionFactory(Identification.Holder(identificationTypes));
+		value definitionFactory=DefinitionFactory(Identification.Holder(configuration.identificationTypes));
 		value targetSelector=TargetSelector();
 		value dependencyFactory=DependencyFactory(definitionFactory,targetSelector,tree);
 		value masterDecorator=MasterDecorator(handlers);

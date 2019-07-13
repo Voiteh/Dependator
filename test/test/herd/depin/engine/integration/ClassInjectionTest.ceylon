@@ -1,10 +1,12 @@
 import ceylon.test {
-	test
+	test,
+	testExtension
 }
 
 import herd.depin.engine {
 	Depin,
-	DefaultScanner
+	DefaultScanner,
+	log
 }
 
 import test.herd.depin.engine.integration.dependency {
@@ -30,9 +32,19 @@ import ceylon.language.meta.declaration {
 import herd.depin.api {
 	DependencyAnnotation
 }
+import depin.test.extension {
+
+	LoggingTestExtension
+}
+import ceylon.logging {
+
+	debug
+}
+
+testExtension (`class LoggingTestExtension`)
 shared class ClassInjectionTest() {
 	
-	
+	log.priority=debug;
 		
 	shared test void shouldInjectJohnPerson(){
 			assert(Depin({`value name`,`value age`}).inject(`Person`)==fixture.person.john);

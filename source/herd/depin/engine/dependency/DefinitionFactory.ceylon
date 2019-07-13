@@ -12,9 +12,18 @@ import herd.depin.api {
 	NamedAnnotation,
 	Identification
 }
+import ceylon.logging {
+
+	createLogger=logger,
+	Logger
+}
+import herd.depin.engine {
+
+	log
+}
 shared class DefinitionFactory(Identification.Holder holder) {
-	
 	shared Dependency.Definition create(Declaration declaration) {
+	
 		if(is TypedDeclaration&AnnotatedDeclaration declaration){
 			variable {Annotation*} annotations;
 			try{
@@ -25,13 +34,15 @@ shared class DefinitionFactory(Identification.Holder holder) {
 				//This will be enough for most of cases. 
 				annotations={NamedAnnotation(declaration.name)};
 			}
-			return Dependency.Definition{ 
+			 value definition = Dependency.Definition{ 
 				type = declaration.openType; 
 				identification = if (annotations.empty && holder.types.contains(`NamedAnnotation`)) 
 				then Identification(NamedAnnotation(declaration.name)) 
 				else Identification(*annotations);
 				
 			};
+			log.debug("[Created Definition]: ``definition``, for declaration: ``declaration``");
+			return definition;
 		}
 		throw Exception("``declaration`` not supported");
 	}

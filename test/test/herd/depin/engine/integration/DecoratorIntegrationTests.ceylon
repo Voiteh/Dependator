@@ -1,7 +1,17 @@
 import ceylon.test {
 	beforeTest,
-	test
+	test,
+	testExtension
 }
+
+import depin.test.extension {
+	LoggingTestExtension
+}
+
+import herd.depin.engine {
+	Depin
+}
+
 import test.herd.depin.engine.integration.dependency {
 	change,
 	singletonDependency,
@@ -15,9 +25,7 @@ import test.herd.depin.engine.integration.injection {
 	EagerTarget,
 	NotifiedTarget
 }
-import herd.depin.engine {
-	Depin
-}
+testExtension (`class LoggingTestExtension`)
 shared class DecoratorIntegrationTests() {
 	
 	shared beforeTest void reset(){

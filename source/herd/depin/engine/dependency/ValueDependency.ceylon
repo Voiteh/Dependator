@@ -5,6 +5,10 @@ import ceylon.language.meta.declaration {
 import herd.depin.api {
 	Dependency
 }
+import herd.depin.engine {
+
+	log
+}
 shared class ValueDependency(GettableDeclaration declaration,
 	Dependency.Definition definition,
 	Dependency? container,
@@ -12,9 +16,13 @@ shared class ValueDependency(GettableDeclaration declaration,
 ) extends Dependency(definition,container,empty,decorators){
 	shared actual Anything resolve {
 		if(exists container, exists resolved=container.resolve){
-			return declaration.memberGet(resolved);
+			value memberGet = declaration.memberGet(resolved);
+			log.debug("Resolved value member dependency ``memberGet else "null"`` for definition ``definition`` and container ``container``");
+			return memberGet;
 		}
-		return declaration.get();
+		value get = declaration.get();
+		log.debug("[Registered] value dependency: ``get else "null"``. for definition ``definition```");
+		return get;
 	}
 		
 }
