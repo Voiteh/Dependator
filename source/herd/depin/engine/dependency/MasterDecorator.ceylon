@@ -24,7 +24,7 @@ shared class MasterDecorator(Handlers handlers) satisfies Dependency.Decorator {
 		log.trace("decorating ``dependency``");
 		Dependency decorated = dependency.decorators.fold(dependency)((Dependency subject, Dependency.Decorator decorator) {
 			Dependency result=decorator.decorate(subject);
-			log.debug("Decorated ``dependency``, with ``result``");
+			log.debug("[Decorated]: ``dependency``, with ``result``");
 			if(is Handler<> result){
 				register(result);
 			}

@@ -33,12 +33,12 @@ shared class InjectionFactory(DependencyFactory dependencyFactory,TargetSelector
 				value constructor=constructorDeclaration.memberApply<Nothing,Object>(containerType);
 				value containerDependency=dependencyFactory.create(containerDeclaration, false);
 				 value memberValueInjection = MemberValueInjection(constructor, containerDependency);
-				 log.debug("Created member value injection: ``memberValueInjection`` with container dependency:``containerDependency``");
+				 log.debug("[Created Member Value Injection]: ``memberValueInjection`` with container dependency:``containerDependency``");
 				 return memberValueInjection;
 			}
 			value constructor=constructorDeclaration.apply<Object>();
 			value valueConstructorInjection = ValueConstructorInjection(constructor);
-			log.debug("Created  value constructor injection: ``valueConstructorInjection``");
+			log.debug("[Created  Value Constructor Injection]: ``valueConstructorInjection``");
 			return valueConstructorInjection;
 		}
 		case(is CallableConstructorDeclaration){
@@ -48,18 +48,18 @@ shared class InjectionFactory(DependencyFactory dependencyFactory,TargetSelector
 				value containerDependency=dependencyFactory.create(containerDeclaration, false);
 				{Dependency*} parameters=constructor.declaration.parameterDeclarations.collect((FunctionOrValueDeclaration element) => dependencyFactory.create(element,true));
 				 value memberCallableConstructorInjection = MemberCallableConstructorInjection(constructor, containerDependency,parameters);
-				 log.debug("Created member  callable constructor injection: ``memberCallableConstructorInjection`` with container dependency: ``containerDependency``, using parameters: ``parameters``");
+				 log.debug("[Created Member Callable Constructor Injection]: ``memberCallableConstructorInjection`` with container dependency: ``containerDependency``, using parameters: ``parameters``");
 				 return memberCallableConstructorInjection;
 			}
 			value constructor=constructorDeclaration.apply<Object>(*model.typeArgumentList);
 			{Dependency*} parameters=constructor.declaration.parameterDeclarations.collect((FunctionOrValueDeclaration element) => dependencyFactory.create(element,true));
 			value callableConstructorInjection = CallableConstructorInjection(constructor, parameters);
-			log.debug("Created  callable constructor injection: ``callableConstructorInjection``, using parameters: ``parameters``");
+			log.debug("[Created Callable Constructor Injection]: ``callableConstructorInjection``, using parameters: ``parameters``");
 			return callableConstructorInjection;
 		}
 	
 		else{
-			throw Exception("unsupported injection for``model``"); 
+			throw Exception("unsupported Injection for``model``"); 
 		}
 		
 		

@@ -41,7 +41,7 @@ shared class DefinitionFactory(Identification.Holder holder) {
 				else Identification(*annotations);
 				
 			};
-			log.debug("Created definition ``definition`` for declarationa ``declaration``");
+			log.debug("[Created Definition]: ``definition``, for declaration: ``declaration``");
 			return definition;
 		}
 		throw Exception("``declaration`` not supported");

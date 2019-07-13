@@ -21,13 +21,13 @@ shared class FunctionalDependency(
 				.filter((Anything element) =>!element is Defaulted);
 		log.trace("Resolved functional parameters:``resolvedParameters`` for definition: ``definition``");
 		if(exists resolved=container?.resolve){
-			log.trace("Resolved functional dependency for definition: ``definition`` container: ``resolved``");
+			log.trace("Resolved functional dependency container: ``resolved``, for definition: ``definition``");
 			value resolvedMember = declaration.memberInvoke(resolved,[], *resolvedParameters);
-			log.debug("Resolved functional member dependency ``resolvedMember else "null"`` for definition``definition``");
+			log.debug("Resolved functional member dependency: ``resolvedMember else "null"``, for definition``definition``");
 			return resolvedMember;
 		}
 		 value invoke = declaration.invoke([],*resolvedParameters);
-		 log.debug("Resolved functional dependency ``invoke else "null"`` for definition``definition``");
+		 log.debug("Resolved functional dependency ``invoke else "null"``, for definition``definition``");
 		 return invoke;
 	}
 	

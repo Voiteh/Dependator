@@ -27,7 +27,7 @@ shared abstract class Dependency {
 			return hash;
 		}
 		
-		string => "``type`` ``identification``";
+		string => "<``type`` ``identification``>";
 	}
 	
 	shared Definition definition;

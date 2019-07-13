@@ -15,7 +15,7 @@ import herd.depin.engine {
 }
 shared class CallableConstructorInjection(CallableConstructor<Object> model,{Dependency*} parameters) extends Injection(){
 	shared actual Object inject {
-		log.debug("Injecting into: ``model``, parameters: ``parameters`` `");
+		log.debug("[Injecting] into: ``model``, parameters: ``parameters`` `");
 		value resolvedParameters=parameters.map((Dependency element) => element.resolve)
 				.filter((Anything element) => !element is Defaulted);
 		log.trace("Resolved parameters: ``resolvedParameters`` for injecting into:``model`` ");

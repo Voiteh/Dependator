@@ -21,7 +21,7 @@ shared class ValueDependency(GettableDeclaration declaration,
 			return memberGet;
 		}
 		value get = declaration.get();
-		log.debug("Registered value dependency ``get else "null"`` for definition ``definition```");
+		log.debug("[Registered] value dependency: ``get else "null"``. for definition ``definition```");
 		return get;
 	}
 		

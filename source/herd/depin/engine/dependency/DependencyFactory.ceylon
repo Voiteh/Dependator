@@ -81,7 +81,7 @@ shared class DependencyFactory(DefinitionFactory definitionFactory,TargetSelecto
 				throw FactorizationError(declaration, "Not supported");
 			}
 		}
-		log.debug("Created dependency: ``dependency``, for declaration: ``declaration``, parameter``parameter``");
+		log.debug("[Created Dependency]: ``dependency``, for declaration: ``declaration``, parameter: ``parameter``");
 		return dependency;
 	}
 	
