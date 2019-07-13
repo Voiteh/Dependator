@@ -1,5 +1,6 @@
 import ceylon.test {
-	test
+	test,
+	testExtension
 }
 
 import herd.depin.engine {
@@ -30,6 +31,12 @@ import ceylon.language.meta.declaration {
 import herd.depin.api {
 	DependencyAnnotation
 }
+import depin.test.extension {
+
+	LoggingTestExtension
+}
+
+testExtension (`class LoggingTestExtension`)
 shared class ClassInjectionTest() {
 	
 	
