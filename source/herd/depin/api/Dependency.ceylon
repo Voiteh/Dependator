@@ -46,7 +46,13 @@ shared abstract class Dependency {
 		this.definition = decorating.definition;
 		this.decorators = decorating.decorators;
 	}
+	shared class ResolutionError(
+		String? description=null,
+		Throwable? cause=null
+	) 
+			extends Exception(description, cause){}
 	
+	throws(`class ResolutionError`)
 	shared formal Anything resolve;
 	
 	shared actual String string {
