@@ -47,26 +47,26 @@ shared class Dependencies(MutableMap<OpenType,Branch> branches= HashMap<OpenType
 	Logger log=createLogger(`module`);
 	shared Dependency? get(Dependency.Definition definition) {
 		log.trace("Getting dependency for definition ``definition``");
-		if (exists get = branches.get(definition.type)) {
+		if (exists get = branches.get(definition.declaration.openType)) {
 			 value dependency = get.get(definition);
 			 log.trace("In old branch found dependency ``dependency else "null"`` for definition ``definition``");
 			 return dependency;
 		}
 		log.trace("No dependency for definition ``definition`` creating branch");
 		value branch=Branch();
-		branches.put(definition.type,branch);
+		branches.put(definition.declaration.openType,branch);
 		return null;
 	}
 	
 	shared Dependency? add(Dependency dependency) {
-		value get = branches.get(dependency.definition.type);
+		value get = branches.get(dependency.definition.declaration.openType);
 		if (exists get) {
 			log.trace("Adding dependency to old branch ``dependency``");
 			return get.add(dependency);
 		}
 		log.trace("Adding dependency to new branch ``dependency``");
 		value branch=Branch();
-		branches.put(dependency.definition.type,branch);
+		branches.put(dependency.definition.declaration.openType,branch);
 		return branch.add(dependency);
 	}
 	

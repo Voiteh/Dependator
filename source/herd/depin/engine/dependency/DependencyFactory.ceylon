@@ -17,11 +17,6 @@ import herd.depin.engine {
 	TargetSelector,
 	log
 }
-import ceylon.logging {
-
-	createLogger=logger,
-	Logger
-}
 
 
 shared class DependencyFactory(DefinitionFactory definitionFactory,TargetSelector targetSelector,Dependencies tree)  {
@@ -31,9 +26,10 @@ shared class DependencyFactory(DefinitionFactory definitionFactory,TargetSelecto
 	}
 	
 	shared Dependency create(NestableDeclaration declaration,Boolean parameter) {
-		Dependency.Definition definition =  definitionFactory.create(declaration);
+		
 		Dependency dependency;
 		if(parameter){
+			Dependency.Definition definition =  definitionFactory.create(declaration);
 			assert(is FunctionOrValueDeclaration declaration);
 			if(declaration.defaulted){
 				dependency= DefaultedParameterDependency(definition, tree);
@@ -48,34 +44,36 @@ shared class DependencyFactory(DefinitionFactory definitionFactory,TargetSelecto
 			}else{
 				containerDependency=null;
 			}
-			
 			switch (declaration)
 			case (is FunctionalDeclaration) {
+				Dependency.Definition definition =  definitionFactory.create(declaration);
 				value parameterDependencies = declaration.parameterDeclarations
 						.map((FunctionOrValueDeclaration element) => create(element,true));
-				dependency= FunctionalDependency(declaration, definition, containerDependency, parameterDependencies,decorators(declaration));
+				dependency= FunctionalDependency( definition, containerDependency, parameterDependencies,decorators(declaration));
 				
 			}
 			else case (is ValueDeclaration) {
-				dependency= ValueDependency(declaration, definition, containerDependency,decorators(declaration));
+				Dependency.Definition definition =  definitionFactory.create(declaration);
+				dependency= ValueDependency(definition, containerDependency,decorators(declaration));
 	
 			}
 			else case (is ClassDeclaration) {
-				if (exists anonymousObject = declaration.objectValue) {
-					dependency= ValueDependency(anonymousObject,definition,containerDependency,decorators(declaration)) ;
-				} else {
-					switch(constructor=targetSelector.select(declaration)) 
+				if (exists anonymousObjectDeclaration = declaration.objectValue) {
+					Dependency.Definition definition =  definitionFactory.create(anonymousObjectDeclaration);
+					dependency= ValueDependency(definition,containerDependency,decorators(declaration)) ;
+				} else { 
+					value constructor = targetSelector.select(declaration);
+					Dependency.Definition definition =  definitionFactory.create(constructor);
+					switch(constructor) 
 					case(is CallableConstructorDeclaration ){
 						value parameterDependencies = constructor.parameterDeclarations
 								.map((FunctionOrValueDeclaration element) => ParameterDependency(definitionFactory.create(element), tree));
-						dependency= FunctionalDependency(constructor, definition, containerDependency, parameterDependencies,decorators(declaration));
-	
+						dependency= FunctionalDependency( definition, containerDependency, parameterDependencies,decorators(declaration));
 					}
 					case(is ValueConstructorDeclaration){
-						dependency= ValueDependency(constructor,definition,containerDependency,decorators(declaration)) ;
+						dependency= ValueDependency(definition,containerDependency,decorators(declaration)) ;
 					}
 				}
-				
 			}
 			else {
 				throw FactorizationError(declaration, "Not supported");

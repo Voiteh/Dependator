@@ -2,9 +2,8 @@ import ceylon.language.meta {
 	type
 }
 import ceylon.language.meta.declaration {
-	AnnotatedDeclaration,
-	TypedDeclaration,
-	Declaration
+	Declaration,
+	NestableDeclaration
 }
 
 import herd.depin.api {
@@ -12,19 +11,14 @@ import herd.depin.api {
 	NamedAnnotation,
 	Identification
 }
-import ceylon.logging {
 
-	createLogger=logger,
-	Logger
-}
 import herd.depin.engine {
-
 	log
 }
 shared class DefinitionFactory(Identification.Holder holder) {
 	shared Dependency.Definition create(Declaration declaration) {
 	
-		if(is TypedDeclaration&AnnotatedDeclaration declaration){
+		if(is NestableDeclaration declaration){
 			variable {Annotation*} annotations;
 			try{
 				annotations = declaration.annotations<Annotation>()
@@ -35,7 +29,7 @@ shared class DefinitionFactory(Identification.Holder holder) {
 				annotations={NamedAnnotation(declaration.name)};
 			}
 			 value definition = Dependency.Definition{ 
-				type = declaration.openType; 
+				declaration = declaration; 
 				identification = if (annotations.empty && holder.types.contains(`NamedAnnotation`)) 
 				then Identification(NamedAnnotation(declaration.name)) 
 				else Identification(*annotations);

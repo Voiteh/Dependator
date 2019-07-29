@@ -1,5 +1,5 @@
 import ceylon.language.meta.declaration {
-	OpenType
+	NestableDeclaration
 }
 
 shared abstract class Dependency {
@@ -10,10 +10,10 @@ shared abstract class Dependency {
 	}
 	
 	shared static
-	class Definition(shared OpenType type, shared Identification identification) {
+	class Definition(shared NestableDeclaration declaration, shared Identification identification) {
 		shared actual Boolean equals(Object that) {
 			if (is Definition that) {
-				return type==that.type &&
+				return declaration.openType==that.declaration.openType&&
 						identification==that.identification;
 			} else {
 				return false;
@@ -22,12 +22,12 @@ shared abstract class Dependency {
 		
 		shared actual Integer hash {
 			variable Integer hash = 1;
-			hash = 31*hash + type.hash;
+			hash = 31*hash + declaration.openType.hash;
 			hash = 31*hash + identification.hash;
 			return hash;
 		}
 		
-		string => "<``type`` ``identification``>";
+		string => "<``declaration.openType`` ``identification``>";
 	}
 	
 	shared Definition definition;
