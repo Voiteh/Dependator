@@ -13,13 +13,28 @@ import herd.depin.engine {
 
 	log
 }
+
+import ceylon.language.meta.declaration {
+
+	FunctionOrValueDeclaration
+}
+import herd.depin.engine.meta {
+
+	Validator,
+	apply
+}
 shared class CallableConstructorInjection(CallableConstructor<Object> model,{Dependency*} parameters) extends Injection(){
+	value validator=Validator{
+		parameterDeclarations = parameters.map((Dependency element) => element.definition.declaration)
+				.narrow<FunctionOrValueDeclaration>().sequence();
+	};
 	shared actual Object inject {
 		log.debug("[Injecting] into: ``model``, parameters: ``parameters`` `");
 		value resolvedParameters=parameters.map((Dependency element) => element.resolve)
-				.filter((Anything element) => !element is Defaulted);
+				.select((Anything element) => !element is Defaulted);
 		log.trace("Resolved parameters: ``resolvedParameters`` for injecting into:``model`` ");
-		return model.apply(*resolvedParameters);
+		validator.validate(null,resolvedParameters);
+		return apply(model, null, resolvedParameters);
 	}
 	
 }
