@@ -4,9 +4,11 @@ import herd.depin.api {
 import herd.depin.engine {
 	log
 }
-import herd.depin.engine.invocation {
-	Validator,
-	invoke
+
+import herd.depin.engine.meta {
+
+	invoke,
+	Validator
 }
 shared class ValueDependency(
 	Dependency.Definition definition,

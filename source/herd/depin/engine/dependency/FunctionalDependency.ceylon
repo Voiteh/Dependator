@@ -9,9 +9,11 @@ import herd.depin.engine {
 	log,
 	safe
 }
-import herd.depin.engine.invocation {
-	Validator,
-	invoke
+
+import herd.depin.engine.meta {
+
+	invoke,
+	Validator
 }
 shared class FunctionalDependency(
 	Dependency.Definition definition,

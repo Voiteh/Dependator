@@ -2,15 +2,13 @@ import ceylon.language.meta.declaration {
 	FunctionOrValueDeclaration
 }
 import ceylon.language.meta.model {
-	ClassModel,
-	Type
+	ClassModel
 }
 
 import herd.depin.api {
 	Dependency,
 	Injection,
 	Identification,
-	NamedAnnotation,
 	Notifier
 }
 import herd.depin.engine.dependency {
