@@ -16,7 +16,8 @@ import herd.depin.engine.meta {
 shared class ValueConstructorInjection(ValueConstructor<Object> model) extends Injection(){
 	shared actual Object inject {
 		log.debug("[Injecting] into: ``model``");
-		return apply(model);
+		assert (is Object result =apply(model));
+		return result;
 	}
 	
 }

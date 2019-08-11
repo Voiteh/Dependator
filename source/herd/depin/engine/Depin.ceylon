@@ -1,15 +1,13 @@
 import ceylon.language.meta.declaration {
 	FunctionOrValueDeclaration
 }
-import ceylon.language.meta.model {
-	ClassModel
-}
 
 import herd.depin.api {
 	Dependency,
 	Injection,
 	Identification,
-	Notifier
+	Notifier,
+	Injectable
 }
 import herd.depin.engine.dependency {
 	DependencyFactory,
@@ -55,7 +53,7 @@ shared class Depin satisfies Injection.Injector& Notifier{
 
 
 	
-	shared actual Type inject<Type>(ClassModel<Type> model)given Type satisfies Object {
+	shared actual Type inject<Type>(Injectable<Type> model){
 		assert(is Type result= factory.create(model).inject);
 		return result;
 	}

@@ -35,7 +35,8 @@ shared class MemberCallableConstructorInjection(MemberClassCallableConstructor<>
 		value resolvedParameters = parameteres.map((Dependency element) => element.resolve).select((Anything element) => !element is Defaulted);
 		log.trace("Resolved parameters: ``resolvedParameters`` for injecting into:``model`` ");
 		validator.validate(resolvedContainer, resolvedParameters);
-		return apply(model,resolvedContainer,resolvedParameters);
+		 assert(exists result = apply(model,resolvedContainer,resolvedParameters));
+		 return result;
 	}
 	
 }

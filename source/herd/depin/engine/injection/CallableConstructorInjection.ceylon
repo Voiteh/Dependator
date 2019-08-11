@@ -34,7 +34,8 @@ shared class CallableConstructorInjection(CallableConstructor<Object> model,{Dep
 				.select((Anything element) => !element is Defaulted);
 		log.trace("Resolved parameters: ``resolvedParameters`` for injecting into:``model`` ");
 		validator.validate(null,resolvedParameters);
-		return apply(model, null, resolvedParameters);
+		assert(is Object result= apply(model, null, resolvedParameters));
+		return result;
 	}
 	
 }

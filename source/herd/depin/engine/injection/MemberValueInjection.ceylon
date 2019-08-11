@@ -22,7 +22,8 @@ shared class MemberValueInjection(MemberClassValueConstructor<> model,Dependency
 		value resolvedContainer = container.resolve;
 		log.trace("Resolved container: ``resolvedContainer else "null"`` for injecting into: ``model`` ");
 		validator.validate(resolvedContainer);
-		return apply(model,resolvedContainer);
+		assert (exists result=apply(model,resolvedContainer));
+		return result;
 	}
 
 }
