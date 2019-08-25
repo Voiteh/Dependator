@@ -8,6 +8,13 @@ import test.herd.depin.engine.integration.injection {
 }
 
 shared object fixture {
+	shared object dependencies{
+		shared object methodInjection{
+			shared Integer initializer=5;
+			shared Integer parameter=5;
+			shared Integer result=initializer+parameter;
+		}
+	}
 	shared object person {
 		shared Person john = Person("John", 123);
 	}
@@ -50,4 +57,10 @@ shared object fixture {
 	shared object unshared{
 		shared String exposed="expooooseeed";
 	}
+	shared object fun {
+		shared Integer first=1;
+		shared Integer second=2;
+		shared Integer result=first+second;
+	}
+	
 }

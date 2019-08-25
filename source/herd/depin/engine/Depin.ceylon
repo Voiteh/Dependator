@@ -55,6 +55,7 @@ shared class Depin satisfies Injection.Injector& Notifier{
 	
 	shared actual Type inject<Type>(Injectable<Type> model){
 		assert(is Type result= factory.create(model).inject);
+		log.debug("Injection into ``model `` succesfull, with result: ``result else "null"``");
 		return result;
 	}
 	shared actual void notify<Event>(Event event) {

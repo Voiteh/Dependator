@@ -26,7 +26,7 @@ shared class ValueDependency(
 			return result;
 		}
 		value result=invoke(definition.declaration);
-		log.debug("[Registered] value dependency: ``result else "null"``. for definition ``definition```");
+		log.debug("[Registered] value dependency: ``result else "null"``, for definition: ``definition``");
 		return result;
 	}
 		
