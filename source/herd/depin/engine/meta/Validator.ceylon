@@ -19,7 +19,7 @@ import herd.validx {
 
 
  void typeConstrain(NestableDeclaration? validDeclaration, Anything val) {
- 	log.debug("Validating type constraint for ``val else "null"`` against ``validDeclaration?.openType else "null"``");
+ 	log.debug("[Validating] type constraint, for ``val else "null"``, against ``validDeclaration?.openType else "null"``");
 	if (exists validOpenType=validDeclaration?.openType) {
 		value valOpenType = resolve(val).declaration.openType;
 		value typeSequence = flat.openTypes(valOpenType).sequence();

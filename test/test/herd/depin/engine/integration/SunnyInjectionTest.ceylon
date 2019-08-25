@@ -23,7 +23,9 @@ import test.herd.depin.engine.integration.injection {
 	AnonymousObjectTarget,
 	SingletonTarget,
 	PrototypeTarget,
-	ExposedTarget
+	ExposedTarget,
+	functionInjection,
+	MethodInjection
 }
 import ceylon.language.meta.declaration {
 	ValueDeclaration,
@@ -42,7 +44,7 @@ import ceylon.logging {
 }
 
 testExtension (`class LoggingTestExtension`)
-shared class ClassInjectionTest() {
+shared class SunnyInjectionTest() {
 	
 	log.priority=debug;
 		
@@ -89,5 +91,11 @@ shared class ClassInjectionTest() {
 		assert(Depin(declarations).inject(`ExposedTarget`).exposing.exposed==fixture.unshared.exposed);
 	}
 	
-	
+	shared test void shouldInjectIntoFunction(){
+		assert(Depin({`value first `,`value second`}).inject(`functionInjection`)==fixture.fun.result);
+	}
+	shared test void shouldInjectIntoMethod(){
+		assert(Depin({`value initializerDependency`,`value parameterDependency`})
+			.inject(`MethodInjection.method`)==fixture.dependencies.methodInjection.result);
+	}
 }

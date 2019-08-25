@@ -1,23 +1,25 @@
 import ceylon.language.meta.model {
-	ClassModel
+	ClassModel,
+	FunctionModel,
+	Gettable
 }
 
 
-
+shared alias Injectable<Type=Anything>  => ClassModel<Type>|Gettable<Type>|FunctionModel<Type>;
 
 shared abstract class Injection {
 	
 
 			
 	shared static interface Injector{
-		shared formal Type inject<Type>(ClassModel<Type> clazz) given Type satisfies Object;
+		shared formal Type inject<Type>(Injectable<Type> clazz) ;
 	}
 	
 	shared new () {
 	}
 
 	
-	shared formal Object inject;
+	shared formal Anything inject;
 	
 	
 	

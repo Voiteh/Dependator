@@ -29,13 +29,14 @@ shared class MemberCallableConstructorInjection(MemberClassCallableConstructor<>
 				.sequence();
 	};
 	shared actual Object inject {
-		log.debug("[Injecting] into: ``model``, parameters: ``parameteres`` for container ``container`` `");
+		log.debug("[Injecting] into: ``model``, parameters: ``parameteres``, for container ``container`` `");
 		value resolvedContainer = container.resolve;
-		log.trace("Resolved container: ``resolvedContainer else "null"`` for injecting into: ``model`` ");
+		log.trace("[Resolved] container: ``resolvedContainer else "null"``, for injecting into: ``model`` ");
 		value resolvedParameters = parameteres.map((Dependency element) => element.resolve).select((Anything element) => !element is Defaulted);
-		log.trace("Resolved parameters: ``resolvedParameters`` for injecting into:``model`` ");
+		log.trace("[Resolved] parameters: ``resolvedParameters``, for injecting into:``model`` ");
 		validator.validate(resolvedContainer, resolvedParameters);
-		return apply(model,resolvedContainer,resolvedParameters);
+		 assert(exists result = apply(model,resolvedContainer,resolvedParameters));
+		 return result;
 	}
 	
 }
