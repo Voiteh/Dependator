@@ -18,8 +18,8 @@ import herd.depin.engine {
 	log
 }
 shared class Branch(MutableMap<Dependency.Definition,Dependency> map=HashMap<Dependency.Definition, Dependency>()) {
-	shared late Dependency fallback;
-	shared  Dependency? add(Dependency dependency) {
+	shared variable Dependency? fallback=null;
+	shared Dependency? add(Dependency dependency) {
 		log.trace("Adding dependency to old branch ``dependency``");
 		value replaced = map.put(dependency.definition,dependency);
 		if(exists replaced){
@@ -48,17 +48,17 @@ shared class Dependencies(shared MutableMap<OpenType,Branch> branches= HashMap<O
 	Logger log=createLogger(`module`);
 	shared Dependency? get(Dependency.Definition definition) {
 		log.trace("Getting dependency for definition ``definition``");
-		if (exists get = branches.get(definition.declaration.openType)) {
-			 value dependency = get.get(definition);
-			 log.trace("In old branch found dependency ``dependency else "null"`` for definition ``definition``");
-			 return dependency;
-		}
-		log.trace("No dependency for definition ``definition`` creating branch");
-		value branch=Branch();
-		branches.put(definition.declaration.openType,branch);
-		return null;
+		value dependency= branches.get(definition.declaration.openType)?.get(definition);
+		log.trace("In branch found dependency ``dependency else "null"`` for definition ``definition``");
+		return dependency;
 	}
-	shared void fallback(Dependency dependency){
+	shared Dependency? getFallback(Dependency.Definition definition){
+		log.trace("Getting fallback dependency for definition ``definition``");
+		value dependency = branches.get(definition.declaration.openType)?.fallback;
+		log.trace("In branch found fallback dependency ``dependency else "null"`` for definition ``definition``");
+		return dependency;
+	}
+	shared void addFallback(Dependency dependency){
 		value get = branches.get(dependency.definition.declaration.openType);
 		if (exists get) {
 			get.fallback=dependency;

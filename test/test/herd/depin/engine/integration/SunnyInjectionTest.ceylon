@@ -37,7 +37,8 @@ import test.herd.depin.engine.integration.injection {
 	AnonymousObjectTarget,
 	ExposedTarget,
 	functionInjection,
-	MethodInjection
+	MethodInjection,
+	fallbackInjection
 }
 
 testExtension (`class LoggingTestExtension`)
@@ -95,4 +96,10 @@ shared class SunnyInjectionTest() {
 		assert(Depin({`value initializerDependency`,`value parameterDependency`})
 			.inject(`MethodInjection.method`)==fixture.dependencies.methodInjection.result);
 	}
+	
+	shared test void shouldInjectFallbackDependency(){
+		assert(Depin({`value fallbackDependency`})
+			.inject(`fallbackInjection`)==fixture.dependencies.fallback);
+	}
+	
 }

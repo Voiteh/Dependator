@@ -57,7 +57,7 @@ shared class Depin satisfies Injection.Injector& Notifier{
 		.each((Dependency|Dependency.Decorated element)  {
 			tree.add(element);
 			if(is Dependency.Decorated element, element.decorators.narrow<FallbackAnnotation>().first exists){
-				tree.fallback(element);
+				tree.addFallback(element);
 			}
 		});
 		
