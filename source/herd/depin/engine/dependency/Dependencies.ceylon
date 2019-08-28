@@ -44,7 +44,7 @@ shared class Branch(MutableMap<Dependency.Definition,Dependency> map=HashMap<Dep
 	}
 	string=> map.fold("")((String initial, Dependency.Definition dependency -> Dependency injectable) => initial + ",``dependency.identification``" )	;
 }
-shared class Dependencies(MutableMap<OpenType,Branch> branches= HashMap<OpenType,Branch>()) {
+shared class Dependencies(shared MutableMap<OpenType,Branch> branches= HashMap<OpenType,Branch>()) {
 	Logger log=createLogger(`module`);
 	shared Dependency? get(Dependency.Definition definition) {
 		log.trace("Getting dependency for definition ``definition``");
@@ -58,7 +58,15 @@ shared class Dependencies(MutableMap<OpenType,Branch> branches= HashMap<OpenType
 		branches.put(definition.declaration.openType,branch);
 		return null;
 	}
-	
+	shared void fallback(Dependency dependency){
+		value get = branches.get(dependency.definition.declaration.openType);
+		if (exists get) {
+			get.fallback=dependency;
+		}
+		value branch=Branch();
+		branches.put(dependency.definition.declaration.openType,branch);
+		branch.fallback=dependency;
+	}
 	shared Dependency? add(Dependency dependency) {
 		value get = branches.get(dependency.definition.declaration.openType);
 		if (exists get) {
