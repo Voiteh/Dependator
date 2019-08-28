@@ -4,9 +4,13 @@ import ceylon.language.meta.declaration {
 
 shared abstract class Dependency {
 	
+	shared static abstract class Decorated(Dependency dependency,Decorator decorator)  extends Dependency.decorated(dependency){
+		shared Decorator[] decorators=if (is Decorated dependency) then dependency.decorators.withTrailing(decorator) else [decorator];
+	}
+	
 	shared static
 	interface Decorator {
-		shared formal Dependency decorate(Dependency dependency);
+		shared formal Decorated decorate(Dependency dependency);
 	}
 	
 	shared static
@@ -38,18 +42,18 @@ shared abstract class Dependency {
 	shared Definition definition;
 	shared {Dependency*} parameters;
 	shared Dependency? container;
-	shared {Decorator*} decorators;
-	shared new (Definition definition, Dependency? container = null, {Dependency*} parameters = empty, {Decorator*} decorators = empty) {
+
+
+	shared new (Definition definition, Dependency? container = null, {Dependency*} parameters = empty) {
 		this.container = container;
 		this.parameters = parameters;
 		this.definition = definition;
-		this.decorators = decorators;
+
 	}
-	shared new decorated(Dependency decorating) {
+	new decorated(Dependency decorating) {
 		this.container = decorating.container;
 		this.parameters = decorating.parameters;
 		this.definition = decorating.definition;
-		this.decorators = decorating.decorators;
 	}
 	
 	

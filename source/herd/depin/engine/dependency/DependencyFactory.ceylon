@@ -6,8 +6,7 @@ import ceylon.language.meta.declaration {
 	ClassDeclaration,
 	FunctionalDeclaration,
 	Declaration,
-	FunctionOrValueDeclaration,
-	AnnotatedDeclaration
+	FunctionOrValueDeclaration
 }
 
 import herd.depin.api {
@@ -20,10 +19,7 @@ import herd.depin.engine {
 
 
 shared class DependencyFactory(DefinitionFactory definitionFactory,TargetSelector targetSelector,Dependencies tree)  {
-	{Dependency.Decorator*} decorators(AnnotatedDeclaration declaration){
-		return declaration.annotations<Annotation>()
-				.narrow<Dependency.Decorator>();
-	}
+	
 	
 	shared Dependency create(NestableDeclaration declaration,Boolean parameter) {
 		
@@ -49,18 +45,18 @@ shared class DependencyFactory(DefinitionFactory definitionFactory,TargetSelecto
 				Dependency.Definition definition =  definitionFactory.create(declaration);
 				value parameterDependencies = declaration.parameterDeclarations
 						.map((FunctionOrValueDeclaration element) => create(element,true));
-				dependency= FunctionalDependency( definition, containerDependency, parameterDependencies,decorators(declaration));
+				dependency= FunctionalDependency( definition, containerDependency, parameterDependencies);
 				
 			}
 			else case (is ValueDeclaration) {
 				Dependency.Definition definition =  definitionFactory.create(declaration);
-				dependency= ValueDependency(definition, containerDependency,decorators(declaration));
+				dependency= ValueDependency(definition, containerDependency);
 	
 			}
 			else case (is ClassDeclaration) {
 				if (exists anonymousObjectDeclaration = declaration.objectValue) {
 					Dependency.Definition definition =  definitionFactory.create(anonymousObjectDeclaration);
-					dependency= ValueDependency(definition,containerDependency,decorators(declaration)) ;
+					dependency= ValueDependency(definition,containerDependency) ;
 				} else { 
 					value constructor = targetSelector.select(declaration);
 					Dependency.Definition definition =  definitionFactory.create(constructor);
@@ -68,10 +64,10 @@ shared class DependencyFactory(DefinitionFactory definitionFactory,TargetSelecto
 					case(is CallableConstructorDeclaration ){
 						value parameterDependencies = constructor.parameterDeclarations
 								.map((FunctionOrValueDeclaration element) => ParameterDependency(definitionFactory.create(element), tree));
-						dependency= FunctionalDependency( definition, containerDependency, parameterDependencies,decorators(declaration));
+						dependency= FunctionalDependency( definition, containerDependency, parameterDependencies);
 					}
 					case(is ValueConstructorDeclaration){
-						dependency= ValueDependency(definition,containerDependency,decorators(declaration)) ;
+						dependency= ValueDependency(definition,containerDependency) ;
 					}
 				}
 			}

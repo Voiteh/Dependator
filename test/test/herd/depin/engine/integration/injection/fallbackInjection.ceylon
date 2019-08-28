@@ -1,0 +1,1 @@
+shared String fallbackInjection(String gimiFallbackPlease) => gimiFallbackPlease;

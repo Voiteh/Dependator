@@ -7,13 +7,14 @@ import herd.depin.api {
 	Injection,
 	Identification,
 	Notifier,
-	Injectable
+	Injectable,
+	FallbackAnnotation
 }
 import herd.depin.engine.dependency {
 	DependencyFactory,
 	DefinitionFactory,
 	Dependencies,
-	MasterDecorator,
+	DecorationManager,
 	Handlers,
 	MasterNotifier
 }
@@ -30,24 +31,36 @@ shared class Depin satisfies Injection.Injector& Notifier{
 	InjectionFactory factory;
 	Dependencies tree;
 	Notifier masterNotifier;
-	shared new({FunctionOrValueDeclaration*} dependencies={},Configuration configuration=Configuration()){
+	
+	void validate({Dependency*} dependencies){
+		dependencies.group((Dependency element) => element.definition)
+				.filter((Dependency.Definition elementKey -> [Dependency+] elementItem) => !elementItem.rest.empty)
+				.each((Dependency.Definition elementKey -> [Dependency+] elementItem) {
+			throw Exception("Multiple dependencies found for single definition: ``elementKey``-> ``elementItem`` ");
+		});
+	}
+	
+	
+	shared new({FunctionOrValueDeclaration*} declarations={},Configuration configuration=Configuration()){
 		tree=Dependencies();
 		value handlers=Handlers();
 		value definitionFactory=DefinitionFactory(Identification.Holder(configuration.identificationTypes));
 		value targetSelector=TargetSelector();
 		value dependencyFactory=DependencyFactory(definitionFactory,targetSelector,tree);
-		value masterDecorator=MasterDecorator(handlers);
+		value decorationManager=DecorationManager(handlers);
 		masterNotifier=MasterNotifier(handlers);
 		factory=InjectionFactory(dependencyFactory,targetSelector);
 		
-		dependencies.map((FunctionOrValueDeclaration element) => dependencyFactory.create(element,false))
-				.map((Dependency element) => tree.add(element))
-				.narrow<Dependency>()
-				.group((Dependency element) => element.definition)
-				.each((Dependency.Definition elementKey -> [Dependency+] elementItem) {
-			throw Exception("Multiple dependencies found for single definition: ``elementKey``-> ``elementItem`` ");
+		value dependencies = declarations.map((FunctionOrValueDeclaration element) => dependencyFactory.create(element,false));
+		validate(dependencies);	
+		dependencies.map(decorationManager.decorate)
+		.each((Dependency|Dependency.Decorated element)  {
+			tree.add(element);
+			if(is Dependency.Decorated element, element.decorators.narrow<FallbackAnnotation>().first exists){
+				tree.addFallback(element);
+			}
 		});
-		tree.replace(masterDecorator.decorate);	
+		
 	}
 
 

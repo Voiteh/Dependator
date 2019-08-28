@@ -18,9 +18,8 @@ import herd.depin.engine.meta {
 shared class FunctionalDependency(
 	Dependency.Definition definition,
 	Dependency? container,
-	{Dependency*} parameters,
-	{Dependency.Decorator*} decorators
-) extends Dependency(definition,container,parameters,decorators){
+	{Dependency*} parameters
+) extends Dependency(definition,container,parameters){
 	value validator=Validator{
 		containerDeclaration = container?.definition?.declaration;
 		parameterDeclarations = parameters.map((Dependency element) => element.definition.declaration)

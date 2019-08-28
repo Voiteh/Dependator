@@ -28,7 +28,6 @@ import herd.validx {
 import test.herd.depin.engine.integration.dependency {
 	nested,
 	name,
-	nonDefault,
 	DataSourceConfiguration
 }
 import test.herd.depin.engine.integration.injection {
