@@ -1,8 +1,22 @@
+import ceylon.language.meta.declaration {
+	ValueDeclaration,
+	FunctionOrValueDeclaration
+}
+import ceylon.logging {
+	debug
+}
 import ceylon.test {
 	test,
 	testExtension
 }
 
+import depin.test.extension {
+	LoggingTestExtension
+}
+
+import herd.depin.api {
+	DependencyAnnotation
+}
 import herd.depin.engine {
 	Depin,
 	DefaultScanner,
@@ -21,26 +35,9 @@ import test.herd.depin.engine.integration.injection {
 	TargetWithTwoCallableConstructors,
 	Nesting,
 	AnonymousObjectTarget,
-	SingletonTarget,
-	PrototypeTarget,
 	ExposedTarget,
 	functionInjection,
 	MethodInjection
-}
-import ceylon.language.meta.declaration {
-	ValueDeclaration,
-	FunctionOrValueDeclaration
-}
-import herd.depin.api {
-	DependencyAnnotation
-}
-import depin.test.extension {
-
-	LoggingTestExtension
-}
-import ceylon.logging {
-
-	debug
 }
 
 testExtension (`class LoggingTestExtension`)

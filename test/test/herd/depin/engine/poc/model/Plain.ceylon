@@ -8,9 +8,6 @@ shared class Plain() {
 	}
 	shared {Integer*} oneTwoThree()=> {1,2,3};
 	
-	void smth(String smth){
-		print(smth);
-	}
 	
 	
 	shared class Inner(){

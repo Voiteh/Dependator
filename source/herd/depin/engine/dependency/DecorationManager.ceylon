@@ -18,12 +18,22 @@ import herd.depin.engine {
 
 	log
 }
+import ceylon.language.meta.declaration {
 
-shared class MasterDecorator(Handlers handlers) satisfies Dependency.Decorator {
-	shared actual Dependency decorate(Dependency dependency) {
+	AnnotatedDeclaration
+}
+
+shared class DecorationManager(Handlers handlers) {
+	{Dependency.Decorator*} decorators(AnnotatedDeclaration declaration){
+		return declaration.annotations<Annotation>()
+				.narrow<Dependency.Decorator>();
+	}
+
+	shared Dependency|Dependency.Decorated decorate(Dependency dependency) {
 		log.trace("decorating ``dependency``");
-		Dependency decorated = dependency.decorators.fold(dependency)((Dependency subject, Dependency.Decorator decorator) {
-			Dependency result=decorator.decorate(subject);
+		
+		Dependency|Dependency.Decorated decorated = decorators(dependency.definition.declaration).fold(dependency)((Dependency subject, Dependency.Decorator decorator) {
+			Dependency.Decorated result=decorator.decorate(subject);
 			log.debug("[Decorated]: ``dependency``, with ``result``");
 			if(is Handler<> result){
 				register(result);

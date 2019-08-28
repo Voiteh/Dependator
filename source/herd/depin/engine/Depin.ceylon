@@ -13,7 +13,7 @@ import herd.depin.engine.dependency {
 	DependencyFactory,
 	DefinitionFactory,
 	Dependencies,
-	MasterDecorator,
+	DecorationManager,
 	Handlers,
 	MasterNotifier
 }
@@ -36,7 +36,7 @@ shared class Depin satisfies Injection.Injector& Notifier{
 		value definitionFactory=DefinitionFactory(Identification.Holder(configuration.identificationTypes));
 		value targetSelector=TargetSelector();
 		value dependencyFactory=DependencyFactory(definitionFactory,targetSelector,tree);
-		value masterDecorator=MasterDecorator(handlers);
+		value masterDecorator=DecorationManager(handlers);
 		masterNotifier=MasterNotifier(handlers);
 		factory=InjectionFactory(dependencyFactory,targetSelector);
 		

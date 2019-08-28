@@ -18,6 +18,7 @@ import herd.depin.engine {
 	log
 }
 shared class Branch(MutableMap<Dependency.Definition,Dependency> map=HashMap<Dependency.Definition, Dependency>()) {
+	shared late Dependency fallback;
 	shared  Dependency? add(Dependency dependency) {
 		log.trace("Adding dependency to old branch ``dependency``");
 		value replaced = map.put(dependency.definition,dependency);

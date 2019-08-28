@@ -12,9 +12,8 @@ import herd.depin.engine.meta {
 }
 shared class ValueDependency(
 	Dependency.Definition definition,
-	Dependency? container,
-	{Dependency.Decorator*} decorators
-) extends Dependency(definition,container,empty,decorators){
+	Dependency? container
+) extends Dependency(definition,container,empty){
 	
 	value validator=Validator(container?.definition?.declaration);
 	

@@ -2,13 +2,22 @@ import ceylon.language.meta.declaration {
 	FunctionOrValueDeclaration,
 	ConstructorDeclaration
 }
+shared final annotation class FallbackAnnotation() satisfies Dependency.Decorator & OptionalAnnotation<FallbackAnnotation,FunctionOrValueDeclaration>{
+	shared actual Dependency.Decorated decorate(Dependency dependency) => object extends Dependency.Decorated(dependency,outer){
+		shared actual Anything resolve => dependency;
+		
 
+		
+			 
+	};
+}
+shared annotation FallbackAnnotation fallback() => FallbackAnnotation();
 shared final annotation class EagerAnnotation() satisfies Dependency.Decorator &
 		OptionalAnnotation<EagerAnnotation,FunctionOrValueDeclaration>{
-	shared actual Dependency decorate(Dependency dependency) => object extends Dependency.decorated(dependency){
+	shared actual Dependency.Decorated decorate(Dependency dependency) => object extends Dependency.Decorated(dependency,outer){
 		Anything data=dependency.resolve;
 		shared actual Anything resolve=> data;
-		
+	
 	};
 
 }
@@ -17,7 +26,7 @@ shared annotation EagerAnnotation eager() => EagerAnnotation();
 shared final annotation class SingletonAnnotation() satisfies Dependency.Decorator &
 	OptionalAnnotation<SingletonAnnotation,FunctionOrValueDeclaration>{
 
-	shared actual Dependency decorate(Dependency dependency) => object extends Dependency.decorated(dependency){
+	shared actual Dependency.Decorated decorate(Dependency dependency) => object extends Dependency.Decorated(dependency,outer){
 		
 		late Anything data;
 		

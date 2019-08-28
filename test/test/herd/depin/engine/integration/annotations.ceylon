@@ -11,7 +11,7 @@ import ceylon.language.meta.model {
 }
 shared final annotation class NotifiedAnnotation() satisfies OptionalAnnotation<NotifiedAnnotation, ValueDeclaration, Value<Boolean>> 
 		& Dependency.Decorator{
-	shared actual Dependency decorate(Dependency dependency) => object extends Dependency.decorated(dependency) satisfies Handler<Boolean>{
+	shared actual Dependency.Decorated decorate(Dependency dependency) => object extends Dependency.Decorated(dependency,outer) satisfies Handler<Boolean>{
 		late Boolean notified;
 		shared actual Anything resolve { 
 			try{ 
