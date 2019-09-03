@@ -85,7 +85,9 @@ shared class Dependencies(shared MutableMap<OpenType,Branch> branches= HashMap<O
 			branch.replace(selector); 
 		});
 	}
-	
+	shared {Dependency*} getByType(OpenType type){
+		return branches.get(type)?.all else empty;
+	}
 	
 	shared {Dependency*} all=> branches.flatMap((OpenType elementKey -> Branch elementItem) => elementItem.all);
 	

@@ -1,6 +1,7 @@
 import ceylon.language.meta.declaration {
 	ValueDeclaration,
-	FunctionOrValueDeclaration
+	FunctionOrValueDeclaration,
+	NestableDeclaration
 }
 import ceylon.logging {
 	debug
@@ -38,7 +39,13 @@ import test.herd.depin.engine.integration.injection {
 	ExposedTarget,
 	functionInjection,
 	MethodInjection,
-	fallbackInjection
+	fallbackInjection,
+	CollectorInjection
+}
+
+import test.herd.depin.engine.integration {
+
+	fixture
 }
 
 testExtension (`class LoggingTestExtension`)
@@ -101,5 +108,18 @@ shared class SunnyInjectionTest() {
 		assert(Depin({`value fallbackDependency`})
 			.inject(`fallbackInjection`)==fixture.dependencies.fallback);
 	}
-	
+	shared test void shouldInjectCollectedDependencies(){
+		value depin=Depin({
+			`value fixture.dependencies.collector.one`,
+			`value fixture.dependencies.collector.two`,
+			`value fixture.dependencies.collector.three`
+		});
+		value collector=depin.inject(`CollectorInjection`).collector;
+		assert(collector.collected.containsEvery({
+			fixture.dependencies.collector.one,
+			fixture.dependencies.collector.two,
+			fixture.dependencies.collector.three
+		}));
+		
+	}
 }

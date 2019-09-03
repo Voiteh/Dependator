@@ -1,0 +1,1 @@
+shared class Collector<Collected>(shared Collected[] collected){}

@@ -15,6 +15,11 @@ shared object fixture {
 			shared Integer result=initializer+parameter;
 		}
 		shared String fallback="abc";
+		shared object collector{
+			shared Integer one=1;
+			shared Integer two=2;
+			shared Integer three=3;
+		}
 	}
 	shared object person {
 		shared Person john = Person("John", 123);

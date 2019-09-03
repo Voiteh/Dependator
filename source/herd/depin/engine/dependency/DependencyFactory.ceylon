@@ -6,7 +6,8 @@ import ceylon.language.meta.declaration {
 	ClassDeclaration,
 	FunctionalDeclaration,
 	Declaration,
-	FunctionOrValueDeclaration
+	FunctionOrValueDeclaration,
+	OpenClassType
 }
 
 import herd.depin.api {
@@ -14,7 +15,8 @@ import herd.depin.api {
 }
 import herd.depin.engine {
 	TargetSelector,
-	log
+	log,
+	Collector
 }
 
 
@@ -27,7 +29,16 @@ shared class DependencyFactory(DefinitionFactory definitionFactory,TargetSelecto
 		if(parameter){
 			Dependency.Definition definition =  definitionFactory.create(declaration);
 			assert(is FunctionOrValueDeclaration declaration);
-			if(declaration.defaulted){
+			if(is OpenClassType declarationOpenType=declaration.openType,declarationOpenType.declaration==`class Collector`){
+				Dependency? containerDependency ;
+				if (is NestableDeclaration containerDeclaration = declaration.container) {
+					containerDependency=create(containerDeclaration,false);
+				}else{
+					containerDependency=null;
+				}
+				dependency=CollectorDependency(definition, tree);					
+			}
+			else if(declaration.defaulted){
 				dependency= DefaultedParameterDependency(definition, tree);
 			}else{
 				dependency=ParameterDependency(definition, tree);
