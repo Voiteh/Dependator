@@ -3,7 +3,8 @@ import herd.depin.api {
 	Dependency
 }
 import herd.depin.engine {
-	log
+	log,
+	Collector
 }
 import ceylon.language.meta.declaration {
 
@@ -14,13 +15,27 @@ import ceylon.language.meta.declaration {
 import ceylon.language.meta.model {
 
 	Class,
-	Value
+	Value,
+	ClassModel,
+	MemberClass
 }
 import ceylon.language.meta {
 
 	type
 }
+import herd.depin.engine.util {
+
+	runtimeCall
+}
 shared class CollectorDependency(Dependency.Definition definition,Dependencies tree) extends Dependency(definition){
+
+	[Object*] collectingTuple(Anything first,Anything[] rest){
+		if(exists first){
+			return Tuple(first,collectingTuple(rest.first, rest.rest));
+		}
+		return empty;
+	}
+
 
 	shared actual Anything resolve {
 		assert(is ValueDeclaration declaration=definition.declaration);
@@ -31,18 +46,26 @@ shared class CollectorDependency(Dependency.Definition definition,Dependencies t
 		value collected = collecting.collect((Dependency element) => element.resolve);
 		log.debug("Collected ``collected``, by type ``collectedOpenType``");
 		
-		Anything collector;
-		
-		if(exists container){
-			assert(is Object resolvedContainer=container.resolve);
-			value bound=declaration.memberApply<>(type(resolvedContainer)).bind(resolvedContainer);
-			assert(is Class<> collectorType=bound.type);
-			collector=collectorType.apply(collected);
-		}else{
-			assert(is Class<> collectorType= declaration.apply<>().type);	
-			collector=collectorType.apply(collected);
+		if(exists first=collected.first){
+			value closedType=type(first);
+			value tuple=collectingTuple(collected.first, collected.rest);
+			switch(closedType)
+			case (is Class<Object,Nothing>) {
+				assert(is Class<Object> collectorType = `class Collector`.apply<>(closedType));
+				return collectorType.apply(tuple);
+			}
+			else case (is MemberClass<Object,Nothing>) {
+				value clazz=closedType.bind(first);
+				assert(is Class<Object> collectorType = `class Collector`.apply<>(clazz));
+				return collectorType.apply(tuple);
+				
+			}
+			else{
+				throw Exception("Unhandled collected type");
+			}
+			
 		}
-		return collector;
+		throw Exception("No dependency for collection of ``collectedOpenType``");
 	}
 	
 }
