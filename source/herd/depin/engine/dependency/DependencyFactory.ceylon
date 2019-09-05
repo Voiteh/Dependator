@@ -10,13 +10,12 @@ import ceylon.language.meta.declaration {
 	OpenClassType
 }
 
-import herd.depin.api {
-	Dependency
-}
+
 import herd.depin.engine {
 	TargetSelector,
 	log,
-	Collector
+	Collector,
+	Dependency
 }
 
 

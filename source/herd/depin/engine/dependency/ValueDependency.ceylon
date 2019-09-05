@@ -1,30 +1,28 @@
-import herd.depin.api {
-	Dependency
-}
+
 import herd.depin.engine {
-	log
-}
+	log,
+	Dependency,
+	safe}
 
 import herd.depin.engine.meta {
 
-	invoke,
-	Validator
+	invoke
 }
 shared class ValueDependency(
 	Dependency.Definition definition,
 	Dependency? container
 ) extends Dependency(definition,container,empty){
 	
-	value validator=Validator(container?.definition?.declaration);
 	
 	shared actual Anything resolve {
 		if(exists container, exists resolved=container.resolve){
-			validator.validate(resolved);
-			value result=invoke(definition.declaration, resolved);
+			value result=safe(()=>invoke(definition.declaration, resolved))
+				((Throwable error)=>ResolutionError("Resolution failed for ``definition`` with container ``container``"));
 			log.debug("Resolved value member dependency ``result else "null"`` for definition ``definition`` and container ``container``");
 			return result;
 		}
-		value result=invoke(definition.declaration);
+		value result=safe(()=>invoke(definition.declaration))
+		((Throwable error) => ResolutionError("Resolution failed for definition ``definition``"));
 		log.debug("[Registered] value dependency: ``result else "null"``, for definition: ``definition``");
 		return result;
 	}

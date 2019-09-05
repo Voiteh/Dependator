@@ -3,9 +3,7 @@ import ceylon.language.meta.declaration {
 }
 
 import herd.depin.api {
-	Dependency,
 	Injection,
-	Identification,
 	Notifier,
 	Injectable,
 	FallbackAnnotation

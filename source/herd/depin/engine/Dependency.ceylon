@@ -7,25 +7,21 @@ import herd.validx {
 	invalidate=validate,
 	Single
 }
-import herd.depin.engine.meta {
+import herd.type.support {
 
-	typeConstrain
+	flat
 }
+import ceylon.language.meta {
+
+	closedType=type
+}
+
+
 
 shared abstract class Dependency {
 	
-	shared class Validator( NestableDeclaration? containerDeclaration = null, FunctionOrValueDeclaration[] parameterDeclarations = []) {
-		
-		//TODO move api module into engine, implement separate validator for injections
-		shared void validate(Anything container, Anything[] parameters=empty) {
-			value parametersValidations = zipPairs(parameterDeclarations, parameters)
-					.collect(([FunctionOrValueDeclaration, Anything] element) => Single(`typeConstrain`, [*element]));
-			invalidate {
-				Single(`typeConstrain`, [containerDeclaration, container]) ,
-				*parametersValidations
-			};
-		}
-	}
+
+	
 	
 	shared static abstract class Decorated(Dependency dependency,Decorator decorator)  extends Dependency.decorated(dependency){
 		shared Decorator[] decorators=if (is Decorated dependency) then dependency.decorators.withTrailing(decorator) else [decorator];

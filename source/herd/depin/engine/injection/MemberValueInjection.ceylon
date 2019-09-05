@@ -1,21 +1,19 @@
 import ceylon.language.meta.model {
 	MemberClassValueConstructor
 }
-import herd.depin.api {
+
+import herd.depin.engine {
+
+	log,
 	Dependency,
 	Injection
 }
-import herd.depin.engine {
-
-	log
-}
 import herd.depin.engine.meta {
 
-	Validator,
 	apply
 }
 shared class MemberValueInjection(MemberClassValueConstructor<> model,Dependency container) extends Injection(){
-	Validator validator=Validator(container.definition.declaration);
+	Validator validator=Validator(model.container);
 		
 	shared actual Object inject {
 		log.debug("[Injecting] into : ``model`` with container: ``container``");

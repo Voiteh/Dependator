@@ -14,12 +14,11 @@ import depin.test.extension {
 	LoggingTestExtension
 }
 
-import herd.depin.api {
-	DependencyAnnotation
-}
+
 import herd.depin.engine {
 	Depin,
-	log
+	log,
+	DependencyAnnotation
 }
 import herd.validx {
 	ValidationError

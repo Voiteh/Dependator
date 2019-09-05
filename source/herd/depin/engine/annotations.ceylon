@@ -4,6 +4,7 @@ import ceylon.language.meta.declaration {
 	ValueDeclaration
 }
 
+
 shared final annotation class FallbackAnnotation() satisfies Dependency.Decorator & OptionalAnnotation<FallbackAnnotation,FunctionOrValueDeclaration>{
 	shared actual Dependency.Decorated decorate(Dependency dependency) => object extends Dependency.Decorated(dependency,outer){
 		shared actual Anything resolve => dependency.resolve;

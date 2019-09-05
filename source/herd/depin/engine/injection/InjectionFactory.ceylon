@@ -12,18 +12,18 @@ import ceylon.language.meta.model {
 	Gettable
 }
 
-import herd.depin.api {
-	Injection,
-	Dependency,
-	Injectable
-}
+
 import herd.depin.engine {
 	TargetSelector,
-	log
+	log,
+	Dependency,
+	Injectable,
+	Injection
 }
 import herd.depin.engine.dependency {
 	DependencyFactory
 }
+//TODO implement factory in same maner as DependencyFactory
 shared class InjectionFactory(DependencyFactory dependencyFactory,TargetSelector selector) {
 	shared Injection create(Injectable<Anything>model) {
 		

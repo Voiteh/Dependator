@@ -15,13 +15,12 @@ import depin.test.extension {
 	LoggingTestExtension
 }
 
-import herd.depin.api {
-	DependencyAnnotation
-}
+
 import herd.depin.engine {
 	Depin,
 	DefaultScanner,
-	log
+	log,
+	DependencyAnnotation
 }
 
 import test.herd.depin.engine.integration.dependency {

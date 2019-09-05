@@ -1,5 +1,6 @@
-import herd.depin.api {
+import herd.depin.engine {
 	Notifier,
+	log,
 	Handler
 }
 import ceylon.language.meta {
@@ -11,10 +12,7 @@ import herd.type.support {
 import ceylon.language.meta.model {
 	Type
 }
-import herd.depin.engine {
 
-	log
-}
 
 shared class MasterNotifier(Handlers handlers) satisfies Notifier {
 	shared actual void notify<Event>(Event event) {

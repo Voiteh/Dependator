@@ -2,12 +2,11 @@ import ceylon.language.meta.model {
 	ValueConstructor
 }
 
-import herd.depin.api {
-	Injection
-}
+
 import herd.depin.engine {
 
-	log
+	log,
+	Injection
 }
 import herd.depin.engine.meta {
 

@@ -1,6 +1,4 @@
-import herd.depin.api {
-	Handler
-}
+
 import ceylon.collection {
 	LinkedList,
 	MutableMap,
@@ -13,6 +11,10 @@ import ceylon.logging {
 
 	createLogger=logger,
 	Logger
+}
+import herd.depin.engine {
+
+	Handler
 }
 
 shared class Handlers(MutableMap<Type<>,LinkedList<Handler<>>> map=HashMap<Type<>,LinkedList<Handler<>>>()) {

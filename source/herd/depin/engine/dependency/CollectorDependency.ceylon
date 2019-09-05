@@ -1,10 +1,8 @@
-import herd.depin.api {
 
-	Dependency
-}
 import herd.depin.engine {
 	log,
-	Collector
+	Collector,
+	Dependency
 }
 import ceylon.language.meta.declaration {
 

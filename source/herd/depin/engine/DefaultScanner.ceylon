@@ -6,8 +6,7 @@ import ceylon.language.meta.declaration {
 	ClassDeclaration
 }
 
-import herd.depin.api {
-	Scope,
+import herd.depin.engine {
 	Scanner,
 	DependencyAnnotation
 }

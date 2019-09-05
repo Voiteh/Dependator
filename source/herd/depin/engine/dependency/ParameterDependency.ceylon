@@ -1,8 +1,7 @@
-import herd.depin.api {
-	Dependency
-}
+
 import herd.depin.engine {
-	log
+	log,
+	Dependency
 }
 
 shared class ParameterDependency(Dependency.Definition definition, Dependencies tree) extends Dependency(definition) {

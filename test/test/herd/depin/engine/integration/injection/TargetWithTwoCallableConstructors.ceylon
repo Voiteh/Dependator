@@ -1,7 +1,9 @@
 
-import herd.depin.api {
-	target,
-	named
+
+import herd.depin.engine {
+
+	named,
+	target
 }
 shared class TargetWithTwoCallableConstructors {
 	

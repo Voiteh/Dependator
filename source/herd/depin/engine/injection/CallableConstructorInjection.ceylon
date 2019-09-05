@@ -2,31 +2,23 @@ import ceylon.language.meta.model {
 	CallableConstructor
 }
 
-import herd.depin.api {
-	Injection,
-	Dependency
-}
+
 import herd.depin.engine.dependency {
 	Defaulted
 }
 import herd.depin.engine {
 
-	log
+	log,
+	Dependency,
+	Injection
 }
 
-import ceylon.language.meta.declaration {
-
-	FunctionOrValueDeclaration
-}
 import herd.depin.engine.meta {
-
-	Validator,
 	apply
 }
 shared class CallableConstructorInjection(CallableConstructor<Object> model,{Dependency*} parameters) extends Injection(){
-	value validator=Validator{
-		parameterDeclarations = parameters.map((Dependency element) => element.definition.declaration)
-				.narrow<FunctionOrValueDeclaration>().sequence();
+	value validator=Injection.Validator{
+		parameterTypes =  model.parameterTypes;
 	};
 	shared actual Object inject {
 		log.debug("[Injecting] into: ``model``, parameters: ``parameters`` `");

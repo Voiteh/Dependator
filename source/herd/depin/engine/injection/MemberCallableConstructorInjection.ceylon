@@ -1,7 +1,4 @@
-import herd.depin.api {
-	Injection,
-	Dependency
-}
+
 import ceylon.language.meta.model {
 	MemberClassCallableConstructor
 }
@@ -10,11 +7,11 @@ import herd.depin.engine.dependency {
 }
 import herd.depin.engine {
 
-	log
+	log,
+	Dependency,
+	Injection
 }
 import herd.depin.engine.meta {
-
-	Validator,
 	apply
 }
 import ceylon.language.meta.declaration {
@@ -23,10 +20,8 @@ import ceylon.language.meta.declaration {
 }
 shared class MemberCallableConstructorInjection(MemberClassCallableConstructor<> model,Dependency container,{Dependency*} parameteres) extends Injection(){
 	Validator validator=Validator{
-		containerDeclaration = container.definition.declaration;
-		parameterDeclarations =parameteres.map((Dependency element) => element.definition.declaration)
-				.narrow<FunctionOrValueDeclaration>()
-				.sequence();
+		containerType= model.container;
+		parameterTypes =model.parameterTypes;
 	};
 	shared actual Object inject {
 		log.debug("[Injecting] into: ``model``, parameters: ``parameteres``, for container ``container`` `");

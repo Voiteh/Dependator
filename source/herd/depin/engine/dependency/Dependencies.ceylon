@@ -6,16 +6,15 @@ import ceylon.language.meta.declaration {
 	OpenType
 }
 
-import herd.depin.api {
-	Dependency
-}
+
 import ceylon.logging {
 	Logger,
 	createLogger=logger
 }
 import herd.depin.engine {
 
-	log
+	log,
+	Dependency
 }
 shared class Branch(MutableMap<Dependency.Definition,Dependency> map=HashMap<Dependency.Definition, Dependency>()) {
 	shared variable Dependency? fallback=null;
