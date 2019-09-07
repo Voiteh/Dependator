@@ -2,12 +2,6 @@ import ceylon.language.meta.declaration {
 	FunctionOrValueDeclaration
 }
 
-import herd.depin.api {
-	Injection,
-	Notifier,
-	Injectable,
-	FallbackAnnotation
-}
 import herd.depin.engine.dependency {
 	DependencyFactory,
 	DefinitionFactory,
