@@ -13,7 +13,7 @@ import herd.depin.engine.meta {
 	apply,
 	safe
 }
-class ValueModelInjection(ValueModel<> model,Dependency? container) satisfies Injection {
+class ValueModelInjection(ValueModel<> model,Dependency? container) extends Injection(model,container) {
 	shared actual Anything inject {
 		switch(model)
 		case (is Qualified<>) {

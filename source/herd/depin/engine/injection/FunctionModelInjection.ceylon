@@ -19,7 +19,7 @@ import herd.depin.engine.meta {
 	apply,
 	safe
 }
-class FunctionModelInjection(FunctionModel<> model,Dependency? container,{Dependency*} parameters) satisfies Injection{
+class FunctionModelInjection(FunctionModel<> model,Dependency? container,{Dependency*} parameters) extends Injection(model,container,parameters){
 	shared actual Anything inject {
 		log.debug("[Injecting] into: ``model``, parameters: ``parameters`` for container `` container else "null" ``");
 		value resolvedContainer= if(exists container ) then safe(()=>container.resolve )
