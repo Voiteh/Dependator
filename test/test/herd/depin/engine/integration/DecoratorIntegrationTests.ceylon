@@ -17,13 +17,15 @@ import test.herd.depin.engine.integration.dependency {
 	singletonDependency,
 	prototypeDependency,
 	eagerDependency,
-	notifiedDependency
+	notifiedDependency,
+	otherSingletonDependency
 }
 import test.herd.depin.engine.integration.injection {
 	PrototypeTarget,
 	SingletonTarget,
 	EagerTarget,
-	NotifiedTarget
+	NotifiedTarget,
+	MultiSingletonTarget
 }
 testExtension (`class LoggingTestExtension`)
 shared class DecoratorIntegrationTests() {
@@ -38,6 +40,17 @@ shared class DecoratorIntegrationTests() {
 		change=fixture.changing.final;
 		assert(depin.inject(`SingletonTarget`).singletonDependency==fixture.changing.initial);
 	}
+	
+	shared test void shouldInjectMultipleSingletons(){
+		value depin=Depin({`function singletonDependency`,`function otherSingletonDependency`});
+		value injected = depin.inject(`MultiSingletonTarget`);
+		assert(injected.singletonDependency==fixture.changing.initial);
+		assert(injected.otherSingletonDependency==fixture.changing.initial);
+		change=fixture.changing.final;
+		assert(injected.singletonDependency==fixture.changing.initial);
+		assert(injected.otherSingletonDependency==fixture.changing.initial);
+	}
+	
 	shared test void shouldInjectPrototype(){
 		value depin=Depin({`function prototypeDependency`});
 		assert(depin.inject(`PrototypeTarget`).prototypeDependency==fixture.changing.initial);
