@@ -1,7 +1,6 @@
 import ceylon.language.meta.declaration {
 	ValueDeclaration,
-	FunctionOrValueDeclaration,
-	NestableDeclaration
+	FunctionOrValueDeclaration
 }
 import ceylon.logging {
 	debug
@@ -15,14 +14,16 @@ import depin.test.extension {
 	LoggingTestExtension
 }
 
-
 import herd.depin.engine {
 	Depin,
-	DefaultScanner,
+	Scanner,
 	log,
 	DependencyAnnotation
 }
 
+import test.herd.depin.engine.integration {
+	fixture
+}
 import test.herd.depin.engine.integration.dependency {
 	...
 }
@@ -40,11 +41,6 @@ import test.herd.depin.engine.integration.injection {
 	MethodInjection,
 	fallbackInjection,
 	CollectorInjection
-}
-
-import test.herd.depin.engine.integration {
-
-	fixture
 }
 
 testExtension (`class LoggingTestExtension`)
@@ -91,7 +87,7 @@ shared class SunnyInjectionTest() {
 
 	
 	shared test void shouldInjectExposedInterface(){
-		value declarations=DefaultScanner().scan({`package test.herd.depin.engine.integration.dependency.unshared`});
+		value declarations=Scanner().scan({`package test.herd.depin.engine.integration.dependency.unshared`});
 		assert(Depin(declarations).inject(`ExposedTarget`).exposing.exposed==fixture.unshared.exposed);
 	}
 	

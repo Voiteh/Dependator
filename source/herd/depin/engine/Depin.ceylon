@@ -8,22 +8,24 @@ import herd.depin.engine.dependency {
 	Dependencies,
 	DecorationManager,
 	Handlers,
-	MasterNotifier
+	NotificationManager,
+	Identification
 }
 import herd.depin.engine.injection {
-	InjectionFactory
+	InjectionFactory,
+	TargetSelector,
+	Injection
 }
 
 
 
-shared class Depin satisfies Injection.Injector& Notifier{
+shared class Depin {
 	shared static abstract class State() of ready{}
 	shared static object ready extends State(){}
 
 	InjectionFactory factory;
 	Dependencies tree;
-	Notifier masterNotifier;
-	
+	NotificationManager notificationManager;
 	void validate({Dependency*} dependencies){
 		dependencies.group((Dependency element) => element.definition)
 				.filter((Dependency.Definition elementKey -> [Dependency+] elementItem) => !elementItem.rest.empty)
@@ -40,7 +42,7 @@ shared class Depin satisfies Injection.Injector& Notifier{
 		value targetSelector=TargetSelector();
 		value dependencyFactory=DependencyFactory(definitionFactory,targetSelector,tree);
 		value decorationManager=DecorationManager(handlers);
-		masterNotifier=MasterNotifier(handlers);
+		notificationManager=NotificationManager(handlers);
 		factory=InjectionFactory(dependencyFactory,targetSelector);
 		
 		value dependencies = declarations.map((FunctionOrValueDeclaration element) => dependencyFactory.create(element,false));
@@ -57,14 +59,14 @@ shared class Depin satisfies Injection.Injector& Notifier{
 
 
 
-	
-	shared actual Type inject<Type>(Injectable<Type> model){
+	throws(`class Injection.Error`,"One of dependencies fails to resolve")
+	shared  Type inject<Type>(Injectable<Type> model){
 		assert(is Type result= factory.create(model).inject);
 		log.debug("Injection into ``model `` succesfull, with result: ``result else "null"``");
 		return result;
 	}
-	shared actual void notify<Event>(Event event) {
-		masterNotifier.notify(event);
+	shared  void notify<Event>(Event event) {
+		notificationManager.notify(event);
 	}
 	
 	

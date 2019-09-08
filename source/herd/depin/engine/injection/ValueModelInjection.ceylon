@@ -5,32 +5,33 @@ import ceylon.language.meta.model {
 	Gettable
 }
 import herd.depin.engine {
-
 	Dependency,
-	Injection,
-	log,
-	safe
+	log
 }
 import herd.depin.engine.meta {
 
-	apply
+	apply,
+	safe
 }
-shared class ValueModelInjection(ValueModel<> model,Dependency? container) satisfies Injection {
+class ValueModelInjection(ValueModel<> model,Dependency? container) satisfies Injection {
 	shared actual Anything inject {
 		switch(model)
 		case (is Qualified<>) {
 			assert(exists container);
 			log.debug("[Injecting] into : ``model`` with container: ``container``");
-			value resolvedContainer = container.resolve;
+			value resolvedContainer = safe(()=> container.resolve)
+			((Throwable cause) => Error(cause,model,container));
 			log.trace("Resolved container: ``resolvedContainer else "null"`` for injecting into: ``model`` ");
-			return safe(()=>apply(model,resolvedContainer))((Throwable error)=>Exception("Error durring value model injection ``model``, with container ``container``",error));
+			return safe(()=>apply(model,resolvedContainer))
+			((Throwable error)=>Error(error,model,resolvedContainer));
 		}
 		else case (is Gettable<>) {
 			log.debug("[Injecting] into: ``model`` ");
-			return safe(() => apply(model))((Throwable error)=>Exception("Error durring value model injection ``model``"));
+			return safe(() => apply(model))
+			((Throwable error)=>Error(error,model));
 		}
 		else{
-			throw Exception("Unhandeld ValueModelInjection ``model`` with container ``container else "null"``");
+			throw Error(Exception("Unhandeld ValueModelInjection"),model,container);
 		}
 	}
 	

@@ -1,12 +1,13 @@
 
 import herd.depin.engine {
 	log,
-	Dependency,
-	safe}
+	Dependency
+}
 
 import herd.depin.engine.meta {
 
-	invoke
+	invoke,
+	safe
 }
 shared class ValueDependency(
 	Dependency.Definition definition,

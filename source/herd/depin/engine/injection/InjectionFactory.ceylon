@@ -13,11 +13,9 @@ import ceylon.language.meta.model {
 }
 
 import herd.depin.engine {
-	TargetSelector,
 	log,
 	Dependency,
-	Injectable,
-	Injection
+	Injectable
 }
 import herd.depin.engine.dependency {
 	DependencyFactory

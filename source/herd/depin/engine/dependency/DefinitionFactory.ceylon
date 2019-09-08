@@ -10,7 +10,6 @@ import ceylon.language.meta.declaration {
 import herd.depin.engine {
 	log,
 	Dependency,
-	Identification,
 	NamedAnnotation
 }
 shared class DefinitionFactory(Identification.Holder holder) {

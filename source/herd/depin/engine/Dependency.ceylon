@@ -1,19 +1,9 @@
 import ceylon.language.meta.declaration {
-	NestableDeclaration,
-	FunctionOrValueDeclaration
+	NestableDeclaration
 }
-import herd.validx {
+import herd.depin.engine.dependency {
 
-	invalidate=validate,
-	Single
-}
-import herd.type.support {
-
-	flat
-}
-import ceylon.language.meta {
-
-	closedType=type
+	Identification
 }
 
 
@@ -55,8 +45,7 @@ shared abstract class Dependency {
 	shared static class ResolutionError(
 		String? description=null,
 		Throwable? cause=null
-	) 
-			extends Exception(description, cause){}
+	) extends Exception(description, cause){}
 	
 	shared Definition definition;
 	shared {Dependency*} parameters;

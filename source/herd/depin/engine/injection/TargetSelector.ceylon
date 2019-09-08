@@ -3,6 +3,11 @@ import ceylon.language.meta.declaration {
 	ClassDeclaration,
 	Declaration
 }
+import herd.depin.engine {
+
+	TargetAnnotation,
+	log
+}
 
 
 shared  class TargetSelector() {

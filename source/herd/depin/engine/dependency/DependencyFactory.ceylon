@@ -12,10 +12,13 @@ import ceylon.language.meta.declaration {
 
 
 import herd.depin.engine {
-	TargetSelector,
 	log,
 	Collector,
 	Dependency
+}
+import herd.depin.engine.injection {
+
+	TargetSelector
 }
 
 

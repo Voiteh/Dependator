@@ -1,1 +1,1 @@
-shared package herd.depin.engine.meta;
+package herd.depin.engine.meta;

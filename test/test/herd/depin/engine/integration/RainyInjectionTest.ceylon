@@ -18,12 +18,9 @@ import depin.test.extension {
 import herd.depin.engine {
 	Depin,
 	log,
-	DependencyAnnotation
+	DependencyAnnotation,
+	Dependency
 }
-import herd.validx {
-	ValidationError
-}
-
 import test.herd.depin.engine.integration.dependency {
 	nested,
 	name,
@@ -35,38 +32,50 @@ import test.herd.depin.engine.integration.injection {
 	DataSource,
 	Person
 }
+import herd.depin.engine.injection {
+
+	Injection
+}
+import ceylon.language.meta.model {
+
+	Class,
+	ClassModel
+}
 
 testExtension (`class LoggingTestExtension`)
 shared class RainyInjectionTest() {
 	
 	log.priority=debug;
-	
-	shared test void whenMissingAgeDependancy_then_shouldThrowValidationException(){
-		Depin depin = Depin({`value name`});
-		 assertThatException(()=>depin.inject(`Person`))
-		 		.hasType(`ValidationError`);
+	Boolean isInjectionError(ClassModel<Throwable> error){
+		return error==`Injection.Error`;
 	}
 	
-	shared test void whenMissingUrlDependency_shouldThrowValidationException(){
+	shared test void whenMissingAgeDependancy_then_shourdThrowInjectionError(){
+		Depin depin = Depin({`value name`});
+		 assertThatException(()=>depin.inject(`Person`))
+		 		.hasType(isInjectionError);
+	}
+	
+	shared test void whenMissingUrlDependency_shourdThrowInjectionError(){
 		{ValueDeclaration*} select = `class DataSourceConfiguration`.memberDeclarations<ValueDeclaration>()
 				.select((ValueDeclaration element) => element.annotated<DependencyAnnotation>())
 		.filter((ValueDeclaration element) => element!=`value DataSourceConfiguration.url`);
 		Depin depin = Depin(select);
 		assertThatException(()=>depin.inject(`DataSource`))
-				.hasType(`ValidationError`);
+				.hasType(isInjectionError);
 	}
-	shared test void whenMissingNonDefaultParameter_shouldThrowValidationException(){
+	shared test void whenMissingNonDefaultParameter_shourdThrowInjectionError(){
 		assertThatException(()=>
 			Depin().inject(`DefaultParametersConstructor`))
-			.hasType(`ValidationError`);
+			.hasType(isInjectionError);
 	}
 
 	
 	
-	shared test void whenMissingNestingClass_shouldThrowValidationException(){
+	shared test void whenMissingNestingClass_shourdThrowInjectionError(){
 		assertThatException(()=>
 				Depin({`value nested`}).inject(`Nesting.Nested`))
-		.hasType(`ValidationError`);
+		.hasType(isInjectionError);
 	}
 
 	

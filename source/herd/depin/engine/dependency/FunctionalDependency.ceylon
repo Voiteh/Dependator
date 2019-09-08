@@ -1,10 +1,10 @@
 import herd.depin.engine {
 	log,
-	safe,
 	Dependency
 }
 import herd.depin.engine.meta {
-	invoke
+	invoke,
+	safe
 }
 shared class FunctionalDependency(
 	Dependency.Definition definition,
