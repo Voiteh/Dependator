@@ -3,10 +3,13 @@ import ceylon.language.meta.declaration {
 	ClassDeclaration,
 	Declaration
 }
+import herd.depin.engine {
 
-import herd.depin.api {
-	TargetAnnotation
+	TargetAnnotation,
+	log
 }
+
+
 shared  class TargetSelector() {
 	shared ConstructorDeclaration select(ClassDeclaration declaration) {
 		ConstructorDeclaration[] annotated = declaration.constructorDeclarations().select((ConstructorDeclaration element) => element.annotated<TargetAnnotation>());

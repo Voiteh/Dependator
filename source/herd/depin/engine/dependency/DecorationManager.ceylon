@@ -7,16 +7,15 @@ import ceylon.language.meta.model {
 	UnionType
 }
 
-import herd.depin.api {
-	Dependency,
-	Handler
-}
+
 import herd.type.support {
 	flat
 }
 import herd.depin.engine {
 
-	log
+	log,
+	Dependency,
+	Handler
 }
 import ceylon.language.meta.declaration {
 

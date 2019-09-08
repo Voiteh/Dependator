@@ -1,28 +1,17 @@
 import ceylon.language.meta.declaration {
 	Declaration,
 	FunctionOrValueDeclaration,
-	Package,
+	ClassDeclaration,
 	Module,
-	ClassDeclaration
+	Package
 }
-
-import herd.depin.api {
-	Scope,
-	Scanner,
-	DependencyAnnotation
-}
-import ceylon.logging {
-	logger
-}
-
-shared class DefaultScanner() extends Scanner() {
-	value log=logger(`module`);
+shared class Scanner() {
 	{FunctionOrValueDeclaration*} single(Scope scope) {
 		log.trace("Scanning scope ``scope``");
 		switch (scope)
 		case (is ClassDeclaration) {
 			{FunctionOrValueDeclaration*} members = scope.memberDeclarations<ClassDeclaration|FunctionOrValueDeclaration>()
-				.flatMap((Scope element) => single(element));
+					.flatMap((Scope element) => single(element));
 			return members;
 		}
 		case (is FunctionOrValueDeclaration) {
@@ -30,16 +19,16 @@ shared class DefaultScanner() extends Scanner() {
 		}
 		case (is Package) {
 			return scope.members<ClassDeclaration|FunctionOrValueDeclaration>()
-				.flatMap((Scope element) => single(element));
+					.flatMap((Scope element) => single(element));
 		}
 		case (is Module) {
 			return scope.members.flatMap((Package element) => single(element));
 		}
 	}
 	
-	shared actual {FunctionOrValueDeclaration*} scan({Scope*} inclusions, {Scope*} exclusions) {
+	shared {FunctionOrValueDeclaration*} scan({Scope*} inclusions, {Scope*} exclusions=[]) {
 		[FunctionOrValueDeclaration+]|[] excluded = exclusions.flatMap((Scope element) => single(element)).sequence();
 		return inclusions.flatMap((Scope element) => single(element))
-			.filter((Declaration element) => !excluded.contains(element));
+				.filter((Declaration element) => !excluded.contains(element));
 	}
 }

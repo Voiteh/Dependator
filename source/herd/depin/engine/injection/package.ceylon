@@ -1,1 +1,1 @@
-package herd.depin.engine.injection;
+shared package herd.depin.engine.injection;

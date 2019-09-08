@@ -14,15 +14,16 @@ import depin.test.extension {
 	LoggingTestExtension
 }
 
-import herd.depin.api {
-	DependencyAnnotation
-}
 import herd.depin.engine {
 	Depin,
-	DefaultScanner,
-	log
+	Scanner,
+	log,
+	DependencyAnnotation
 }
 
+import test.herd.depin.engine.integration {
+	fixture
+}
 import test.herd.depin.engine.integration.dependency {
 	...
 }
@@ -38,7 +39,8 @@ import test.herd.depin.engine.integration.injection {
 	ExposedTarget,
 	functionInjection,
 	MethodInjection,
-	fallbackInjection
+	fallbackInjection,
+	CollectorInjection
 }
 
 testExtension (`class LoggingTestExtension`)
@@ -85,7 +87,7 @@ shared class SunnyInjectionTest() {
 
 	
 	shared test void shouldInjectExposedInterface(){
-		value declarations=DefaultScanner().scan({`package test.herd.depin.engine.integration.dependency.unshared`});
+		value declarations=Scanner().scan({`package test.herd.depin.engine.integration.dependency.unshared`});
 		assert(Depin(declarations).inject(`ExposedTarget`).exposing.exposed==fixture.unshared.exposed);
 	}
 	
@@ -101,5 +103,18 @@ shared class SunnyInjectionTest() {
 		assert(Depin({`value fallbackDependency`})
 			.inject(`fallbackInjection`)==fixture.dependencies.fallback);
 	}
-	
+	shared test void shouldInjectCollectedDependencies(){
+		value depin=Depin({
+			`value fixture.dependencies.collector.one`,
+			`value fixture.dependencies.collector.two`,
+			`value fixture.dependencies.collector.three`
+		});
+		value collector=depin.inject(`CollectorInjection`).collector;
+		assert(collector.collected.containsEvery({
+			fixture.dependencies.collector.one,
+			fixture.dependencies.collector.two,
+			fixture.dependencies.collector.three
+		}));
+		
+	}
 }

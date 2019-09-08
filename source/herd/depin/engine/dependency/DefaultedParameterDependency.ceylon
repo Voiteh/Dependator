@@ -1,9 +1,8 @@
-import herd.depin.api {
-	Dependency
-}
+
 import herd.depin.engine {
 
-	log
+	log,
+	Dependency
 }
 shared abstract class Defaulted() of defaulted{}
 object defaulted extends Defaulted(){}

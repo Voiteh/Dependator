@@ -3,7 +3,7 @@ import ceylon.language.meta.declaration {
 	ValueDeclaration,
 	FunctionalDeclaration
 }
-
+	
 	shared Anything invoke(NestableDeclaration declaration,Anything container=null,Anything[] parameters=[]){
 		switch(declaration)
 		case (is FunctionalDeclaration) {

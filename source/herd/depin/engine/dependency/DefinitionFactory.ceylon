@@ -6,14 +6,11 @@ import ceylon.language.meta.declaration {
 	NestableDeclaration
 }
 
-import herd.depin.api {
-	Dependency,
-	NamedAnnotation,
-	Identification
-}
 
 import herd.depin.engine {
-	log
+	log,
+	Dependency,
+	NamedAnnotation
 }
 shared class DefinitionFactory(Identification.Holder holder) {
 	shared Dependency.Definition create(Declaration declaration) {

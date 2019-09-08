@@ -6,16 +6,15 @@ import ceylon.language.meta.declaration {
 	OpenType
 }
 
-import herd.depin.api {
-	Dependency
-}
+
 import ceylon.logging {
 	Logger,
 	createLogger=logger
 }
 import herd.depin.engine {
 
-	log
+	log,
+	Dependency
 }
 shared class Branch(MutableMap<Dependency.Definition,Dependency> map=HashMap<Dependency.Definition, Dependency>()) {
 	shared variable Dependency? fallback=null;
@@ -85,7 +84,9 @@ shared class Dependencies(shared MutableMap<OpenType,Branch> branches= HashMap<O
 			branch.replace(selector); 
 		});
 	}
-	
+	shared {Dependency*} getByType(OpenType type){
+		return branches.get(type)?.all else empty;
+	}
 	
 	shared {Dependency*} all=> branches.flatMap((OpenType elementKey -> Branch elementItem) => elementItem.all);
 	

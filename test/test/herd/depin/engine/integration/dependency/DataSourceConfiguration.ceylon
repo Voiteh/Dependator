@@ -1,5 +1,7 @@
 
-import herd.depin.api {
+
+import herd.depin.engine {
+
 	dependency
 }
 shared class DataSourceConfiguration() {

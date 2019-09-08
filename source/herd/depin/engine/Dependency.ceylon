@@ -1,8 +1,17 @@
 import ceylon.language.meta.declaration {
 	NestableDeclaration
 }
+import herd.depin.engine.dependency {
+
+	Identification
+}
+
+
 
 shared abstract class Dependency {
+	
+
+	
 	
 	shared static abstract class Decorated(Dependency dependency,Decorator decorator)  extends Dependency.decorated(dependency){
 		shared Decorator[] decorators=if (is Decorated dependency) then dependency.decorators.withTrailing(decorator) else [decorator];
@@ -36,8 +45,7 @@ shared abstract class Dependency {
 	shared static class ResolutionError(
 		String? description=null,
 		Throwable? cause=null
-	) 
-			extends Exception(description, cause){}
+	) extends Exception(description, cause){}
 	
 	shared Definition definition;
 	shared {Dependency*} parameters;

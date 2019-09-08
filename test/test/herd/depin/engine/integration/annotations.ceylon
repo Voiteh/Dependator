@@ -2,12 +2,14 @@ import ceylon.language.meta.declaration {
 	ValueDeclaration
 }
 
-import herd.depin.api {
-	Dependency,
-	Handler
-}
+
 import ceylon.language.meta.model {
 	Value
+}
+import herd.depin.engine {
+
+	Dependency,
+	Handler
 }
 shared final annotation class NotifiedAnnotation() satisfies OptionalAnnotation<NotifiedAnnotation, ValueDeclaration, Value<Boolean>> 
 		& Dependency.Decorator{
