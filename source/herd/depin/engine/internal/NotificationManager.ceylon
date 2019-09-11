@@ -14,6 +14,7 @@ import herd.type.support {
 }
 
 
+
 shared class NotificationManager(Handlers handlers)  {
 	shared  void notify<Event>(Event event) {
 		value types = flat.types(type(event));

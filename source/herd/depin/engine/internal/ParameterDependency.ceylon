@@ -4,7 +4,8 @@ import herd.depin.engine {
 	Dependency
 }
 
-shared class ParameterDependency(Dependency.Definition definition, Dependencies tree) extends Dependency(definition) {
+
+class ParameterDependency(Dependency.Definition definition, Dependencies tree) extends Dependency(definition) {
 	shared actual default Anything resolve {
 		Dependency? dependency;
 		if (exists shadow= tree.get(definition)) {

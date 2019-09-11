@@ -4,9 +4,11 @@ import herd.depin.engine {
 	log,
 	Dependency
 }
-shared abstract class Defaulted() of defaulted{}
+
+
+abstract class Defaulted() of defaulted{}
 object defaulted extends Defaulted(){}
-shared class DefaultedParameterDependency(Dependency.Definition definition,Dependencies tree) extends ParameterDependency(definition, tree){
+ class DefaultedParameterDependency(Dependency.Definition definition,Dependencies tree) extends ParameterDependency(definition, tree){
 	shared actual Anything resolve{
 		log.trace("Resolving defaulted parameter dependency: ``definition``");
 		Dependency? dependency;

@@ -10,7 +10,7 @@ import herd.depin.engine {
 }
 
 
-shared  class TargetSelector() {
+ shared class TargetSelector() {
 	shared ConstructorDeclaration select(ClassDeclaration declaration) {
 		ConstructorDeclaration[] annotated = declaration.constructorDeclarations().select((ConstructorDeclaration element) => element.annotated<TargetAnnotation>());
 		if (exists selected = annotated.first) {

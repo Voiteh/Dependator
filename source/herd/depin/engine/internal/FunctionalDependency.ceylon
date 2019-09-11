@@ -2,11 +2,14 @@ import herd.depin.engine {
 	log,
 	Dependency
 }
-import herd.depin.engine.meta {
+
+
+import herd.depin.engine.internal.util {
+
 	invoke,
 	safe
 }
-shared class FunctionalDependency(
+class FunctionalDependency(
 	Dependency.Definition definition,
 	Dependency? container,
 	{Dependency*} parameters

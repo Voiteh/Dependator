@@ -10,16 +10,12 @@ import ceylon.language.meta.declaration {
 	OpenClassType
 }
 
-
 import herd.depin.engine {
 	log,
 	Collector,
 	Dependency
 }
-import herd.depin.engine.injection {
 
-	TargetSelector
-}
 
 
 shared class DependencyFactory(DefinitionFactory definitionFactory,TargetSelector targetSelector,Dependencies tree)  {

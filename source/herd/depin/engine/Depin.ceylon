@@ -2,20 +2,17 @@ import ceylon.language.meta.declaration {
 	FunctionOrValueDeclaration
 }
 
-import herd.depin.engine.dependency {
-	DependencyFactory,
-	DefinitionFactory,
-	Dependencies,
-	DecorationManager,
-	Handlers,
-	NotificationManager,
-	Identification
-}
-import herd.depin.engine.injection {
+import herd.depin.engine.internal {
 	InjectionFactory,
 	TargetSelector,
-	Injection
+	DecorationManager,
+	DefinitionFactory,
+	Dependencies,
+	DependencyFactory,
+	Handlers,
+	NotificationManager
 }
+
 
 
 
@@ -35,10 +32,10 @@ shared class Depin {
 	}
 	
 	
-	shared new({FunctionOrValueDeclaration*} declarations={},Configuration configuration=Configuration()){
+	shared new({FunctionOrValueDeclaration*} declarations={}){
 		tree=Dependencies();
 		value handlers=Handlers();
-		value definitionFactory=DefinitionFactory(Identification.Holder(configuration.identificationTypes));
+		value definitionFactory=DefinitionFactory(Identification.Holder([`NamedAnnotation`]));
 		value targetSelector=TargetSelector();
 		value dependencyFactory=DependencyFactory(definitionFactory,targetSelector,tree);
 		value decorationManager=DecorationManager(handlers);

@@ -15,11 +15,10 @@ import ceylon.language.meta.model {
 import herd.depin.engine {
 	log,
 	Dependency,
-	Injectable
+	Injectable,
+	Injection
 }
-import herd.depin.engine.dependency {
-	DependencyFactory
-}
+
 shared class InjectionFactory(DependencyFactory dependencyFactory,TargetSelector selector) {
 	shared Injection create(Injectable<Anything> injectable) {
 		Dependency? container=if (is NestableDeclaration containerDeclaration=injectable.declaration.container) 

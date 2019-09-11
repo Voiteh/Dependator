@@ -19,7 +19,8 @@ import herd.depin.engine {
 	Depin,
 	log,
 	DependencyAnnotation,
-	Dependency
+	Dependency,
+	Injection
 }
 import test.herd.depin.engine.integration.dependency {
 	nested,
@@ -32,15 +33,13 @@ import test.herd.depin.engine.integration.injection {
 	DataSource,
 	Person
 }
-import herd.depin.engine.injection {
 
-	Injection
-}
 import ceylon.language.meta.model {
 
 	Class,
 	ClassModel
 }
+
 
 testExtension (`class LoggingTestExtension`)
 shared class RainyInjectionTest() {

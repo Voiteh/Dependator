@@ -21,11 +21,12 @@ import ceylon.language.meta {
 
 	type
 }
-import herd.depin.engine.util {
+import herd.depin.engine.internal.util {
 
 	runtimeCall
 }
-shared class CollectorDependency(Dependency.Definition definition,Dependencies tree) extends Dependency(definition){
+
+class CollectorDependency(Dependency.Definition definition,Dependencies tree) extends Dependency(definition){
 
 	[Object*] collectingTuple(Anything first,Anything[] rest){
 		if(exists first){

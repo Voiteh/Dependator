@@ -6,16 +6,12 @@ import ceylon.language.meta.model {
 	MemberClassCallableConstructor
 }
 
-
-import herd.depin.engine.dependency {
-	Defaulted
-}
 import herd.depin.engine {
 	log,
-	Dependency
+	Dependency,
+	Injection
 }
-
-import herd.depin.engine.meta {
+import herd.depin.engine.internal.util {
 	apply,
 	safe
 }
