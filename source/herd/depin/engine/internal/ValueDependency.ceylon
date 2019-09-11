@@ -3,13 +3,11 @@ import herd.depin.engine {
 	log,
 	Dependency
 }
-
-import herd.depin.engine.meta {
-
+import herd.depin.engine.internal.util {
 	invoke,
 	safe
 }
-shared class ValueDependency(
+ class ValueDependency(
 	Dependency.Definition definition,
 	Dependency? container
 ) extends Dependency(definition,container,empty){

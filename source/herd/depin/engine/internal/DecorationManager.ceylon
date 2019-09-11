@@ -22,6 +22,7 @@ import ceylon.language.meta.declaration {
 	AnnotatedDeclaration
 }
 
+
 shared class DecorationManager(Handlers handlers) {
 	{Dependency.Decorator*} decorators(AnnotatedDeclaration declaration){
 		return declaration.annotations<Annotation>()

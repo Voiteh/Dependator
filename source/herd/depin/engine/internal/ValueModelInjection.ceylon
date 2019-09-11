@@ -4,14 +4,18 @@ import ceylon.language.meta.model {
 	Qualified,
 	Gettable
 }
-import herd.depin.engine {
-	Dependency,
-	log
-}
-import herd.depin.engine.meta {
 
-	apply,
-	safe
+
+import herd.depin.engine.internal.util {
+	safe,
+	apply
+}
+
+import herd.depin.engine {
+
+	log,
+	Dependency,
+	Injection
 }
 class ValueModelInjection(ValueModel<> model,Dependency? container) extends Injection(model,container) {
 	shared actual Anything inject {
