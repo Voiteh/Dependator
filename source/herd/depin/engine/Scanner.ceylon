@@ -5,7 +5,7 @@ import ceylon.language.meta.declaration {
 	Module,
 	Package
 }
-shared class Scanner() {
+shared object scanner {
 	{FunctionOrValueDeclaration*} single(Scope scope) {
 		log.trace("Scanning scope ``scope``");
 		switch (scope)
