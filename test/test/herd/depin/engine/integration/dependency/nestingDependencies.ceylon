@@ -4,7 +4,7 @@
 import test.herd.depin.engine.integration {
 	fixture
 }
-import herd.depin.engine {
+import herd.depin.core {
 
 	dependency
 }

@@ -10,7 +10,7 @@ import ceylon.language.meta.declaration {
 	OpenClassType
 }
 
-import herd.depin.engine {
+import herd.depin.core {
 	log,
 	Collector,
 	Dependency
@@ -44,6 +44,9 @@ shared class DependencyFactory(DefinitionFactory definitionFactory,TargetSelecto
 		}
 		else{
 			Dependency? containerDependency ;
+			if(declaration.formal){
+				throw Exception("Formal declarations not allowed: ``declaration```");
+			}
 			if (is NestableDeclaration containerDeclaration = declaration.container) {
 				 containerDependency=create(containerDeclaration,false);
 			}else{

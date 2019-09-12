@@ -3,7 +3,7 @@ import ceylon.language.meta.declaration {
 	ClassDeclaration,
 	Declaration
 }
-import herd.depin.engine {
+import herd.depin.core {
 
 	TargetAnnotation,
 	log

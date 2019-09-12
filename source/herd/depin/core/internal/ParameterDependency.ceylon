@@ -1,5 +1,5 @@
 
-import herd.depin.engine {
+import herd.depin.core {
 	log,
 	Dependency
 }

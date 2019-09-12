@@ -6,12 +6,12 @@ import ceylon.language.meta.model {
 }
 
 
-import herd.depin.engine.internal.util {
+import herd.depin.core.internal.util {
 	safe,
 	apply
 }
 
-import herd.depin.engine {
+import herd.depin.core {
 
 	log,
 	Dependency,

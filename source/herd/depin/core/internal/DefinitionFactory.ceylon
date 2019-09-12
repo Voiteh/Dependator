@@ -7,7 +7,7 @@ import ceylon.language.meta.declaration {
 }
 
 
-import herd.depin.engine {
+import herd.depin.core {
 	log,
 	Dependency,
 	NamedAnnotation,

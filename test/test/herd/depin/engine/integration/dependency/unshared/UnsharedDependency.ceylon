@@ -6,7 +6,7 @@ import test.herd.depin.engine.integration {
 import test.herd.depin.engine.integration.dependency {
 	ExposingInterface
 }
-import herd.depin.engine {
+import herd.depin.core {
 
 	dependency
 }

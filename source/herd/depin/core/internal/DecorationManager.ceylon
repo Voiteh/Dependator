@@ -11,7 +11,7 @@ import ceylon.language.meta.model {
 import herd.type.support {
 	flat
 }
-import herd.depin.engine {
+import herd.depin.core {
 
 	log,
 	Dependency,

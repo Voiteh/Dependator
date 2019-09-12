@@ -12,7 +12,7 @@ import ceylon.logging {
 	createLogger=logger,
 	Logger
 }
-import herd.depin.engine {
+import herd.depin.core {
 
 	Handler
 }

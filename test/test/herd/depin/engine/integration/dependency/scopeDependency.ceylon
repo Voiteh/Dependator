@@ -4,7 +4,7 @@ import test.herd.depin.engine.integration {
 	fixture,
 	notified
 }
-import herd.depin.engine {
+import herd.depin.core {
 
 	eager,
 	dependency,

@@ -1,5 +1,5 @@
 
-import herd.depin.engine {
+import herd.depin.core {
 	log,
 	Collector,
 	Dependency
@@ -21,7 +21,7 @@ import ceylon.language.meta {
 
 	type
 }
-import herd.depin.engine.internal.util {
+import herd.depin.core.internal.util {
 
 	runtimeCall
 }

@@ -5,7 +5,7 @@ import ceylon.language.meta.model {
 	Type
 }
 
-import herd.depin.engine {
+import herd.depin.core {
 	log,
 	Handler
 }

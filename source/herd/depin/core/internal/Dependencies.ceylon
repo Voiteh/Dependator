@@ -11,7 +11,7 @@ import ceylon.logging {
 	Logger,
 	createLogger=logger
 }
-import herd.depin.engine {
+import herd.depin.core {
 
 	log,
 	Dependency

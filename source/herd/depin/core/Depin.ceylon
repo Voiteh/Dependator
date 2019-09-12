@@ -2,7 +2,7 @@ import ceylon.language.meta.declaration {
 	FunctionOrValueDeclaration
 }
 
-import herd.depin.engine.internal {
+import herd.depin.core.internal {
 	InjectionFactory,
 	TargetSelector,
 	DecorationManager,

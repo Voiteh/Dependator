@@ -12,7 +12,7 @@ import ceylon.language.meta.model {
 	ValueModel
 }
 
-import herd.depin.engine {
+import herd.depin.core {
 	log,
 	Dependency,
 	Injectable,

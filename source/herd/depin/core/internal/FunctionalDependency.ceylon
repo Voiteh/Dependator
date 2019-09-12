@@ -1,10 +1,10 @@
-import herd.depin.engine {
+import herd.depin.core {
 	log,
 	Dependency
 }
 
 
-import herd.depin.engine.internal.util {
+import herd.depin.core.internal.util {
 
 	invoke,
 	safe

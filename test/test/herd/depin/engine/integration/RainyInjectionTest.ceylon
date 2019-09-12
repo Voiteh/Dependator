@@ -1,6 +1,9 @@
 import ceylon.language.meta.declaration {
 	ValueDeclaration
 }
+import ceylon.language.meta.model {
+	ClassModel
+}
 import ceylon.logging {
 	debug
 }
@@ -14,30 +17,24 @@ import depin.test.extension {
 	LoggingTestExtension
 }
 
-
-import herd.depin.engine {
+import herd.depin.core {
 	Depin,
 	log,
 	DependencyAnnotation,
-	Dependency,
 	Injection
 }
+
 import test.herd.depin.engine.integration.dependency {
 	nested,
 	name,
-	DataSourceConfiguration
+	DataSourceConfiguration,
+	InterfaceDependency
 }
 import test.herd.depin.engine.integration.injection {
 	DefaultParametersConstructor,
 	Nesting,
 	DataSource,
 	Person
-}
-
-import ceylon.language.meta.model {
-
-	Class,
-	ClassModel
 }
 
 
@@ -47,6 +44,9 @@ shared class RainyInjectionTest() {
 	log.priority=debug;
 	Boolean isInjectionError(ClassModel<Throwable> error){
 		return error==`Injection.Error`;
+	}
+	shared test void whenProvidedFormalDepenedency_then_shouldThrowException(){
+		assertThatException(()=> Depin({`value InterfaceDependency.formalValue`})).hasType(`Exception`);
 	}
 	
 	shared test void whenMissingAgeDependancy_then_shourdThrowInjectionError(){

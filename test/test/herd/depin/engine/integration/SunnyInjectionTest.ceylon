@@ -14,11 +14,11 @@ import depin.test.extension {
 	LoggingTestExtension
 }
 
-import herd.depin.engine {
+import herd.depin.core {
 	Depin,
-	Scanner,
 	log,
-	DependencyAnnotation
+	DependencyAnnotation,
+	scanner
 }
 
 import test.herd.depin.engine.integration {
@@ -87,7 +87,7 @@ shared class SunnyInjectionTest() {
 
 	
 	shared test void shouldInjectExposedInterface(){
-		value declarations=Scanner().scan({`package test.herd.depin.engine.integration.dependency.unshared`});
+		value declarations=scanner.scan({`package test.herd.depin.engine.integration.dependency.unshared`});
 		assert(Depin(declarations).inject(`ExposedTarget`).exposing.exposed==fixture.unshared.exposed);
 	}
 	

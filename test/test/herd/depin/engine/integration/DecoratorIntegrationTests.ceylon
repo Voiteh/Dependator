@@ -8,7 +8,7 @@ import depin.test.extension {
 	LoggingTestExtension
 }
 
-import herd.depin.engine {
+import herd.depin.core {
 	Depin
 }
 
