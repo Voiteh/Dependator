@@ -1,6 +1,5 @@
 
 import herd.depin.core {
-
 	log,
 	Dependency
 }
@@ -9,24 +8,16 @@ import herd.depin.core {
 abstract class Defaulted() of defaulted{}
 object defaulted extends Defaulted(){}
  class DefaultedParameterDependency(Dependency.Definition definition,Dependencies tree) extends ParameterDependency(definition, tree){
+		
 	shared actual Anything resolve{
 		log.trace("Resolving defaulted parameter dependency: ``definition``");
-		Dependency? dependency;
-		if (exists shadow= tree.get(definition)) {
-			dependency =shadow;
-		}else if(exists fallback=tree.getFallback(definition)){
-			dependency=fallback;
-		}
-		else{
-			dependency=null;
-		}
+		Dependency? dependency=provide;
 		if(exists dependency){
-			value resolve = dependency.resolve;
-			log.trace("Resolved defaulted parameter dependency: ``definition`` to ``resolve else "null"``");
+			Anything resolve=doResolve(dependency);
+			log.debug("[Resolved] defaulted parameter dependency: `` resolve else "null" ``, for definition: ``definition``");
 			return resolve;
 		}
-				
-		log.trace("Resolved defaulted parameter dependency: ``definition`` to ``defaulted``");
+		log.trace("[Resolved] defaulted parameter dependency: ``definition`` to ``defaulted``");
 		return defaulted;
 	}
 }

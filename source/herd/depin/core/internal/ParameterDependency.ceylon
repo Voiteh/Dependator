@@ -3,20 +3,39 @@ import herd.depin.core {
 	log,
 	Dependency
 }
+import ceylon.language.meta.declaration {
+
+	FunctionDeclaration
+}
+import herd.depin.core.internal.util {
+
+	safe
+}
+
 
 
 class ParameterDependency(Dependency.Definition definition, Dependencies tree) extends Dependency(definition) {
-	shared actual default Anything resolve {
-		Dependency? dependency;
+	shared default Dependency? provide {
 		if (exists shadow= tree.get(definition)) {
-			dependency =shadow;
+			return shadow;
 		}else if(exists fallback=tree.getFallback(definition)){
-			dependency=fallback;
+			return fallback;
+		}
+		return null;
+	}
+	
+	shared Anything doResolve(Dependency dependency){
+		if(is FunctionDeclaration declaration =dependency.definition.declaration) {
+			return safe(()=> declaration.apply<>())((Throwable error)=>ResolutionError("Type parameters are not supported for dependencies yet", error));
 		}
 		else{
-			dependency=null;
+			return dependency.resolve;
 		}
-		value resolve = dependency?.resolve;
+	}
+	
+	shared actual default Anything resolve {
+		Dependency? dependency=provide;
+		Anything resolve =if(exists dependency) then doResolve(dependency) else null;
 		log.debug("[Resolved] parameter dependency: `` resolve else "null" ``, for definition: ``definition``");
 		return resolve;
 	}
