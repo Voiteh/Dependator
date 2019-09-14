@@ -1,5 +1,8 @@
 """
+   
    This is core module, for dependency injection framework Depin. 
+   
+   # Introduction 
    Whole concept of this framework, is based on [[Dependency]] class and [[Injection]] interface. 
    Both are tightly coupled togather. 
    The [[Dependency]] class is wrapped ceylon declaration, with additional information like [[Identification]],
@@ -21,23 +24,51 @@
    [[Depin]] will convert declarations into [[Dependency]]'ies  and provide [[Depin.inject]] method.
    Now the injection can happen. [[Depin.inject]] requires [[Injectable]] parameter which is alias for class, function or value model to which injection will happen. 
    Attributes and methods needs to be bound to container object first.
-
+   
+   
    Example:
    		
-   		shared dependency String topLevelValue="some value";
-   		shared dependency Integer topLevelFunction(String someString) => someString.size;
-   
-   		shared Integer topLevelInjection(Integer topLevelFunction(String someString), String topLevelValue){
-   			return topLevelFunction(topLevelValue);
+   		dependency String topLevelValue="some value";
+   		dependency Integer topLevelFunction(String someString) => someString.size;
+   		   
+   		Integer topLevelInjection(Integer topLevelFunction(String someString), String topLevelValue){
+   		   return topLevelFunction(topLevelValue);
    		}
-   		//run
-   		shared void moduleDocs() {
-   			value depedencencyDeclarations=scanner.scan({`module`});
-   			value result=Depin(depedencencyDeclarations).inject(`topLevelInjection`);
-   			assert(topLevelValue.size==result);
+   			   
+   		shared void topLevelInjectionRun() {
+   		   value depedencencyDeclarations=scanner.scan({`module`});
+   		   value result=Depin(depedencencyDeclarations).inject(`topLevelInjection`);
+   		   assert(topLevelValue.size==result);
    		}
+   # Visibility
+   //TODO
+   	   	
+   # Naming
+   For some cases it is required to rename given [[Dependency]], for such requirements [[NamedAnnotation]] has been introduced. It takes [[String]] name as argument. 
+   This hints [[Depin]] that [[Dependency]] created from this named declaration will have name as given in [[NamedAnnotation.name]].
+   	
+   Example:
    		
-"""
+   		dependency Integer[] summable =[1,2,3];
+   		class DependencyHolder(named("summable") Integer[] numbers){
+   			shared named("integerSum") dependency 
+   			Integer? sum = numbers.reduce((Integer partial, Integer element) => partial+element);
+   		}
+   
+   		void assertInjection(Integer? integerSum){
+   			assert(exists integerSum,integerSum==6);
+   		}
+   
+   
+   	shared void namedInjectionRun(){
+   		 Depin{
+   			declarations=scanner.scan({`package`});
+   		}.inject(`assertInjection`);
+   	}		 
+   	
+   	
+   	
+   """
 module herd.depin.core "0.0.0" {
 	
 	shared import ceylon.logging "1.3.3";

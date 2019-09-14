@@ -15,7 +15,12 @@ shared object scanner {
 			return members;
 		}
 		case (is FunctionOrValueDeclaration) {
-			return if (scope.annotated<DependencyAnnotation>()) then { scope } else empty;
+			if (scope.annotated<DependencyAnnotation>()) {
+				log.debug("Included ``scope``");
+				return { scope }; 
+			} else {
+				return empty;
+			}
 		}
 		case (is Package) {
 			return scope.members<ClassDeclaration|FunctionOrValueDeclaration>()
@@ -26,9 +31,9 @@ shared object scanner {
 		}
 	}
 	
-	shared {FunctionOrValueDeclaration*} scan({Scope*} inclusions, {Scope*} exclusions=[]) {
+	shared FunctionOrValueDeclaration[] scan({Scope*} inclusions, {Scope*} exclusions=[]) {
 		[FunctionOrValueDeclaration+]|[] excluded = exclusions.flatMap((Scope element) => single(element)).sequence();
 		return inclusions.flatMap((Scope element) => single(element))
-				.filter((Declaration element) => !excluded.contains(element));
+				.filter((Declaration element) => !excluded.contains(element)).sequence();
 	}
 }

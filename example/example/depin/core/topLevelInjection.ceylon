@@ -7,14 +7,14 @@ import herd.depin.core {
 
 
 
-shared dependency String topLevelValue="some value";
-shared dependency Integer topLevelFunction(String someString) => someString.size;
+ dependency String topLevelValue="some value";
+ dependency Integer topLevelFunction(String someString) => someString.size;
 
-shared Integer topLevelInjection(Integer topLevelFunction(String someString), String topLevelValue){
+ Integer topLevelInjection(Integer topLevelFunction(String someString), String topLevelValue){
 	return topLevelFunction(topLevelValue);
 }
-//run 
-shared void moduleDocs() {
+
+shared void topLevelInjectionRun() {
 		value depedencencyDeclarations=scanner.scan({`module`});
 		value result=Depin(depedencencyDeclarations).inject(`topLevelInjection`);
 		assert(topLevelValue.size==result);
