@@ -23,7 +23,7 @@
    [[Injection]] is process of resolving dependencies (container and parameters) and calling requested constructor method or getting value.   
    
    #Usage
-
+   
    To use this framework, one need to first provide dependencies, for further injection. 
    It is done using [[scanner]] object. Scanning is gathering of  and value declaration annotated with [[DependencyAnnotation]].
    
@@ -36,18 +36,18 @@
    
    
    Example:
-   		
+   
    		dependency String topLevelValue="some value";
    		dependency Integer topLevelFunction(String someString) => someString.size;
-   		   
+   
    		Integer topLevelInjection(Integer topLevelFunction(String someString), String topLevelValue){
-   		   return topLevelFunction(topLevelValue);
+   			return topLevelFunction(topLevelValue);
    		}
-   			   
-   		shared void topLevelInjectionRun() {
-   		   value depedencencyDeclarations=scanner.scan({`module`});
-   		   value result=Depin(depedencencyDeclarations).inject(`topLevelInjection`);
-   		   assert(topLevelValue.size==result);
+   
+   		shared void run() {
+   			value depedencencyDeclarations=scanner.scan({`package`});
+   			value result=Depin(depedencencyDeclarations).inject(`topLevelInjection`);
+   			assert(topLevelValue.size==result);
    		}
    # Visibility
    //TODO
@@ -58,24 +58,24 @@
    	
    Example:
    		
-   		dependency Integer[] summable =[1,2,3];
-   		class DependencyHolder(named("summable") Integer[] numbers){
-   			shared named("integerSum") dependency 
-   			Integer? sum = numbers.reduce((Integer partial, Integer element) => partial+element);
-   		}
-   
-   		void assertInjection(Integer? integerSum){
-   			assert(exists integerSum,integerSum==6);
-   		}
-  
-   
-   	shared void namedInjectionRun(){
-   		 Depin{
-   			declarations=scanner.scan({`package`});
-   		}.inject(`assertInjection`);
-   	}		 
+   		   dependency Integer[] summable =[1,2,3];
+   		   class DependencyHolder(named("summable") Integer[] numbers){
+   		   		shared named("integerSum") dependency 
+   		   		Integer? sum = numbers.reduce((Integer partial, Integer element) => partial+element);
+   		   }
+   		   
+   		   void assertInjection(Integer? integerSum){
+   		   		assert(exists integerSum,integerSum==6);
+   		   }
+   		   
+   		   
+   		   shared void run(){
+   		  		 Depin{
+   		  			 scanner.scan({`package`});
+   		   		}.inject(`assertInjection`);
+   		   }
    	
-   ### Warning 
+   ## Warning! 
    Beacause of https://github.com/eclipse/ceylon/issues/7448 it is not possible to name (using [[NamedAnnotation]]) constructor parameters,
    for [[Dependency]] containers or injection constructor parameters.
    
@@ -88,18 +88,33 @@
       -  Singleton - represented by [[SingletonAnnotation]]
       -  Eager  - represented by [[EagerAnnotation]]
       -  Fallback - represented by [[FallbackAnnotation]]
+      
    	More information can be found in specific annotation documentation.
    	
    	 ## Handlers 
-   	 Each decorator can be from outside of framework, it needs just to implement [[Handler]] interface.
+   	 Each decorator can be notified, from outside of framework, it needs just to implement [[Handler]] interface.
    	 This feature provides ability to change way decorators works.
    	 For example It allows to free up resources. To notify decorator [[Depin.notify]] method needs to be called. 
    	 
    	 # Collectors 
    	 [[Collector]] class is used for collecting of dependencies with specific open type.
    	  In this case naming doesn't matters. 
-   	 [[Depin]] will always inject whole known set of dependencies for given type declared in [[Collector]]'s `Collected` type parameter. 
-   """
+   	 [[Depin]] will always inject whole known set of dependencies for given type declared in [[Collector]]'s `Collected` type parameter.
+   	 
+   	 Example:
+   	 		dependency Integer one=1;
+   			dependency Integer two=2;
+   
+   			void assertCollectorInjection(Collector<Integer> namingDoesntMatters){
+   				assert(namingDoesntMatters.collected.containsEvery({one,two}));
+   			}
+   
+   			shared void run(){
+   				Depin{
+   					scanner.scan({`package`});
+   				}.inject(`assertCollectorInjection`);
+   			} 
+   """
 
 module herd.depin.core "0.0.0" {
 	

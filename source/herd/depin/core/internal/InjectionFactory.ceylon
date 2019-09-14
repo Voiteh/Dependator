@@ -19,57 +19,50 @@ import herd.depin.core {
 	Injection
 }
 
-shared class InjectionFactory(DependencyFactory dependencyFactory,TargetSelector selector) {
+shared class InjectionFactory(DependencyFactory dependencyFactory, TargetSelector selector) {
 	shared Injection create(Injectable<Anything> injectable) {
-		Dependency? container=if (is NestableDeclaration containerDeclaration=injectable.declaration.container) 
-			then dependencyFactory.create(containerDeclaration, false) 
-			else null;
+		Dependency? container = if (is NestableDeclaration containerDeclaration = injectable.declaration.container)
+		then dependencyFactory.create(containerDeclaration, false)
+		else null;
 		Injection injection;
-		switch(injectable)
+		switch (injectable)
 		case (is ValueModel<>) {
-			injection=ValueModelInjection(injectable, container);
+			injection = ValueModelInjection(injectable, container);
 			log.debug("[Created value model injection] ``injection`` for ``injectable`` ");
 		}
 		case (is ClassModel<Anything,Nothing>) {
 			ConstructorDeclaration constructorDeclaration = selector.select(injectable.declaration);
-			switch(constructorDeclaration)
-			case(is ValueConstructorDeclaration){
+			switch (constructorDeclaration)
+			case (is ValueConstructorDeclaration) {
 				ValueModel<Object> constructor;
-				if(is NestableDeclaration containerDeclaration=injectable.declaration.container){
-					assert(is Type<Object> containerType=injectable.container);
-				    constructor=constructorDeclaration.memberApply<Nothing,Object>(containerType);
-				}else{
-					constructor=constructorDeclaration.apply<Object>();
+				if (is NestableDeclaration containerDeclaration = injectable.declaration.container) {
+					assert (is Type<Object> containerType = injectable.container);
+					constructor = constructorDeclaration.memberApply<Nothing,Object>(containerType);
+				} else {
+					constructor = constructorDeclaration.apply<Object>();
 				}
-				   injection=ValueModelInjection(constructor, container);
-					log.debug("[Created value model injection]: ``injection``");
+				injection = ValueModelInjection(constructor, container);
+				log.debug("[Created value model injection]: ``injection``");
 			}
-			case(is CallableConstructorDeclaration){
+			case (is CallableConstructorDeclaration) {
 				FunctionModel<> constructor;
 				
-				if(is NestableDeclaration containerDeclaration=injectable.declaration.container){
-					assert(is Type<Object> containerType=injectable.container);
-					constructor=constructorDeclaration.memberApply<>(containerType, *injectable.typeArgumentList);
-				}else{
-					constructor=constructorDeclaration.apply<Object>(*injectable.typeArgumentList);
+				if (is NestableDeclaration containerDeclaration = injectable.declaration.container) {
+					assert (is Type<Object> containerType = injectable.container);
+					constructor = constructorDeclaration.memberApply<>(containerType, *injectable.typeArgumentList);
+				} else {
+					constructor = constructorDeclaration.apply<Object>(*injectable.typeArgumentList);
 				}
-				{Dependency*} parameters=constructor.declaration.parameterDeclarations.collect((FunctionOrValueDeclaration element) => dependencyFactory.create(element,true));
-				injection= FunctionModelInjection(constructor, container,parameters);
+				{Dependency*} parameters = constructor.declaration.parameterDeclarations.collect((FunctionOrValueDeclaration element) => dependencyFactory.create(element, true));
+				injection = FunctionModelInjection(constructor, container, parameters);
 				log.debug("[Created function model injection]: ``injection`` for ``injection``");
 			}
-			
 		}
 		case (is FunctionModel<Anything,Nothing>) {
-			{Dependency*} parameters=injectable.declaration.parameterDeclarations.collect((FunctionOrValueDeclaration element) => dependencyFactory.create(element,true));
-			injection= FunctionModelInjection(injectable, container, parameters);
+			Dependency[] parameters = injectable.declaration.parameterDeclarations.collect((FunctionOrValueDeclaration element) => dependencyFactory.create(element, true));
+			injection = FunctionModelInjection(injectable, container, parameters);
 			log.debug("[Created function model injection]: ``injection`` for ``injectable``");
-			
 		}
 		return injection;
-
 	}
-	
-
-
-	
 }

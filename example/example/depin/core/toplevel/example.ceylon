@@ -6,7 +6,6 @@ import herd.depin.core {
 }
 
 
-
  dependency String topLevelValue="some value";
  dependency Integer topLevelFunction(String someString) => someString.size;
 
@@ -14,8 +13,8 @@ import herd.depin.core {
 	return topLevelFunction(topLevelValue);
 }
 
-shared void topLevelInjectionRun() {
-		value depedencencyDeclarations=scanner.scan({`module`});
+shared void run() {
+		value depedencencyDeclarations=scanner.scan({`package`});
 		value result=Depin(depedencencyDeclarations).inject(`topLevelInjection`);
 		assert(topLevelValue.size==result);
 }

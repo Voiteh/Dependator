@@ -18,8 +18,8 @@ void assertInjection(Integer? integerSum){
 }
 
 
-shared void namedInjectionRun(){
+shared void run(){
 	Depin{
-		declarations=scanner.scan({`package`});
+		scanner.scan({`package`});
 	}.inject(`assertInjection`);
 }

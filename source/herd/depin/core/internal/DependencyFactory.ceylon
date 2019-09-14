@@ -28,12 +28,6 @@ shared class DependencyFactory(DefinitionFactory definitionFactory,TargetSelecto
 			Dependency.Definition definition =  definitionFactory.create(declaration);
 			assert(is FunctionOrValueDeclaration declaration);
 			if(is OpenClassType declarationOpenType=declaration.openType,declarationOpenType.declaration==`class Collector`){
-				Dependency? containerDependency ;
-				if (is NestableDeclaration containerDeclaration = declaration.container) {
-					containerDependency=create(containerDeclaration,false);
-				}else{
-					containerDependency=null;
-				}
 				dependency=CollectorDependency(definition, tree);					
 			}
 			else if(declaration.defaulted){
@@ -56,7 +50,7 @@ shared class DependencyFactory(DefinitionFactory definitionFactory,TargetSelecto
 			case (is FunctionalDeclaration) {
 				Dependency.Definition definition =  definitionFactory.create(declaration);
 				value parameterDependencies = declaration.parameterDeclarations
-						.collect((FunctionOrValueDeclaration element) => create(element,true));
+ 						.collect((FunctionOrValueDeclaration element) => create(element,true));
 				dependency= FunctionalDependency( definition, containerDependency, parameterDependencies);
 				
 			}
@@ -75,7 +69,7 @@ shared class DependencyFactory(DefinitionFactory definitionFactory,TargetSelecto
 					switch(constructor) 
 					case(is CallableConstructorDeclaration ){
 						value parameterDependencies = constructor.parameterDeclarations
-								.map((FunctionOrValueDeclaration element) => ParameterDependency(definitionFactory.create(element), tree));
+								.collect((FunctionOrValueDeclaration element) => ParameterDependency(definitionFactory.create(element), tree));
 						dependency= FunctionalDependency( definition, containerDependency, parameterDependencies);
 					}
 					case(is ValueConstructorDeclaration){

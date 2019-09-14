@@ -1,29 +1,21 @@
 
-import herd.depin.core {
-	log,
-	Collector,
-	Dependency
+import ceylon.language.meta {
+	type
 }
 import ceylon.language.meta.declaration {
-
 	ValueDeclaration,
 	OpenClassType,
 	OpenType
 }
 import ceylon.language.meta.model {
-
 	Class,
-	Value,
-	ClassModel,
 	MemberClass
 }
-import ceylon.language.meta {
 
-	type
-}
-import herd.depin.core.internal.util {
-
-	runtimeCall
+import herd.depin.core {
+	log,
+	Collector,
+	Dependency
 }
 
 class CollectorDependency(Dependency.Definition definition,Dependencies tree) extends Dependency(definition){

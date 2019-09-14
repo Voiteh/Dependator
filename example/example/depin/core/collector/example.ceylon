@@ -1,5 +1,4 @@
 import herd.depin.core {
-
 	dependency,
 	Collector,
 	scanner,
@@ -13,7 +12,7 @@ void assertCollectorInjection(Collector<Integer> namingDoesntMatters){
 	assert(namingDoesntMatters.collected.containsEvery({one,two}));
 }
 
-shared void runCollectorInjection(){
+shared void run(){
 	Depin{
 		scanner.scan({`package`});
 	}.inject(`assertCollectorInjection`);

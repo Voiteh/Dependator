@@ -42,7 +42,7 @@ shared class Depin {
 		notificationManager=NotificationManager(handlers);
 		factory=InjectionFactory(dependencyFactory,targetSelector);
 		
-		value dependencies = declarations.map((FunctionOrValueDeclaration element) => dependencyFactory.create(element,false));
+		value dependencies = declarations.collect((FunctionOrValueDeclaration element) => dependencyFactory.create(element,false));
 		validate(dependencies);	
 		dependencies.map(decorationManager.decorate)
 		.each((Dependency|Dependency.Decorated element)  {
