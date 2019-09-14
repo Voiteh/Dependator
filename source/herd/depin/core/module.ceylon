@@ -18,12 +18,12 @@
    To cache resolvance there are [[Dependency.Decorator]]s which can be applied, furtherly described. 
    By default dependency resolution is lazy and  not cached in any way.
    
-   ## Dependency Injection
+   ## Dependency injection
    
    [[Injection]] is process of resolving dependencies (container and parameters) and calling requested constructor method or getting value.   
-   Resolvance is done every time 
    
-   
+   #Usage
+
    To use this framework, one need to first provide dependencies, for further injection. 
    It is done using [[scanner]] object. Scanning is gathering of  and value declaration annotated with [[DependencyAnnotation]].
    
@@ -93,7 +93,8 @@
    	 ## Handlers 
    	 Each decorator can be from outside of framework, it needs just to implement [[Handler]] interface. This feature provides ability to change way decorators works.
    	 For example It allows to free up resources. To notify decorator [[Depin.notify]] method needs to be called.s 
-   """
+   """
+
 module herd.depin.core "0.0.0" {
 	
 	shared import ceylon.logging "1.3.3";
