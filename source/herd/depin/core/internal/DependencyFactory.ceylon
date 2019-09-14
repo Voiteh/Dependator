@@ -56,7 +56,7 @@ shared class DependencyFactory(DefinitionFactory definitionFactory,TargetSelecto
 			case (is FunctionalDeclaration) {
 				Dependency.Definition definition =  definitionFactory.create(declaration);
 				value parameterDependencies = declaration.parameterDeclarations
-						.map((FunctionOrValueDeclaration element) => create(element,true));
+						.collect((FunctionOrValueDeclaration element) => create(element,true));
 				dependency= FunctionalDependency( definition, containerDependency, parameterDependencies);
 				
 			}

@@ -25,7 +25,7 @@ class ParameterDependency(Dependency.Definition definition, Dependencies tree) e
 	}
 	
 	shared Anything doResolve(Dependency dependency){
-		if(is FunctionDeclaration declaration =dependency.definition.declaration) {
+		if(is FunctionDeclaration declaration =definition.declaration) {
 			return safe(()=> declaration.apply<>())((Throwable error)=>ResolutionError("Type parameters are not supported for dependencies yet", error));
 		}
 		else{

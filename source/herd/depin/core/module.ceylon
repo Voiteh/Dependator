@@ -91,8 +91,14 @@
    	More information can be found in specific annotation documentation.
    	
    	 ## Handlers 
-   	 Each decorator can be from outside of framework, it needs just to implement [[Handler]] interface. This feature provides ability to change way decorators works.
-   	 For example It allows to free up resources. To notify decorator [[Depin.notify]] method needs to be called.s 
+   	 Each decorator can be from outside of framework, it needs just to implement [[Handler]] interface.
+   	 This feature provides ability to change way decorators works.
+   	 For example It allows to free up resources. To notify decorator [[Depin.notify]] method needs to be called. 
+   	 
+   	 # Collectors 
+   	 [[Collector]] class is used for collecting of dependencies with specific open type.
+   	  In this case naming doesn't matters. 
+   	 [[Depin]] will always inject whole known set of dependencies for given type declared in [[Collector]]'s `Collected` type parameter. 
    """
 
 module herd.depin.core "0.0.0" {
