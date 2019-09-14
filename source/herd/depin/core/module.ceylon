@@ -11,10 +11,19 @@
    From point of view of [[Injection]], two declaration (and after provisioning [[Dependency]]) having same name,
    (for example from different packages), with different open types are not coliding. 
    [[Dependency]] has also ability to be resolved.
-   Resolvance process is executed via [[Dependency.resolve]] attribute, this is done every time dependency has been identified and being injected.
-   To cache resolvance there are [[Dependency.Decorator]]s which can be applied, furtherly described.
+   
+   ## Dependency resolution
+   
+   Resolution process is executed via [[Dependency.resolve]] function, this is done every time dependency has been identified and being injected.
+   To cache resolvance there are [[Dependency.Decorator]]s which can be applied, furtherly described. 
+   By default dependency resolution is lazy and  not cached in any way.
+   
+   ## Dependency Injection
+   
    [[Injection]] is process of resolving dependencies (container and parameters) and calling requested constructor method or getting value.   
-        
+   Resolvance is done every time 
+   
+   
    To use this framework, one need to first provide dependencies, for further injection. 
    It is done using [[scanner]] object. Scanning is gathering of  and value declaration annotated with [[DependencyAnnotation]].
    
@@ -58,7 +67,7 @@
    		void assertInjection(Integer? integerSum){
    			assert(exists integerSum,integerSum==6);
    		}
-   
+  
    
    	shared void namedInjectionRun(){
    		 Depin{
@@ -66,8 +75,24 @@
    		}.inject(`assertInjection`);
    	}		 
    	
+   ### Warning 
+   Beacause of https://github.com/eclipse/ceylon/issues/7448 it is not possible to name (using [[NamedAnnotation]]) constructor parameters,
+   for [[Dependency]] containers or injection constructor parameters.
+   
+    # Decorators 
+    This framework uses concept of decorators defined via [[Dependency.Decorator]] interface. Each decorator is an annotation, 
+    allowing to change way of dependency resolution. Example usage is to provide ability to define singletons or eager dependency resolvers.
+    [[Dependency.Decorator]]s can be defined outside of this module, they are recognized during dependency creation from declarations.
+    This feature in frameworks like Spring is called scopes. 
+    Build in decorators: 
+      -  Singleton - represented by [[SingletonAnnotation]]
+      -  Eager  - represented by [[EagerAnnotation]]
+      -  Fallback - represented by [[FallbackAnnotation]]
+   	More information can be found in specific annotation documentation.
    	
-   	
+   	 ## Handlers 
+   	 Each decorator can be from outside of framework, it needs just to implement [[Handler]] interface. This feature provides ability to change way decorators works.
+   	 For example It allows to free up resources. To notify decorator [[Depin.notify]] method needs to be called.s 
    """
 module herd.depin.core "0.0.0" {
 	
