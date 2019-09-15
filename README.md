@@ -30,8 +30,6 @@ By default dependency resolution is lazy and  not cached in any way.
 ### Dependency injection
 
 `Injection` is process of resolving dependencies (container and parameters) and calling requested constructor method or getting value.
- 
-## Usage
 
 To use this framework, one need to first provide dependencies, for further injection. 
 It is done using `scanner` object. Scanning is gathering of methods  and values declaration annotated with `dependency`.
@@ -59,7 +57,7 @@ shared void run() {
 ```
   
 
-### Scanning Visibility
+### Scanning visibility
 
 Scanner will scan all classes and they members it doesn't matters either they are shared or not. It may be required to pass scopes which will be excluded in `scanner.scan`. 
 
@@ -91,7 +89,7 @@ shared void run(){
 ```
 #### Warning ! 
 It is important to remember that to identify a dependency, it's type, must exactly match with declaration of type in injection. 
-So `sum` is declared with `Integer?` type, `printInjection` first parameter has exactly the same type! All intersection types, interfaces and unions must match exactly!
+So in given example `sum` is declared with `Integer?` type, `printInjection` first parameter has exactly the same type! All intersection types, interfaces and unions must match exactly!
 		
 #### Warning 2 ! 
 Because of https://github.com/eclipse/ceylon/issues/7448 it is not possible to name (using `named` annotation) constructor parameters,
@@ -139,9 +137,9 @@ allowing to change way of dependency resolution. Example usage is to provide abi
 `Dependency.Decorator`s can be defined outside of this module, they are recognized during dependency creation from declarations.
 This feature in frameworks like Spring is called scopes. 
 Build in decorators: 
-  -  Singleton - represented by `singleton`
-  -  Eager  - represented by `eager`
-  -  Fallback - represented by `fallback`
+  -  Singleton - represented by `singleton` annotation,
+  -  Eager  - represented by `eager` annotation,
+  -  Fallback - represented by `fallback` annotation.
 
 More information can be found in specific annotation documentation.
 	
