@@ -2,9 +2,6 @@ import ceylon.language.meta.declaration {
 	ValueDeclaration,
 	FunctionOrValueDeclaration
 }
-import ceylon.logging {
-	debug
-}
 import ceylon.test {
 	test,
 	testExtension
@@ -14,11 +11,10 @@ import depin.test.extension {
 	LoggingTestExtension
 }
 
-import herd.depin.engine {
+import herd.depin.core {
 	Depin,
-	Scanner,
-	log,
-	DependencyAnnotation
+	DependencyAnnotation,
+	scanner
 }
 
 import test.herd.depin.engine.integration {
@@ -46,7 +42,6 @@ import test.herd.depin.engine.integration.injection {
 testExtension (`class LoggingTestExtension`)
 shared class SunnyInjectionTest() {
 	
-	log.priority=debug;
 		
 	shared test void shouldInjectJohnPerson(){
 			assert(Depin({`value name`,`value age`}).inject(`Person`)==fixture.person.john);
@@ -83,11 +78,10 @@ shared class SunnyInjectionTest() {
 		assert(Depin(select).inject(`AnonymousObjectTarget`).innerObjectDependency
 			==fixture.objectDependencies.innerObjectDependency);
 	}
-	
 
 	
 	shared test void shouldInjectExposedInterface(){
-		value declarations=Scanner().scan({`package test.herd.depin.engine.integration.dependency.unshared`});
+		value declarations=scanner.scan({`package test.herd.depin.engine.integration.dependency.unshared`});
 		assert(Depin(declarations).inject(`ExposedTarget`).exposing.exposed==fixture.unshared.exposed);
 	}
 	

@@ -6,7 +6,7 @@ import ceylon.language.meta.declaration {
 import ceylon.language.meta.model {
 	Value
 }
-import herd.depin.engine {
+import herd.depin.core {
 
 	Dependency,
 	Handler

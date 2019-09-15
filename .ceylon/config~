@@ -3,3 +3,6 @@
 source=source
 resource=resource
 source=test
+
+[defaults]
+encoding=UTF-8
