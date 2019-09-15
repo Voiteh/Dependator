@@ -31,7 +31,7 @@ By default dependency resolution is lazy and  not cached in any way.
 
 `Injection` is process of resolving dependencies (container and parameters) and calling requested constructor method or getting value.
  
-##Usage
+## Usage
 
 To use this framework, one need to first provide dependencies, for further injection. 
 It is done using `scanner` object. Scanning is gathering of methods  and values declaration annotated with `dependency`.
@@ -67,7 +67,7 @@ Scanner will scan all classes and they members it doesn't matters either they ar
 In this release Depin, does not honor Ceylon encapsulation in any way. Whatever is scanned, can be injected. This will be modified in further release. 
 		
 ### Naming
-For some cases it is required to rename given `Dependency`, for such requirements `named` annotatiion has been introduced. It takes `String` name as argument. 
+For some cases it is required to rename given `Dependency`, for such requirements `named` annotation has been introduced. It takes `String` name as argument. 
 This hints `Depin` that `Dependency` created from this named declaration will have name as given in `named.name`.
 	
 Example:
@@ -106,30 +106,31 @@ In this case `target` can be used. This is applicable for injections and depende
 
 Example:
 ```ceylon
-  class TargetedInjection {
 
-			String constructorName;
-	
-			shared new(){
-				constructorName="default";
-			}
-	
-			shared target new targetedConstructor(){
-				constructorName="targeted";
-			}
-	
-	
-			shared void printInjection(){
-				print("Selected construcotr was: ``constructorName``");
-			}
-		}
+class TargetedInjection {
+
+	String constructorName;
+
+	shared new(){
+		constructorName="default";
+	}
+
+	shared target new targetedConstructor(){
+		constructorName="targeted";
+	}
 
 
-		shared void run(){
-			Depin{
-				scanner.scan({`package`});
-			}.inject(`TargetedInjection.printInjection`);
-		} 
+	shared void printInjection(){
+		print("Selected construcotr was: ``constructorName``");
+	}
+}
+
+
+shared void run(){
+	Depin{
+		scanner.scan({`package`});
+	}.inject(`TargetedInjection.printInjection`);
+} 
 
 ```
 ## Decorators 
@@ -156,16 +157,17 @@ In this case naming doesn't matters.
 	 
 Example:
 ```ceylon
-  dependency Integer one=1;
-		dependency Integer two=2;
+dependency Integer one=1;
+dependency Integer two=2;
 			
-	void assertCollectorInjection(Collector<Integer> namingDoesntMatters){
-		assert(namingDoesntMatters.collected.containsEvery({one,two}));
-	}
+void assertCollectorInjection(Collector<Integer> namingDoesntMatters){
+	assert(namingDoesntMatters.collected.containsEvery({one,two}));
+}
 		
-	shared void run(){
-		Depin{
+shared void run(){
+	Depin{
 		scanner.scan({`package`});
 		}.inject(`assertCollectorInjection`);
-	} 
+	}
+} 
 ```
