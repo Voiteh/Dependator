@@ -44,18 +44,18 @@ Now the injection can happen. `Depin.inject` requires `Injectable` parameter whi
 
 Example:
 ```ceylon
-		dependency String topLevelValue="some value";
-		dependency Integer topLevelFunction(String someString) => someString.size;
+dependency String topLevelValue="some value";
+dependency Integer topLevelFunction(String someString) => someString.size;
 
-		Integer topLevelInjection(Integer topLevelFunction(String someString), String topLevelValue){
-			return topLevelFunction(topLevelValue);
-		}
+Integer topLevelInjection(Integer topLevelFunction(String someString), String topLevelValue){
+	return topLevelFunction(topLevelValue);
+}
 
-		shared void run() {
-			value depedencencyDeclarations=scanner.scan({`package`});
-			value result=Depin(depedencencyDeclarations).inject(`topLevelInjection`);
-			assert(topLevelValue.size==result);
-		}
+shared void run() {
+	value depedencencyDeclarations=scanner.scan({`package`});
+	value result=Depin(depedencencyDeclarations).inject(`topLevelInjection`);
+	assert(topLevelValue.size==result);
+}
 ```
   
 
@@ -72,22 +72,22 @@ This hints `Depin` that `Dependency` created from this named declaration will ha
 	
 Example:
 ```ceylon	
-	dependency Integer[] summable =[1,2,3];
-		class DependencyHolder(named("summable") Integer[] numbers){
-		named("integerSum") dependency 
-		Integer? sum = numbers.reduce((Integer partial, Integer element) => partial+element);
-	}
+dependency Integer[] summable =[1,2,3];
+	class DependencyHolder(named("summable") Integer[] numbers){
+	named("integerSum") dependency 
+	Integer? sum = numbers.reduce((Integer partial, Integer element) => partial+element);
+}
 
-  	void printInjection(Integer? integerSum){
-		print("Sum of summable is: ``integerSum else "null"``");
-  	}
+void printInjection(Integer? integerSum){
+	print("Sum of summable is: ``integerSum else "null"``");
+}
 
 
- 	shared void run(){
-		Depin{
-			scanner.scan({`package`});
-		}.inject(`printInjection`);
-	}
+shared void run(){
+	Depin{
+		scanner.scan({`package`});
+	}.inject(`printInjection`);
+}
 ```
 #### Warning ! 
 It is important to remember that to identify a dependency, it's type, must exactly match with declaration of type in injection. 
