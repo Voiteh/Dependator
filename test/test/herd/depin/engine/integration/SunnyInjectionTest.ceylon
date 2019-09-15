@@ -83,7 +83,6 @@ shared class SunnyInjectionTest() {
 		assert(Depin(select).inject(`AnonymousObjectTarget`).innerObjectDependency
 			==fixture.objectDependencies.innerObjectDependency);
 	}
-	
 
 	
 	shared test void shouldInjectExposedInterface(){

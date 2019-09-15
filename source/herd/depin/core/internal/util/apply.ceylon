@@ -4,7 +4,8 @@ import ceylon.language.meta.model {
 	Gettable,
 	Qualified,
 	Method,
-	Attribute
+	Attribute,
+	MemberClass
 }
 shared Anything apply(Applicable<>|Qualified<>|Gettable<> model, Anything container=null,Anything[] parameters=[]) {
 	
@@ -16,15 +17,25 @@ shared Anything apply(Applicable<>|Qualified<>|Gettable<> model, Anything contai
 		return model.get();
 	}
 	else case (is Qualified<>) {
-		if(is Method<> model){
-			value  bind = model.bind(container);
-			return apply(bind,container,parameters);
+		Applicable<>|Qualified<>|Gettable<> bind;
+		switch(model)
+		case (is Attribute<> ){
+			bind = model.bind(container);
 		}
-		else if(is Attribute<> model){
-			value bind = model.bind(container);
-			return apply(bind,container,parameters);
+		case (is Method<>){
+			bind=model.bind(container);
 		}
-		assert(is Gettable<Object> bind=model.bind(container));
+		case(is MemberClass<>){
+			bind =model.bind(container);
+		}
+		else{
+			value bound = model.bind(container);
+			if(is Applicable<>|Qualified<>|Gettable<> bound){
+				bind=bound;
+			}else{
+				return bound;
+			}
+		}
 		return apply(bind,container,parameters);
 	}
 	
