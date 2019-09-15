@@ -3,25 +3,28 @@
 Depin - Dependency injection framework for Ceylon
 
 # Core 
-All examples in this code can be found in `example` source directory of core module 
+All examples in this code can be found in `example` source directory of core module
+
+### Logging
+This module uses standard Ceylon logging defined via `module ceylon.logging`. Configuration of logging may be altered using `log` value. 
+Reference to `module ceylon.logging` documentation for more information. 
+
+ 
 ## Introduction 
-Whole concept of this framework, is based on `Dependency` class and `Injection` interface. 
-Both are tightly coupled togather. 
-The `Dependency` class is wrapped ceylon declaration, with additional information like `Identification`,
+Whole concept of this framework, is based on `Dependency` and `Injection` abstract classes. 
+Both are tightly coupled together. 
+The `Dependency` class is wrapped Ceylon declaration, with additional information like `Identification`,
 providing ability to clearly identify what to inject in `Injection`.
 `Dependency` is identified by it's name and declaration open type. 
 From point of view of `Injection`, two declaration (and after provisioning `Dependency`) having same name,
-(for example from different packages), with different open types are not coliding. 
+(for example from different packages), with different open types are not colliding. 
 `Dependency` has also ability to be resolved.
 
-### Logging
-This module uses statndard Ceylon logging defined via `module ceylon.logging`. Configuration of logging may be altered using `log` value. 
-Reference to `module ceylon.logging` documentation for more information. 
 
 ### Dependency resolution
 
 Resolution process is executed via `Dependency.resolve` function, this is done every time dependency has been identified and being injected.
-To cache resolvance there are `Dependency.Decorator`s which can be applied, furtherly described. 
+To cache resolution there are `Dependency.Decorator`s which can be applied, farther described in this guide. 
 By default dependency resolution is lazy and  not cached in any way.
  
 ### Dependency injection
@@ -34,8 +37,8 @@ To use this framework, one need to first provide dependencies, for further injec
 It is done using `scanner` object. Scanning is gathering of methods  and values declaration annotated with `dependency`.
 
 They can be nested in classes and member classes or top level, any formal declaration will be rejected. 
-The `scanner.scan` call would provide declarations for further use. This function, takes `Scope`s as paremeters.
-`Scope` is range on which scanning would execute. When declaration are allready scaned they can be used for,`Depin` class object creation. 
+The `scanner.scan` call would provide declarations for further use. This function, takes `Scope`s as parameters.
+`Scope` is range on which scanning would execute. When declaration are already sccaned, they can be used for,`Depin` class object creation. 
 `Depin` will convert declarations into `Dependency`'ies  and provide `Depin.inject` method.
 Now the injection can happen. `Depin.inject` requires `Injectable` parameter which is alias for class, function or value model to which injection will happen. 
 
@@ -88,10 +91,10 @@ Example:
 ```
 #### Warning ! 
 It is important to remember that to identify a dependency, it's type, must exactly match with declaration of type in injection. 
-So `sum` is declared with `Integer?` type, `printInjection` first parameter has exactly the same type! All interesections, interfaces, and unions must match exactly!
+So `sum` is declared with `Integer?` type, `printInjection` first parameter has exactly the same type! All intersection types, interfaces and unions must match exactly!
 		
 #### Warning 2 ! 
-Beacause of https://github.com/eclipse/ceylon/issues/7448 it is not possible to name (using `named` annotation) constructor parameters,
+Because of https://github.com/eclipse/ceylon/issues/7448 it is not possible to name (using `named` annotation) constructor parameters,
 for `Dependency` containers or injection constructor parameters.
 
  		
