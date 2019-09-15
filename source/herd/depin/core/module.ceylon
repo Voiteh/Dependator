@@ -32,8 +32,6 @@
    [[Scope]] is range on which scanning would execute. When declaration are allready scaned they can be used for,   [[Depin]] class object creation. 
    [[Depin]] will convert declarations into [[Dependency]]'ies  and provide [[Depin.inject]] method.
    Now the injection can happen. [[Depin.inject]] requires [[Injectable]] parameter which is alias for class, function or value model to which injection will happen. 
-   Attributes and methods needs to be bound to container object first.
-   
    
    Example:
    
@@ -49,72 +47,110 @@
    			value result=Depin(depedencencyDeclarations).inject(`topLevelInjection`);
    			assert(topLevelValue.size==result);
    		}
-   # Visibility
-   //TODO
+   		
+   ## Scanning Visibility
+   
+   Scanner will scan all classes and they members it doesn't matters either they are shared or not. It may be required to pass scopes which will be excluded in `scanner.scan`. 
+   
+   ## Dependency visibility and encapsulation
+   In this release Depin, does not honor Ceylon encapsulation in any way. Whatever is scanned, can be injected. This will be modified in further release. 
    	   	
-   # Naming
+   ## Naming
    For some cases it is required to rename given [[Dependency]], for such requirements [[NamedAnnotation]] has been introduced. It takes [[String]] name as argument. 
    This hints [[Depin]] that [[Dependency]] created from this named declaration will have name as given in [[NamedAnnotation.name]].
    	
    Example:
    		
-   		   dependency Integer[] summable =[1,2,3];
-   		   class DependencyHolder(named("summable") Integer[] numbers){
-   		   		shared named("integerSum") dependency 
-   		   		Integer? sum = numbers.reduce((Integer partial, Integer element) => partial+element);
-   		   }
-   		   
-   		   void assertInjection(Integer? integerSum){
-   		   		assert(exists integerSum,integerSum==6);
-   		   }
-   		   
-   		   
-   		   shared void run(){
-   		  		 Depin{
-   		  			 scanner.scan({`package`});
-   		   		}.inject(`assertInjection`);
-   		   }
+   	   	dependency Integer[] summable =[1,2,3];
+   	   		class DependencyHolder(named("summable") Integer[] numbers){
+   	   		named("integerSum") dependency 
+   	   		Integer? sum = numbers.reduce((Integer partial, Integer element) => partial+element);
+   	   	}
+   	   
+   	  	 void printInjection(Integer? integerSum){
+   	   		print("Sum of summable is: ``integerSum else "null"``");
+   	  	 }
+   	   
+   	   
+   	 	  shared void run(){
+   	   		Depin{
+   	   			scanner.scan({`package`});
+   	   		}.inject(`printInjection`);
+   	   	}
    	
-   ## Warning! 
+   ### Warning! 
    Beacause of https://github.com/eclipse/ceylon/issues/7448 it is not possible to name (using [[NamedAnnotation]]) constructor parameters,
    for [[Dependency]] containers or injection constructor parameters.
    
-    # Decorators 
-    This framework uses concept of decorators defined via [[Dependency.Decorator]] interface. Each decorator is an annotation, 
-    allowing to change way of dependency resolution. Example usage is to provide ability to define singletons or eager dependency resolvers.
-    [[Dependency.Decorator]]s can be defined outside of this module, they are recognized during dependency creation from declarations.
-    This feature in frameworks like Spring is called scopes. 
-    Build in decorators: 
-      -  Singleton - represented by [[SingletonAnnotation]]
-      -  Eager  - represented by [[EagerAnnotation]]
-      -  Fallback - represented by [[FallbackAnnotation]]
+   ## Targeting
+   In some cases it is required to declare more than one constructor in a class. [[Depin]] won't be able to gues which constructor to use. 
+   In this case [[TargetAnnotation]] can be used. This is applicable for injections and dependencies. 
+   
+   Example:
+   
+        class TargetedInjection {
+   
+	   		String constructorName;
+	   
+	   		shared new(){
+	   			constructorName="default";
+	   		}
+	   
+	   		shared target new targetedConstructor(){
+	   			constructorName="targeted";
+	   		}
+	   
+	   
+	   		shared void printInjection(){
+	   			print("Selected construcotr was: ``constructorName``");
+	   		}
+   
+   		}
+   
+   
+   		shared void run(){
+   			Depin{
+   				scanner.scan({`package`});
+   			}.inject(`TargetedInjection.printInjection`);
+   		} 
+   
+   
+   # Decorators 
+   This framework uses concept of decorators defined via [[Dependency.Decorator]] interface. Each decorator is an annotation, 
+   allowing to change way of dependency resolution. Example usage is to provide ability to define singletons or eager dependency resolvers.
+   [[Dependency.Decorator]]s can be defined outside of this module, they are recognized during dependency creation from declarations.
+   This feature in frameworks like Spring is called scopes. 
+   Build in decorators: 
+     -  Singleton - represented by [[SingletonAnnotation]]
+     -  Eager  - represented by [[EagerAnnotation]]
+     -  Fallback - represented by [[FallbackAnnotation]]
       
-   	More information can be found in specific annotation documentation.
+   More information can be found in specific annotation documentation.
    	
-   	 ## Handlers 
-   	 Each decorator can be notified, from outside of framework, it needs just to implement [[Handler]] interface.
-   	 This feature provides ability to change way decorators works.
-   	 For example It allows to free up resources. To notify decorator [[Depin.notify]] method needs to be called. 
+   ## Handlers 
+   Each decorator can be notified, from outside of framework, it needs just to implement [[Handler]] interface.
+   This feature provides ability to change way decorators works.
+   For example It allows to free up resources. To notify decorator [[Depin.notify]] method needs to be called. 
    	 
-   	 # Collectors 
-   	 [[Collector]] class is used for collecting of dependencies with specific open type.
-   	  In this case naming doesn't matters. 
-   	 [[Depin]] will always inject whole known set of dependencies for given type declared in [[Collector]]'s `Collected` type parameter.
+   # Collectors 
+   [[Collector]] class is used for collecting of dependencies with specific open type.
+   In this case naming doesn't matters. 
+   [[Depin]] will always inject whole known set of dependencies for given type declared in [[Collector]]'s `Collected` type parameter.
    	 
-   	 Example:
-   	 		dependency Integer one=1;
-   			dependency Integer two=2;
-   
-   			void assertCollectorInjection(Collector<Integer> namingDoesntMatters){
-   				assert(namingDoesntMatters.collected.containsEvery({one,two}));
-   			}
-   
-   			shared void run(){
-   				Depin{
-   					scanner.scan({`package`});
-   				}.inject(`assertCollectorInjection`);
-   			} 
-   """
+   Example:
+        dependency Integer one=1;
+   		dependency Integer two=2;
+   			   
+   		void assertCollectorInjection(Collector<Integer> namingDoesntMatters){
+   			assert(namingDoesntMatters.collected.containsEvery({one,two}));
+   		}
+   			   
+   		shared void run(){
+   			Depin{
+   			scanner.scan({`package`});
+   			}.inject(`assertCollectorInjection`);
+   		} 
+   """
 
 module herd.depin.core "0.0.0" {
 	

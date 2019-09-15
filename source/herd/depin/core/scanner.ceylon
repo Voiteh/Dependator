@@ -10,7 +10,7 @@ shared object scanner {
 		log.trace("Scanning scope ``scope``");
 		switch (scope)
 		case (is ClassDeclaration) {
-			{FunctionOrValueDeclaration*} members = scope.memberDeclarations<ClassDeclaration|FunctionOrValueDeclaration>()
+			{FunctionOrValueDeclaration*} members = scope.declaredMemberDeclarations<ClassDeclaration|FunctionOrValueDeclaration>()
 					.flatMap((Scope element) => single(element));
 			return members;
 		}

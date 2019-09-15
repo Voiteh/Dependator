@@ -2,7 +2,9 @@ import ceylon.language.meta.model {
 
 	Applicable,
 	Gettable,
-	Qualified
+	Qualified,
+	Method,
+	Attribute
 }
 shared Anything apply(Applicable<>|Qualified<>|Gettable<> model, Anything container=null,Anything[] parameters=[]) {
 	
@@ -14,8 +16,12 @@ shared Anything apply(Applicable<>|Qualified<>|Gettable<> model, Anything contai
 		return model.get();
 	}
 	else case (is Qualified<>) {
-		if(!parameters.empty){
-			assert(is Applicable<Object> bind = model.bind(container));
+		if(is Method<> model){
+			value  bind = model.bind(container);
+			return apply(bind,container,parameters);
+		}
+		else if(is Attribute<> model){
+			value bind = model.bind(container);
 			return apply(bind,container,parameters);
 		}
 		assert(is Gettable<Object> bind=model.bind(container));

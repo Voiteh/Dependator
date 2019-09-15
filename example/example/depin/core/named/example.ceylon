@@ -9,17 +9,17 @@ import herd.depin.core {
 
 dependency Integer[] summable =[1,2,3];
 class DependencyHolder(named("summable") Integer[] numbers){
-	shared named("integerSum") dependency 
+	named("integerSum") dependency 
 	Integer? sum = numbers.reduce((Integer partial, Integer element) => partial+element);
 }
 
-void assertInjection(Integer? integerSum){
-	assert(exists integerSum,integerSum==6);
+void printInjection(Integer? integerSum){
+	print("Sum of summable is: ``integerSum else "null"``");
 }
 
 
 shared void run(){
 	Depin{
 		scanner.scan({`package`});
-	}.inject(`assertInjection`);
+	}.inject(`printInjection`);
 }
