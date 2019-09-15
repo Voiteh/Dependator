@@ -4,9 +4,6 @@ import ceylon.language.meta.declaration {
 import ceylon.language.meta.model {
 	ClassModel
 }
-import ceylon.logging {
-	debug
-}
 import ceylon.test {
 	testExtension,
 	test,
@@ -19,7 +16,6 @@ import depin.test.extension {
 
 import herd.depin.core {
 	Depin,
-	log,
 	DependencyAnnotation,
 	Injection
 }

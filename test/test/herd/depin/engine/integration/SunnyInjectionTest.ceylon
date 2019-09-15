@@ -2,9 +2,6 @@ import ceylon.language.meta.declaration {
 	ValueDeclaration,
 	FunctionOrValueDeclaration
 }
-import ceylon.logging {
-	debug
-}
 import ceylon.test {
 	test,
 	testExtension
@@ -16,7 +13,6 @@ import depin.test.extension {
 
 import herd.depin.core {
 	Depin,
-	log,
 	DependencyAnnotation,
 	scanner
 }
