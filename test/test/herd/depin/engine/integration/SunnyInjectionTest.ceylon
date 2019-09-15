@@ -46,7 +46,6 @@ import test.herd.depin.engine.integration.injection {
 testExtension (`class LoggingTestExtension`)
 shared class SunnyInjectionTest() {
 	
-	log.priority=debug;
 		
 	shared test void shouldInjectJohnPerson(){
 			assert(Depin({`value name`,`value age`}).inject(`Person`)==fixture.person.john);

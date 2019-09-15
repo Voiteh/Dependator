@@ -1,11 +1,8 @@
 
-
-
-
-
-
+"Abstraction over ceylon model providing ablity to define what and how to inject."
 shared abstract class Injection{
 	
+	"Thrown whenever [[Depin.inject]] has failed "
 	shared static class Error(Throwable cause,shared Injectable<Anything> injectable, shared Anything container=null,shared {Anything*} parameters=empty)
 			extends Exception("Injection failed for ``injectable``, with container:``container  else "null" `` and parameters: ``parameters``",cause){}
 			
@@ -18,8 +15,8 @@ shared abstract class Injection{
 				this.injectable = injectable;
 				
 			} 
-			
-			
+	"Injects given parameters and container into injectable"
+	throws(`class Error`)
 	shared formal Anything inject;
 	
 	

@@ -1,5 +1,4 @@
-"""
-   
+"""   
    This is core module, for dependency injection framework Depin. 
    
    # Introduction 
@@ -12,20 +11,24 @@
    (for example from different packages), with different open types are not coliding. 
    [[Dependency]] has also ability to be resolved.
    
+   ## Logging
+   This module uses statndard Ceylon logging defined via [[module ceylon.logging]]. Configuration of logging may be altered using [[log]] value. 
+   Reference to [[module ceylon.logging]] documentation for more information. 
+   
    ## Dependency resolution
    
    Resolution process is executed via [[Dependency.resolve]] function, this is done every time dependency has been identified and being injected.
    To cache resolvance there are [[Dependency.Decorator]]s which can be applied, furtherly described. 
    By default dependency resolution is lazy and  not cached in any way.
-   
+    
    ## Dependency injection
    
    [[Injection]] is process of resolving dependencies (container and parameters) and calling requested constructor method or getting value.   
-   
+    
    #Usage
    
    To use this framework, one need to first provide dependencies, for further injection. 
-   It is done using [[scanner]] object. Scanning is gathering of  and value declaration annotated with [[DependencyAnnotation]].
+   It is done using [[scanner]] object. Scanning is gathering of methods  and values declaration annotated with [[dependency]].
    
    They can be nested in classes and member classes or top level, any formal declaration will be rejected. 
    The [[scanner.scan]] call would provide declarations for further use. This function, takes [[Scope]]s as paremeters.
@@ -47,7 +50,9 @@
    			value result=Depin(depedencencyDeclarations).inject(`topLevelInjection`);
    			assert(topLevelValue.size==result);
    		}
-   		
+   
+  
+   
    ## Scanning Visibility
    
    Scanner will scan all classes and they members it doesn't matters either they are shared or not. It may be required to pass scopes which will be excluded in `scanner.scan`. 
@@ -56,8 +61,8 @@
    In this release Depin, does not honor Ceylon encapsulation in any way. Whatever is scanned, can be injected. This will be modified in further release. 
    	   	
    ## Naming
-   For some cases it is required to rename given [[Dependency]], for such requirements [[NamedAnnotation]] has been introduced. It takes [[String]] name as argument. 
-   This hints [[Depin]] that [[Dependency]] created from this named declaration will have name as given in [[NamedAnnotation.name]].
+   For some cases it is required to rename given [[Dependency]], for such requirements [[named]] annotatiion has been introduced. It takes [[String]] name as argument. 
+   This hints [[Depin]] that [[Dependency]] created from this named declaration will have name as given in [[named.name]].
    	
    Example:
    		
@@ -67,24 +72,31 @@
    	   		Integer? sum = numbers.reduce((Integer partial, Integer element) => partial+element);
    	   	}
    	   
-   	  	 void printInjection(Integer? integerSum){
+   	  	void printInjection(Integer? integerSum){
    	   		print("Sum of summable is: ``integerSum else "null"``");
-   	  	 }
+   	  	}
    	   
    	   
-   	 	  shared void run(){
+   	 	shared void run(){
    	   		Depin{
    	   			scanner.scan({`package`});
    	   		}.inject(`printInjection`);
    	   	}
-   	
-   ### Warning! 
-   Beacause of https://github.com/eclipse/ceylon/issues/7448 it is not possible to name (using [[NamedAnnotation]]) constructor parameters,
+   	   	
+   ### Warning ! 
+   It is important to remember that to identify a dependency, it's type, must exactly match with declaration of type in injection. 
+   So `sum` is declared with [[Integer?]] type, `printInjection` first parameter has exactly the same type! All interesections, interfaces, and unions must match exactly!
+      		
+   ### Warning 2 ! 
+   Beacause of https://github.com/eclipse/ceylon/issues/7448 it is not possible to name (using [[named]] annotation) constructor parameters,
    for [[Dependency]] containers or injection constructor parameters.
+   
+    		
+   		
    
    ## Targeting
    In some cases it is required to declare more than one constructor in a class. [[Depin]] won't be able to gues which constructor to use. 
-   In this case [[TargetAnnotation]] can be used. This is applicable for injections and dependencies. 
+   In this case [[target]] can be used. This is applicable for injections and dependencies. 
    
    Example:
    
@@ -104,8 +116,7 @@
 	   		shared void printInjection(){
 	   			print("Selected construcotr was: ``constructorName``");
 	   		}
-   
-   		}
+	   	}
    
    
    		shared void run(){
@@ -121,9 +132,9 @@
    [[Dependency.Decorator]]s can be defined outside of this module, they are recognized during dependency creation from declarations.
    This feature in frameworks like Spring is called scopes. 
    Build in decorators: 
-     -  Singleton - represented by [[SingletonAnnotation]]
-     -  Eager  - represented by [[EagerAnnotation]]
-     -  Fallback - represented by [[FallbackAnnotation]]
+     -  Singleton - represented by [[singleton]]
+     -  Eager  - represented by [[eager]]
+     -  Fallback - represented by [[fallback]]
       
    More information can be found in specific annotation documentation.
    	

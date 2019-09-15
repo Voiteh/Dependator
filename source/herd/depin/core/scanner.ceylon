@@ -5,6 +5,8 @@ import ceylon.language.meta.declaration {
 	Module,
 	Package
 }
+
+"Scans given scopes and produces declarations to be transformed into [[Dependency]]ies"
 shared object scanner {
 	{FunctionOrValueDeclaration*} single(Scope scope) {
 		log.trace("Scanning scope ``scope``");
@@ -30,7 +32,8 @@ shared object scanner {
 			return scope.members.flatMap((Package element) => single(element));
 		}
 	}
-	
+	"Scans included [[inclusions]], reduced by excluded [[exclusions]] producing sequence of declarations for transformations into [[Dependency]]. 
+	 Only declarations annotated with [[dependency]] and they container classes are taken in consideration"
 	shared FunctionOrValueDeclaration[] scan({Scope*} inclusions, {Scope*} exclusions=[]) {
 		[FunctionOrValueDeclaration+]|[] excluded = exclusions.flatMap((Scope element) => single(element)).sequence();
 		return inclusions.flatMap((Scope element) => single(element))

@@ -41,7 +41,6 @@ import test.herd.depin.engine.integration.injection {
 testExtension (`class LoggingTestExtension`)
 shared class RainyInjectionTest() {
 	
-	log.priority=debug;
 	Boolean isInjectionError(ClassModel<Throwable> error){
 		return error==`Injection.Error`;
 	}

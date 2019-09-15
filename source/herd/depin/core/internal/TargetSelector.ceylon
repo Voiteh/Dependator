@@ -15,7 +15,7 @@ import herd.depin.core {
 		ConstructorDeclaration[] annotated = declaration.constructorDeclarations().select((ConstructorDeclaration element) => element.annotated<TargetAnnotation>());
 		if (exists selected = annotated.first) {
 			if (annotated.rest.empty) {
-				log.debug("Selected ``selected``, for declaration: ``declaration``");
+				log.debug("[Selected] ``selected``, for declaration: ``declaration``");
 				return selected;
 			} else {
 				throw Error {
@@ -24,7 +24,7 @@ import herd.depin.core {
 				};
 			}
 		} else if (exists default = declaration.defaultConstructor) {
-			log.debug("Selected ``default``, for declaration: ``declaration``");
+			log.debug("[Selected] ``default``, for declaration: ``declaration``");
 			return default;
 		} else {
 			throw Error {
