@@ -8,8 +8,9 @@ import ceylon.language.meta.declaration {
 shared abstract class Dependency {
 	
 	"Used for creating of decorated dependency, reduces runtime errors with missing decorator passed as parameters."
-	shared static abstract class Decorated(Dependency dependency,Decorator decorator)  extends Dependency.decorated(dependency){
-		shared Decorator[] decorators=if (is Decorated dependency) then dependency.decorators.withTrailing(decorator) else [decorator];
+	shared static
+	abstract class Decorated(Dependency dependency, Decorator decorator) extends Dependency.decorated(dependency) {
+		shared Decorator[] decorators = if (is Decorated dependency) then dependency.decorators.withTrailing(decorator) else [decorator];
 	}
 	"Depdency decorated with annotation implementing this interface, will change [[Dependency.resolve]] function works depending on implementation. "
 	shared static
@@ -24,11 +25,10 @@ shared abstract class Dependency {
 		"Declaration of dependency"
 		shared NestableDeclaration declaration,
 		"Identification of dependnecy"
-		 shared Identification identification
-	) {
+		shared Identification identification) {
 		shared actual Boolean equals(Object that) {
 			if (is Definition that) {
-				return declaration.openType==that.declaration.openType&&
+				return declaration.openType==that.declaration.openType &&
 						identification==that.identification;
 			} else {
 				return false;
@@ -42,13 +42,15 @@ shared abstract class Dependency {
 			return hash;
 		}
 		
-		string => "<``declaration.openType`` ``identification``>";
+		shared actual String string {
+			return "``declaration.openType``.``identification``";
+		}
 	}
 	"Thrown whenver [[Dependency.resolve]] failes to complete succesfully"
-	shared static class ResolutionError(
-		String? description=null,
-		Throwable? cause=null
-	) extends Exception(description, cause){}
+	shared static
+	class ResolutionError(
+		String? description = null,
+		Throwable? cause = null) extends Exception(description, cause) {}
 	
 	"Definition of given dependency"
 	shared Definition definition;
@@ -56,14 +58,11 @@ shared abstract class Dependency {
 	shared {Dependency*} parameters;
 	"Container of given nested dependecy"
 	shared Dependency? container;
-
-
-
+	
 	shared new (Definition definition, Dependency? container = null, {Dependency*} parameters = empty) {
 		this.container = container;
 		this.parameters = parameters;
 		this.definition = definition;
-
 	}
 	
 	new decorated(Dependency decorating) {
@@ -73,13 +72,21 @@ shared abstract class Dependency {
 	}
 	
 	"Resolve given [[Dependency]] declaration to object or null, which this depedency represents"
-	throws(`class ResolutionError`)
+	throws (`class ResolutionError`)
 	shared formal Anything resolve;
 	
 	shared actual String string {
+		
+		value builder = StringBuilder();
 		if (exists container) {
-			return "``container``::``definition`` ``parameters``";
+			builder.append("``container``::");
 		}
-		return "``definition`` ``parameters``";
+		builder.append("``definition``");
+		
+		if (!parameters.empty) {
+			String params = parameters.fold("")((String partial, Dependency next) => if (partial.empty) then "``next``" else "``partial``, ``next``");
+			builder.append(" [``params``]");
+		}
+		return builder.string;
 	}
 }

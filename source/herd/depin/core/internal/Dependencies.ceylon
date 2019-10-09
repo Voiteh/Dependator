@@ -46,15 +46,15 @@ shared class Branch(MutableMap<Dependency.Definition,Dependency> map=HashMap<Dep
 shared class Dependencies(shared MutableMap<OpenType,Branch> branches= HashMap<OpenType,Branch>()) {
 	Logger log=createLogger(`module`);
 	shared Dependency? get(Dependency.Definition definition) {
-		log.trace("Getting dependency for definition ``definition``");
+		log.trace("Getting dependency for definition: ``definition``");
 		value dependency= branches.get(definition.declaration.openType)?.get(definition);
-		log.trace("In branch found dependency ``dependency else "null"`` for definition ``definition``");
+		log.trace("In branch found dependency ``dependency else "null"`` for definition: ``definition``");
 		return dependency;
 	}
 	shared Dependency? getFallback(Dependency.Definition definition){
-		log.trace("Getting fallback dependency for definition ``definition``");
+		log.trace("Getting fallback dependency for definition: ``definition``");
 		value dependency = branches.get(definition.declaration.openType)?.fallback;
-		log.trace("In branch found fallback dependency ``dependency else "null"`` for definition ``definition``");
+		log.trace("In branch found fallback dependency ``dependency else "null"`` for definition: ``definition``");
 		return dependency;
 	}
 	shared void addFallback(Dependency dependency){

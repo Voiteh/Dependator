@@ -9,6 +9,7 @@ shared final annotation class FallbackDecorator() satisfies Dependency.Decorator
 	shared actual Dependency.Decorated decorate(Dependency dependency) => object extends Dependency.Decorated(dependency,outer){
 		shared actual Anything resolve => dependency.resolve;
 	};
+	string => "fallback";
 }
 "Decorator annotation, used for creating a [[Dependency]], which will be taken in consideration, whenever any other [[Dependency]] of declared type, can't be found, for injection"
 shared annotation FallbackDecorator fallback() => FallbackDecorator();
@@ -24,7 +25,7 @@ shared final annotation class EagerDecorator() satisfies Dependency.Decorator &
 		shared actual Anything resolve=> data;
 	
 	};
-
+	string => "eager";
 }
 "Decoration annotation, used for creating [[Dependency]], which will be resolved eagerly durring [[Depin]] object creation, rather than durring injection process. Use it togather with [[SingletonDecorator]]"
 shared annotation EagerDecorator eager() => EagerDecorator();
@@ -49,7 +50,7 @@ shared final annotation class SingletonDecorator() satisfies Dependency.Decorato
 		
 	};
 	
-	
+	string => "singleton";
 }
 
 "Decorator annotation, used to cache resolution of dependency decorated with. "
@@ -59,13 +60,16 @@ shared annotation SingletonDecorator singleton() => SingletonDecorator();
 see(`function dependency`)
 shared final annotation class DependencyAnnotation()
 		satisfies OptionalAnnotation<DependencyAnnotation,FunctionOrValueDeclaration> {
+	string => "dependency";
 }
 
 "Annotation used for creation of scannable declaration for [[scanner.scan]] function. Only declaration annotated with this annotation are taken in consideration when scanned. "
 shared annotation DependencyAnnotation dependency() => DependencyAnnotation();
 
 see(`function target`)
-shared final annotation class TargetAnnotation() satisfies OptionalAnnotation<TargetAnnotation,ConstructorDeclaration>{}
+shared final annotation class TargetAnnotation() satisfies OptionalAnnotation<TargetAnnotation,ConstructorDeclaration>{
+	string => "target";
+}
 
 "Annotation, which allows selecting of constructor used for injection using [[Depin.inject]]. "
 shared annotation TargetAnnotation target() => TargetAnnotation();

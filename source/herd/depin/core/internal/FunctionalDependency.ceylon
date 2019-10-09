@@ -20,12 +20,12 @@ class FunctionalDependency(
 		value resolvedParameters = parameters.collect((Dependency element) => safe(()=> element.resolve)
 			((Throwable error) => ResolutionError("Error durring parameter resolution for: ``element`` in ``this``",error)))
 				.filter((Anything element) =>!element is Defaulted).sequence();
-		log.trace("Resolved functional parameters:``resolvedParameters`` for definition: ``definition``");
+		log.trace("[Resolved] functional parameters:``resolvedParameters`` for definition: ``definition``");
 		value resolvedContainer=safe(()=>container?.resolve)
 		((Throwable error) => ResolutionError("Error durring container resolution for: ``container else "null"`` in ``this``",error));
 		value it = safe(()=> invoke(definition.declaration,resolvedContainer,resolvedParameters))
 		((Throwable error)=>ResolutionError("Invocation for dependency ``definition`` failed for container ``resolvedContainer else "null"`` and parameters ``resolvedParameters``"));
-		log.debug("Resolved functional dependency ``it else "null"``, for definition``definition``");
+		log.debug("[Resolved] functional dependency ``it else "null"``, for definition: ``definition``");
 		 return it;
 	}
 	
