@@ -52,7 +52,7 @@ class CollectorDependency(Dependency.Definition definition,Dependencies tree) ex
 				
 			}
 			else{
-				throw Exception("Unhandled collected type");
+				throw Exception("Unhandled collected type ``closedType``");
 			}
 			
 		}

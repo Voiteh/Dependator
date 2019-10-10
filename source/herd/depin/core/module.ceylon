@@ -160,7 +160,7 @@
    			}.inject(`assertCollectorInjection`);
    		} 
    """
-module herd.depin.core "0.0.1" {
+module herd.depin.core "0.0.2" {
 	
 	shared import ceylon.logging "1.3.3";
 	shared import ceylon.collection "1.3.3";
