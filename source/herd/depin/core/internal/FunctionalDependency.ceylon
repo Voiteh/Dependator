@@ -24,7 +24,7 @@ class FunctionalDependency(
 		value resolvedContainer=safe(()=>container?.resolve)
 		((Throwable error) => ResolutionError("Error durring container resolution for: ``container else "null"`` in ``this``",error));
 		value it = safe(()=> invoke(definition.declaration,resolvedContainer,resolvedParameters))
-		((Throwable error)=>ResolutionError("Invocation for dependency ``definition`` failed for container ``resolvedContainer else "null"`` and parameters ``resolvedParameters``"));
+		((Throwable error)=>ResolutionError("Invocation for dependency ``definition`` failed for container ``resolvedContainer else "null"`` and parameters ``resolvedParameters``",error));
 		log.debug("[Resolved] functional dependency ``it else "null"``, for definition: ``definition``");
 		 return it;
 	}

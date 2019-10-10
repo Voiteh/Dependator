@@ -49,8 +49,8 @@ shared abstract class Dependency {
 	"Thrown whenver [[Dependency.resolve]] failes to complete succesfully"
 	shared static
 	class ResolutionError(
-		String? description = null,
-		Throwable? cause = null) extends Exception(description, cause) {}
+		String? description,
+		Throwable? cause) extends Exception(description, cause) {}
 	
 	"Definition of given dependency"
 	shared Definition definition;

@@ -55,7 +55,7 @@ shared class InjectionFactory(DependencyFactory dependencyFactory, TargetSelecto
 				}
 				{Dependency*} parameters = constructor.declaration.parameterDeclarations.collect((FunctionOrValueDeclaration element) => dependencyFactory.create(element, true));
 				injection = FunctionModelInjection(constructor, container, parameters);
-				log.debug("[Created function model injection]: ``injection`` for ``injection``");
+				log.debug("[Created constructor model injection]: ``injection`` for ``injection``");
 			}
 		}
 		case (is FunctionModel<Anything,Nothing>) {
