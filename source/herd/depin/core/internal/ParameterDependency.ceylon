@@ -35,7 +35,12 @@ class ParameterDependency(Dependency.Definition definition, Dependencies tree) e
 	
 	shared actual default Anything resolve {
 		Dependency? dependency=provide;
-		Anything resolve =if(exists dependency) then doResolve(dependency) else null;
+		Anything resolve;
+		 if(exists dependency){
+			resolve=doResolve(dependency) ;
+		}else{
+			throw Dependency.ResolutionError("Couldn't find dependency for definition ``definition``",null);
+		}
 		log.debug("[Resolved] parameter dependency: `` resolve else "null" ``, for definition: ``definition``");
 		return resolve;
 	}

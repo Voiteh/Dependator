@@ -1,5 +1,6 @@
 import ceylon.language.meta.declaration {
-	FunctionOrValueDeclaration
+	FunctionOrValueDeclaration,
+	NestableDeclaration
 }
 
 import herd.depin.core.internal {
@@ -24,6 +25,8 @@ shared class Depin {
 
 	InjectionFactory factory;
 	Dependencies tree;
+	DefinitionFactory definitionFactory;
+	DependencyFactory dependencyFactory;
 	NotificationManager notificationManager;
 	void validate({Dependency*} dependencies){
 		dependencies.group((Dependency element) => element.definition)
@@ -40,9 +43,10 @@ shared class Depin {
 	){
 		tree=Dependencies();
 		value handlers=Handlers();
-		value definitionFactory=DefinitionFactory(Identification.Holder([`NamedAnnotation`]));
+		definitionFactory=DefinitionFactory(Identification.Holder([`NamedAnnotation`]));
+		
 		value targetSelector=TargetSelector();
-		value dependencyFactory=DependencyFactory(definitionFactory,targetSelector,tree);
+		dependencyFactory=DependencyFactory(definitionFactory,targetSelector,tree);
 		value decorationManager=DecorationManager(handlers);
 		notificationManager=NotificationManager(handlers);
 		factory=InjectionFactory(dependencyFactory,targetSelector);
@@ -58,9 +62,20 @@ shared class Depin {
 		});
 		notificationManager.notify(ready);
 	}
+	"Support entry point for retreiving results of dependency resolution. 
+	 Usable in frameworks like Android SDK or libgdx, where there is no possiblity to nicely create,
+	  new instance of given model but [[late]] objects, needs to be provided manually in onCreate"
+	throws(`class Dependency.ResolutionError`, "Dependency can't be find for given declaration")
+	shared Result extract<Result>(NestableDeclaration declaration){
+		value dependency=dependencyFactory.create(declaration, true);
+		assert(is Result result= dependency.resolve);
+		return result;
+	}
 
 
-	"Main functionality of this framework allowing to instantaite or call given [[Injectable]] using it's model"
+	"Main functionality of this framework allowing to instantaite or call given [[Injectable]] using it's model. 
+	 Be aware that for [[ceylon.language.meta.model:ValueModel]], [[inject]] always create new instance of given model. 
+	 For [[ceylon.language.meta.model:FunctionModel]] result depends on implementation of function."
 	throws(`class Injection.Error`,"One of dependencies fails to resolve")
 	shared  Type inject<Type>(Injectable<Type> model){
 		assert(is Type result= factory.create(model).inject);
