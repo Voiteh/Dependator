@@ -52,12 +52,16 @@ shared abstract class Dependency {
 		String? description,
 		Throwable? cause) extends Exception(description, cause) {}
 	
+
+	
+	
 	"Definition of given dependency"
 	shared Definition definition;
 	"Parameters of given function dependency"
 	shared {Dependency*} parameters;
 	"Container of given nested dependecy"
 	shared Dependency? container;
+	
 	
 	shared new (Definition definition, Dependency? container = null, {Dependency*} parameters = empty) {
 		this.container = container;

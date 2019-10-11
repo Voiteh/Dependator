@@ -39,6 +39,7 @@ import test.herd.depin.engine.integration.injection {
 	CollectorInjection
 }
 
+
 testExtension (`class LoggingTestExtension`)
 shared class SunnyInjectionTest() {
 	
@@ -110,5 +111,11 @@ shared class SunnyInjectionTest() {
 			fixture.dependencies.collector.three
 		}));
 		
+	}
+	shared test void shouldExtractNameDependency(){
+		value extractedName=Depin({
+			`value name`
+		}).extract<String>(`value name`);
+		assert(extractedName==fixture.person.john.name);
 	}
 }
