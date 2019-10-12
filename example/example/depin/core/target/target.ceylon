@@ -26,6 +26,6 @@ class TargetedInjection {
 
 shared void run(){
 	Depin{
-		scanner.scan({`package`});
+		scanner.dependencies({`package`});
 	}.inject(`TargetedInjection.printInjection`);
 }

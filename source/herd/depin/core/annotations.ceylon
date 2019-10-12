@@ -63,7 +63,7 @@ shared final annotation class DependencyAnnotation()
 	string => "dependency";
 }
 
-"Annotation used for creation of scannable declaration for [[scanner.scan]] function. Only declaration annotated with this annotation are taken in consideration when scanned. "
+"Annotation used for creation of scannable declaration for [[scanner.dependencies]] function. Only declaration annotated with this annotation are taken in consideration when scanned. "
 shared annotation DependencyAnnotation dependency() => DependencyAnnotation();
 
 see(`function target`)

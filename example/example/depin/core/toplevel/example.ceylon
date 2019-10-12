@@ -14,7 +14,7 @@ import herd.depin.core {
 }
 
 shared void run() {
-		value depedencencyDeclarations=scanner.scan({`package`});
+		value depedencencyDeclarations=scanner.dependencies({`package`});
 		value result=Depin(depedencencyDeclarations).inject(`topLevelInjection`);
 		assert(topLevelValue.size==result);
 }

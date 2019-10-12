@@ -14,6 +14,6 @@ void assertCollectorInjection(Collector<Integer> namingDoesntMatters){
 
 shared void run(){
 	Depin{
-		scanner.scan({`package`});
+		scanner.dependencies({`package`});
 	}.inject(`assertCollectorInjection`);
 }
