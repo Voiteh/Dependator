@@ -82,7 +82,7 @@ shared class SunnyInjectionTest() {
 
 	
 	shared test void shouldInjectExposedInterface(){
-		value declarations=scanner.scan({`package test.herd.depin.engine.integration.dependency.unshared`});
+		value declarations=scanner.dependencies({`package test.herd.depin.engine.integration.dependency.unshared`});
 		assert(Depin(declarations).inject(`ExposedTarget`).exposing.exposed==fixture.unshared.exposed);
 	}
 	

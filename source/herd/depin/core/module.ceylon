@@ -28,7 +28,7 @@
    To use this framework, one first needs to provide dependencies, for further injection. 
    It is done using [[scanner]] object. Scanning is gathering of methods  and values declaration annotated with [[dependency]].
    They can be nested in classes and member classes or top level, any formal declaration will be rejected. 
-   The [[scanner.scan]] call would provide declarations for further use. This function, takes [[Scope]]s as paremeters.
+   The [[scanner.dependencies]] call would provide declarations for further use. This function, takes [[Scope]]s as paremeters.
    [[Scope]] is range on which scanning would execute. When declaration are allready scaned they can be used for, [[Depin]] class object creation. 
    [[Depin]] will convert declarations into [[Dependency]]'ies  and provide [[Depin.inject]] method.
    Now the injection can happen. [[Depin.inject]] requires [[Injectable]] parameter which is alias for class, function or value model to which injection will happen. 

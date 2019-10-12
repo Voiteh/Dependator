@@ -13,6 +13,8 @@ shared object scanner {
 		switch (scope)
 		case (is ClassDeclaration) {
 			{FunctionOrValueDeclaration*} members = scope.declaredMemberDeclarations<ClassDeclaration|FunctionOrValueDeclaration>()
+					.chain(scope.memberDeclarations<ClassDeclaration|FunctionOrValueDeclaration>())
+					.distinct
 					.flatMap((Scope element) => single(element));
 			return members;
 		}
@@ -34,7 +36,7 @@ shared object scanner {
 	}
 	"Scans included [[inclusions]], reduced by excluded [[exclusions]] producing sequence of declarations for transformations into [[Dependency]]. 
 	 Only declarations annotated with [[dependency]] and they container classes are taken in consideration"
-	shared FunctionOrValueDeclaration[] scan({Scope*} inclusions, {Scope*} exclusions=[]) {
+	shared FunctionOrValueDeclaration[] dependencies({Scope*} inclusions, {Scope*} exclusions=[]) {
 		[FunctionOrValueDeclaration+]|[] excluded = exclusions.flatMap((Scope element) => single(element)).sequence();
 		return inclusions.flatMap((Scope element) => single(element))
 				.filter((Declaration element) => !excluded.contains(element)).sequence();
