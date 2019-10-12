@@ -1,6 +1,7 @@
 import ceylon.language.meta.declaration {
 	FunctionOrValueDeclaration,
-	NestableDeclaration
+	NestableDeclaration,
+	ValueDeclaration
 }
 
 import herd.depin.core.internal {
@@ -12,6 +13,18 @@ import herd.depin.core.internal {
 	DependencyFactory,
 	Handlers,
 	NotificationManager
+}
+import ceylon.language.meta {
+
+	type
+}
+import herd.depin.core.internal.util {
+
+	doCompleate=compleate
+}
+import ceylon.language.meta.model {
+
+	Value
 }
 
 
@@ -70,6 +83,15 @@ shared class Depin {
 		value dependency=dependencyFactory.create(declaration, true);
 		assert(is Result result= dependency.resolve);
 		return result;
+	}
+	throws(`class Dependency.ResolutionError`, "Dependency can't be find for given compleatable declaration")
+	throws(`class CompleationException`, "Given target can't be compleated with provided dependencies ")
+	shared void compleate(Object target){
+		scanner.compleatables(target)
+				.map((Value<> element) => [element,dependencyFactory.create(element.declaration, true).resolve])
+			.each(([Value<>, Anything] element) => doCompleate(*element));
+			
+			
 	}
 
 

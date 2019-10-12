@@ -7,7 +7,7 @@ import herd.depin.core {
 
 abstract class Defaulted() of defaulted{}
 object defaulted extends Defaulted(){}
- class DefaultedParameterDependency(Dependency.Definition definition,Dependencies tree) extends ParameterDependency(definition, tree){
+ class DefaultedReachingDependency(Dependency.Definition definition,Dependencies tree) extends ReachingDependency(definition, tree){
 		
 	shared actual Anything resolve{
 		log.trace("Resolving defaulted parameter dependency: ``definition``");

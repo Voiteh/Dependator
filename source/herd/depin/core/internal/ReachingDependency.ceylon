@@ -14,7 +14,7 @@ import herd.depin.core.internal.util {
 
 
 
-class ParameterDependency(Dependency.Definition definition, Dependencies tree) extends Dependency(definition) {
+class ReachingDependency(Dependency.Definition definition, Dependencies tree) extends Dependency(definition) {
 	shared default Dependency? provide {
 		if (exists shadow= tree.get(definition)) {
 			return shadow;

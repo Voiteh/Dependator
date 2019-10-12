@@ -1,8 +1,21 @@
 import ceylon.language.meta.declaration {
 	FunctionOrValueDeclaration,
-	ConstructorDeclaration
+	ConstructorDeclaration,
+	ValueDeclaration
+}
+import ceylon.language.meta.model {
+
+	Attribute
 }
 
+
+
+see(`function compleatable`)
+shared final annotation class CompleatableAnnotation() satisfies OptionalAnnotation<CompleatableAnnotation,ValueDeclaration,Attribute<>>{
+	
+}
+"Used to mark a late attribute to be compleatead via [[Depin.compleate]] method, only late attributes will be compleated. Non late attributes will cause "
+shared annotation CompleatableAnnotation compleatable() => CompleatableAnnotation();
 
 see(`function fallback`)
 shared final annotation class FallbackDecorator() satisfies Dependency.Decorator & OptionalAnnotation<FallbackDecorator,FunctionOrValueDeclaration>{
@@ -63,7 +76,7 @@ shared final annotation class DependencyAnnotation()
 	string => "dependency";
 }
 
-"Annotation used for creation of scannable declaration for [[scanner.scan]] function. Only declaration annotated with this annotation are taken in consideration when scanned. "
+"Annotation used for creation of scannable declaration for [[scanner.dependencies]] function. Only declaration annotated with this annotation are taken in consideration when scanned. "
 shared annotation DependencyAnnotation dependency() => DependencyAnnotation();
 
 see(`function target`)

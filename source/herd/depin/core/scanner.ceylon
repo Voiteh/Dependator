@@ -3,7 +3,18 @@ import ceylon.language.meta.declaration {
 	FunctionOrValueDeclaration,
 	ClassDeclaration,
 	Module,
-	Package
+	Package,
+	ValueDeclaration
+}
+import ceylon.language.meta.model {
+
+	Class,
+	Attribute,
+	Value
+}
+import ceylon.language.meta {
+
+	type
 }
 
 "Scans given scopes and produces declarations to be transformed into [[Dependency]]ies"
@@ -34,9 +45,18 @@ shared object scanner {
 	}
 	"Scans included [[inclusions]], reduced by excluded [[exclusions]] producing sequence of declarations for transformations into [[Dependency]]. 
 	 Only declarations annotated with [[dependency]] and they container classes are taken in consideration"
-	shared FunctionOrValueDeclaration[] scan({Scope*} inclusions, {Scope*} exclusions=[]) {
+	shared FunctionOrValueDeclaration[] dependencies({Scope*} inclusions, {Scope*} exclusions=[]) {
 		[FunctionOrValueDeclaration+]|[] excluded = exclusions.flatMap((Scope element) => single(element)).sequence();
 		return inclusions.flatMap((Scope element) => single(element))
 				.filter((Declaration element) => !excluded.contains(element)).sequence();
 	}
+	
+	
+	shared Value<>[] compleatables(Object target){
+		return type(target).getAttributes<>(`CompleatableAnnotation`)
+				.map((Attribute<> element) => element.bind(target))
+				.sequence();
+	}
+	
+	
 }

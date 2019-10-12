@@ -21,19 +21,19 @@ import herd.depin.core {
 shared class DependencyFactory(DefinitionFactory definitionFactory,TargetSelector targetSelector,Dependencies tree)  {
 	
 	
-	shared Dependency create(NestableDeclaration declaration,Boolean parameter) {
+	shared Dependency create(NestableDeclaration declaration,Boolean reaching) {
 		
 		Dependency dependency;
-		if(parameter){
+		if(reaching){
 			Dependency.Definition definition =  definitionFactory.create(declaration);
 			assert(is FunctionOrValueDeclaration declaration);
 			if(is OpenClassType declarationOpenType=declaration.openType,declarationOpenType.declaration==`class Collector`){
 				dependency=CollectorDependency(definition, tree);					
 			}
 			else if(declaration.defaulted){
-				dependency= DefaultedParameterDependency(definition, tree);
+				dependency= DefaultedReachingDependency(definition, tree);
 			}else{
-				dependency=ParameterDependency(definition, tree);
+				dependency=ReachingDependency(definition, tree);
 			}
 		}
 		else{
@@ -69,7 +69,7 @@ shared class DependencyFactory(DefinitionFactory definitionFactory,TargetSelecto
 					switch(constructor) 
 					case(is CallableConstructorDeclaration ){
 						value parameterDependencies = constructor.parameterDeclarations
-								.collect((FunctionOrValueDeclaration element) => ParameterDependency(definitionFactory.create(element), tree));
+								.collect((FunctionOrValueDeclaration element) => ReachingDependency(definitionFactory.create(element), tree));
 						dependency= FunctionalDependency( definition, containerDependency, parameterDependencies);
 					}
 					case(is ValueConstructorDeclaration){
@@ -81,7 +81,7 @@ shared class DependencyFactory(DefinitionFactory definitionFactory,TargetSelecto
 				throw FactorizationError(declaration, "Not supported");
 			}
 		}
-		log.debug("[Created Dependency]: ``dependency``, for declaration: ``declaration``, parameter: ``parameter``");
+		log.debug("[Created Dependency]: ``dependency``, for declaration: ``declaration``, parameter: ``reaching``");
 		return dependency;
 	}
 	

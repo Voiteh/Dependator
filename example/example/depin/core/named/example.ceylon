@@ -20,6 +20,6 @@ void printInjection(Integer? integerSum){
 
 shared void run(){
 	Depin{
-		scanner.scan({`package`});
+		scanner.dependencies({`package`});
 	}.inject(`printInjection`);
 }
