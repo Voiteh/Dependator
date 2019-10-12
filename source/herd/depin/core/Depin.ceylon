@@ -62,9 +62,9 @@ shared class Depin {
 		});
 		notificationManager.notify(ready);
 	}
-	"Support entry point for retreiving results of dependency resolution. 
+	"Support entry point, for retreiving results of dependency resolution. 
 	 Usable in frameworks like Android SDK or libgdx, where there is no possiblity to nicely create,
-	  new instance of given model but [[late]] objects, needs to be provided manually in onCreate"
+	  new instance of given model but [[late]] attributes, needs to be provided manually in onCreate"
 	throws(`class Dependency.ResolutionError`, "Dependency can't be find for given declaration")
 	shared Result extract<Result>(NestableDeclaration declaration){
 		value dependency=dependencyFactory.create(declaration, true);
