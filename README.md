@@ -35,7 +35,7 @@ To use this framework, one need to first provide dependencies, for further injec
 It is done using `scanner` object. Scanning is gathering of methods  and values declaration annotated with `dependency`.
 
 They can be nested in classes and member classes or top level, any formal declaration will be rejected. 
-The `scanner.scan` call would provide declarations for further use. This function, takes `Scope`s as parameters.
+The `scanner.dependencies` call would provide declarations for further use. This function, takes `Scope`s as parameters.
 `Scope` is range on which scanning would execute. When declaration are already sccaned, they can be used for,`Depin` class object creation. 
 `Depin` will convert declarations into `Dependency`'ies  and provide `Depin.inject` method.
 Now the injection can happen. `Depin.inject` requires `Injectable` parameter which is alias for class, function or value model to which injection will happen. 
@@ -50,16 +50,34 @@ Integer topLevelInjection(Integer topLevelFunction(String someString), String to
 }
 
 shared void run() {
-	value depedencencyDeclarations=scanner.scan({`package`});
+	value depedencencyDeclarations=scanner.dependencies({`package`});
 	value result=Depin(depedencencyDeclarations).inject(`topLevelInjection`);
 	assert(topLevelValue.size==result);
 }
 ```
-  
+### Dependency extraction (from 0.1.0)
+To provide easier interoperation with frameworks where programmer has no control, over creating objects such as Android SDK, `Depin.extract` functionality has been introduced. It allows to provide resolved dependencies into the caller. So going with example of Android SDK, in `Activity.onCreate`, dependencies can be obtained by using correct naming and typing. Then they can be bounded to `late` or `variable` fields and used in life-cycle of `Activity`. Be aware that `Depin` does not provide any ability for disposing of these dependencies. Although this can be achieved using dependency decorators and event handlers, notified through `Depin.notify` method. It would vary by use-case, as each framework uses different interface for disposing. 
+
+Example:
+```ceylon
+class UnaccesibleDependencyContainer(){
+	suppressWarnings("unusedDeclaration")
+	dependency String name="abc";
+}
+
+late String name;
+shared void onCreate(){
+	value dependencies = scanner.dependencies({`package`});
+	name = Depin(dependencies).extract<String>(`value name`);
+	assert(name=="abc");
+	print(name);
+}
+
+```
 
 ### Scanning visibility
 
-Scanner will scan all classes and they members it doesn't matters either they are shared or not. It may be required to pass scopes which will be excluded in `scanner.scan`. 
+Scanner will scan all classes and they members it doesn't matters either they are shared or not. It may be required to pass scopes which will be excluded in `scanner.dependencies`. 
 
 ### Dependency visibility and encapsulation
 In this release Depin, does not honor Ceylon encapsulation in any way. Whatever is scanned, can be injected. This will be modified in further release. 
@@ -83,7 +101,7 @@ void printInjection(Integer? integerSum){
 
 shared void run(){
 	Depin{
-		scanner.scan({`package`});
+		scanner.dependencies({`package`});
 	}.inject(`printInjection`);
 }
 ```
@@ -126,10 +144,9 @@ class TargetedInjection {
 
 shared void run(){
 	Depin{
-		scanner.scan({`package`});
+		scanner.dependencies({`package`});
 	}.inject(`TargetedInjection.printInjection`);
 } 
-
 ```
 ## Decorators 
 This framework uses concept of decorators defined via `Dependency.Decorator` interface. Each decorator is an annotation, 
@@ -164,8 +181,55 @@ void assertCollectorInjection(Collector<Integer> namingDoesntMatters){
 		
 shared void run(){
 	Depin{
-		scanner.scan({`package`});
+		scanner.dependencies({`package`});
 		}.inject(`assertCollectorInjection`);
 	}
 } 
 ```
+## Interoperation with java
+Because of Java type-system definition, where generics are not part of the type declaration, `Depin` usage can be a bit of pain. For cases, where there are not type parameters dependency injection should function without issues, but whenever generics are in place `<out Anything>`, type parameter declaration must be used.  
+
+Example:
+
+java class in native jvm module
+
+```java
+public class Generic<T>{
+	private T data;
+	
+	public Generic(T data){
+		this.data=data;
+	}
+	
+	public T getData(){
+		return data;
+	}
+	@Override
+	public String toString(){
+		return data.toString();
+	}
+}
+```
+
+dependencies declaration and usage in Ceylon
+
+
+```ceylon
+dependency Generic<out Anything> data= Generic("data");
+
+suppressWarnings("uncheckedTypeArguments")
+shared Generic<String> injection(Generic<out Anything> data){
+	assert( is Generic<String> data  );
+	return data;
+}
+
+shared void run(){
+	value dependencies=scanner.dependencies({`package`});
+	value result=Depin(dependencies).inject(`injection`);
+	assert(result==data);
+	print(result);
+}
+```
+
+
+    
