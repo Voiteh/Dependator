@@ -36,7 +36,8 @@ import test.herd.depin.engine.integration.injection {
 	functionInjection,
 	MethodInjection,
 	fallbackInjection,
-	CollectorInjection
+	CollectorInjection,
+	SubtypeCollectorInjection
 }
 
 
@@ -117,5 +118,15 @@ shared class SunnyInjectionTest() {
 			`value name`
 		}).extract<String>(`value name`);
 		assert(extractedName==fixture.person.john.name);
+	}
+	shared test void shouldInjectCollectableSubtypesCollector(){
+		value subtype=Depin({
+			`value fixture.dependencies.collector.collected.one`,
+			`value fixture.dependencies.collector.collected.two`
+		}).inject(`SubtypeCollectorInjection`);
+		assert(subtype.collector.collected.containsEvery({
+			fixture.dependencies.collector.collected.one,
+			fixture.dependencies.collector.collected.two
+		}));
 	}
 }

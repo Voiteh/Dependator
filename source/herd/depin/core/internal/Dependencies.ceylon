@@ -16,6 +16,10 @@ import herd.depin.core {
 	log,
 	Dependency
 }
+import herd.type.support {
+
+	flat
+}
 shared class Branch(MutableMap<Dependency.Definition,Dependency> map=HashMap<Dependency.Definition, Dependency>()) {
 	shared variable Dependency? fallback=null;
 	shared Dependency? add(Dependency dependency) {
@@ -90,6 +94,14 @@ shared class Dependencies(shared MutableMap<OpenType,Branch> branches= HashMap<O
 	
 	shared {Dependency*} all=> branches.flatMap((OpenType elementKey -> Branch elementItem) => elementItem.all);
 	
+	shared {Dependency*} getSubTypeOf(OpenType target) => 
+			branches.filter(
+				(OpenType key -> Branch item)=> flat.openTypes(key).contains(target)
+			).flatMap((OpenType key -> Branch item) => item.all);
+	
+	
+	
 	string => branches.fold("")((String initial, OpenType type -> Branch register) => initial + "``type``: ``register``\n\r" );
+	
 	
 }

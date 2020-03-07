@@ -15,7 +15,8 @@ import ceylon.language.meta.model {
 import herd.depin.core {
 	log,
 	Collector,
-	Dependency
+	Dependency,
+	SubtypeAnnotation
 }
 
 class CollectorDependency(Dependency.Definition definition,Dependencies tree) extends Dependency(definition){
@@ -32,11 +33,17 @@ class CollectorDependency(Dependency.Definition definition,Dependencies tree) ex
 		assert(is ValueDeclaration declaration=definition.declaration);
 		assert(is OpenClassType collectorOpenType=declaration.openType);
 		assert(exists OpenType collectedOpenType=collectorOpenType.typeArgumentList.first);
-		value collecting = tree.getByType(collectedOpenType);
-		log.trace("Collecting ``collecting``, by type ``collectedOpenType``");
+		{Dependency*} collecting;
+		log.trace("Collecting, by type ``collectedOpenType``");
+		if(declaration.annotated<SubtypeAnnotation>()){
+			collecting=tree.getSubTypeOf(collectedOpenType);
+		}else{
+			collecting = tree.getByType(collectedOpenType);
+			
+		}
+		log.trace("Resolving ``collecting``, by type ``collectedOpenType``");
 		value collected = collecting.collect((Dependency element) => element.resolve);
 		log.debug("Collected ``collected``, by type ``collectedOpenType``");
-		
 		if(exists first=collected.first){
 			value closedType=type(first);
 			value tuple=collectingTuple(collected.first, collected.rest);
@@ -56,7 +63,7 @@ class CollectorDependency(Dependency.Definition definition,Dependencies tree) ex
 			}
 			
 		}
-		throw Exception("No dependency for collection of ``collectedOpenType``");
+		throw Exception("There was no dependecy to be collected for ``declaration``");
 	}
 	
 }
