@@ -100,10 +100,13 @@ shared class Dependencies(shared MutableMap<OpenType,Branch> branches= HashMap<O
 	shared {Dependency*} all=> branches.flatMap((OpenType elementKey -> Branch elementItem) => elementItem.all);
 	
 	shared {Dependency*} getSubTypeOf(OpenType target) {
-		Boolean filter(OpenType  -> Branch item);
+		Boolean filter(OpenType -> Branch item);
 		switch(target)
 		case (is OpenUnion) {
 			filter=(OpenType key-> Branch item)=>flat.openTypes(key).containsAny(target.caseTypes);
+		}
+		case (is OpenIntersection){
+			filter=(OpenType key-> Branch item)=>flat.openTypes(key).containsEvery(target.satisfiedTypes);
 		}
 		else{
 			filter=(OpenType key-> Branch item)=>flat.openTypes(key).contains(target);

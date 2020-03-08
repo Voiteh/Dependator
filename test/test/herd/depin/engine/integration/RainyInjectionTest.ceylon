@@ -32,7 +32,7 @@ import test.herd.depin.engine.integration.injection {
 	Nesting,
 	DataSource,
 	Person,
-	CollectedInjection
+	SubtypeCollectedInjection
 }
 
 testExtension (`class LoggingTestExtension`)
@@ -91,7 +91,7 @@ shared class RainyInjectionTest() {
 	assertThatException(() => Depin({
 						`value fixture.dependencies.collector.collectable.one`,
 						`value fixture.dependencies.collector.collectable.two`
-					}).inject(`CollectedInjection`)
+					}).inject(`SubtypeCollectedInjection`)
 		)
 			.hasType(isInjectionError);
 	}

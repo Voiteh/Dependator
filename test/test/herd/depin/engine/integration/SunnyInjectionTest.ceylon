@@ -37,7 +37,9 @@ import test.herd.depin.engine.integration.injection {
 	MethodInjection,
 	fallbackInjection,
 	CollectorInjection,
-	SubtypeCollectorInjection
+	SubtypeCollectorInjection,
+	SubtypeUnionCollectedInjection,
+	SubtypeIntersectionCollectedInjection
 }
 
 
@@ -127,6 +129,29 @@ shared class SunnyInjectionTest() {
 		assert(subtype.collector.collected.containsEvery({
 			fixture.dependencies.collector.collected.one,
 			fixture.dependencies.collector.collected.two
+		}));
+	}
+	shared test void whenProvidedCollectableValues_then_shouldInjectSubtypeUnionTypeCollector(){
+		value subtype=Depin({
+			`value fixture.dependencies.collector.collected.one`,
+			`value fixture.dependencies.collector.collected.two`
+		}).inject(`SubtypeUnionCollectedInjection`);
+		assert(subtype.collector.collected.containsEvery({
+			fixture.dependencies.collector.collected.one,
+			fixture.dependencies.collector.collected.two
+		}));
+	}
+	shared test void whenProvidedIntegerValues_then_shouldInjectSubtypeIntersectionTypeCollector(){
+		value depin=Depin({
+			`value fixture.dependencies.collector.one`,
+			`value fixture.dependencies.collector.two`,
+			`value fixture.dependencies.collector.three`
+		});
+		value collector=depin.inject(`SubtypeIntersectionCollectedInjection`).collector;
+		assert(collector.collected.containsEvery({
+			fixture.dependencies.collector.one,
+			fixture.dependencies.collector.two,
+			fixture.dependencies.collector.three
 		}));
 	}
 }
