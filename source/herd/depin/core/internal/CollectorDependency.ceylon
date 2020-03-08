@@ -9,7 +9,8 @@ import ceylon.language.meta.declaration {
 }
 import ceylon.language.meta.model {
 	Class,
-	MemberClass
+	MemberClass,
+	Type
 }
 
 import herd.depin.core {
@@ -44,22 +45,26 @@ class CollectorDependency(Dependency.Definition definition,Dependencies tree) ex
 		log.trace("Resolving ``collecting``, by type ``collectedOpenType``");
 		value collected = collecting.collect((Dependency element) => element.resolve);
 		log.debug("Collected ``collected``, by type ``collectedOpenType``");
-		if(exists first=collected.first){
-			value closedType=type(first);
+		value closedType = collected.reduce((Anything partial, Anything element) {
+			value elementType=type(element);
+			if(is Type<>partial){
+				return partial.union(elementType);
+			}else{
+				return type(partial).union(elementType);
+			}
+		});
+		if(is Type<> closedType){
 			value tuple=collectingTuple(collected.first, collected.rest);
 			switch(closedType)
-			case (is Class<Object,Nothing>) {
-				assert(is Class<Object> collectorType = `class Collector`.apply<>(closedType));
-				return collectorType.apply(tuple);
-			}
-			else case (is MemberClass<Object,Nothing>) {
-				value clazz=closedType.bind(first);
+			case (is MemberClass<Object,Nothing>) {
+				value clazz=closedType.bind(collected.first);
 				assert(is Class<Object> collectorType = `class Collector`.apply<>(clazz));
 				return collectorType.apply(tuple);
 				
-			}
+			}		
 			else{
-				throw Exception("Unhandled collected type ``closedType``");
+				assert(is Class<Object> collectorType = `class Collector`.apply<>(closedType));
+				return collectorType.apply(tuple);
 			}
 			
 		}

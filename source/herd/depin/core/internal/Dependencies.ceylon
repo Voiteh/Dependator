@@ -3,7 +3,12 @@ import ceylon.collection {
 	HashMap
 }
 import ceylon.language.meta.declaration {
-	OpenType
+	OpenType,
+	OpenClassOrInterfaceType,
+	OpenTypeVariable,
+	OpenUnion,
+	OpenIntersection,
+	nothingType
 }
 
 
@@ -94,10 +99,21 @@ shared class Dependencies(shared MutableMap<OpenType,Branch> branches= HashMap<O
 	
 	shared {Dependency*} all=> branches.flatMap((OpenType elementKey -> Branch elementItem) => elementItem.all);
 	
-	shared {Dependency*} getSubTypeOf(OpenType target) => 
-			branches.filter(
-				(OpenType key -> Branch item)=> flat.openTypes(key).contains(target)
-			).flatMap((OpenType key -> Branch item) => item.all);
+	shared {Dependency*} getSubTypeOf(OpenType target) {
+		Boolean filter(OpenType  -> Branch item);
+		switch(target)
+		case (is OpenUnion) {
+			filter=(OpenType key-> Branch item)=>flat.openTypes(key).containsAny(target.caseTypes);
+		}
+		else{
+			filter=(OpenType key-> Branch item)=>flat.openTypes(key).contains(target);
+		}
+		return branches.filter(
+			(OpenType key -> Branch item)=> filter(key->item)
+		).flatMap((OpenType key -> Branch item) => item.all);
+		
+	}
+			
 	
 	
 	
