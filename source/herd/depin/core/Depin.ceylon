@@ -1,6 +1,7 @@
 import ceylon.language.meta.declaration {
 	FunctionOrValueDeclaration,
-	NestableDeclaration
+	NestableDeclaration,
+	ClassDeclaration
 }
 
 import herd.depin.core.internal {
@@ -39,7 +40,7 @@ shared class Depin {
 	"Transforms given declarations into dependencies allowing for further injection."
 	shared new(
 		"Declarations transformed into [[Dependencies]]"
-		{FunctionOrValueDeclaration*} declarations={}
+		{ClassDeclaration|FunctionOrValueDeclaration*} declarations={}
 	){
 		tree=Dependencies();
 		value handlers=Handlers();
@@ -51,7 +52,7 @@ shared class Depin {
 		notificationManager=NotificationManager(handlers);
 		factory=InjectionFactory(dependencyFactory,targetSelector);
 		
-		value dependencies = declarations.collect((FunctionOrValueDeclaration element) => dependencyFactory.create(element,false));
+		value dependencies = declarations.collect((ClassDeclaration|FunctionOrValueDeclaration element) => dependencyFactory.create(element,false));
 		validate(dependencies);	
 		dependencies.map(decorationManager.decorate)
 		.each((Dependency|Dependency.Decorated element)  {
