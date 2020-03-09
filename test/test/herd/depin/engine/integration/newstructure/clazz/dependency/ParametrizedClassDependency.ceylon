@@ -1,0 +1,1 @@
+shared class ParametrizedClassDependency<SomeParameter>(shared SomeParameter someParameter) {}

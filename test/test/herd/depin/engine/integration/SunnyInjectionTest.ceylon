@@ -40,6 +40,7 @@ import test.herd.depin.engine.integration.injection {
 }
 
 
+
 testExtension (`class LoggingTestExtension`)
 shared class SunnyInjectionTest() {
 	
@@ -118,4 +119,5 @@ shared class SunnyInjectionTest() {
 		}).extract<String>(`value name`);
 		assert(extractedName==fixture.person.john.name);
 	}
+	
 }

@@ -1,6 +1,7 @@
 import ceylon.language.meta.declaration {
 	FunctionOrValueDeclaration,
-	ConstructorDeclaration
+	ConstructorDeclaration,
+	ClassDeclaration
 }
 
 
@@ -75,7 +76,7 @@ shared final annotation class TargetAnnotation() satisfies OptionalAnnotation<Ta
 shared annotation TargetAnnotation target() => TargetAnnotation();
 
 see(`function named`)
-shared annotation final class NamedAnnotation(String name) satisfies OptionalAnnotation<NamedAnnotation,FunctionOrValueDeclaration>{
+shared annotation final class NamedAnnotation(String name) satisfies OptionalAnnotation<NamedAnnotation,FunctionOrValueDeclaration|ClassDeclaration>{
 	
 
 	shared actual Boolean equals(Object that) {

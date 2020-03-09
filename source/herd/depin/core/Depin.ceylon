@@ -44,7 +44,7 @@ shared class Depin {
 	){
 		tree=Dependencies();
 		value handlers=Handlers();
-		definitionFactory=DefinitionFactory(Identification.Holder([`NamedAnnotation`]));
+		definitionFactory=DefinitionFactory();
 		
 		value targetSelector=TargetSelector();
 		dependencyFactory=DependencyFactory(definitionFactory,targetSelector,tree);

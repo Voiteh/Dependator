@@ -1,11 +1,9 @@
-import ceylon.language.meta {
-	type
-}
 import ceylon.language.meta.declaration {
 	Declaration,
-	NestableDeclaration
+	NestableDeclaration,
+	ClassDeclaration,
+	CallableConstructorDeclaration
 }
-
 
 import herd.depin.core {
 	log,
@@ -13,30 +11,55 @@ import herd.depin.core {
 	NamedAnnotation,
 	Identification
 }
-shared class DefinitionFactory(Identification.Holder holder) {
-	shared Dependency.Definition create(Declaration declaration) {
+
+shared class DefinitionFactory() {
 	
-		if(is NestableDeclaration declaration){
-			variable {Annotation*} annotations;
-			try{
-				annotations = declaration.annotations<Annotation>()
-						.select((Annotation element) => holder.types.contains(type(element)));
-			}catch(Throwable x){
-				//Ceylon BUG (https://github.com/eclipse/ceylon/issues/7448)!!! We can't identifiy parameter by annotations but for now we can use name of the parameter.
+	shared Dependency.Definition create(Declaration declaration) {
+		
+		if (is NestableDeclaration declaration) {
+			variable NamedAnnotation? name;
+			try {
+				name = declaration.annotations<NamedAnnotation>().first;
+			} catch (Throwable x) {
+				//Ceylon BUG (https://github.com/eclipse/ceylon/issues/7448)!!!
+				//We can't identifiy parameter by annotations but for now we can use name of the parameter.
 				//This will be enough for most of cases. 
-				annotations={NamedAnnotation(declaration.name)};
+				name = NamedAnnotation(declaration.name);
 			}
-			 value definition = Dependency.Definition{ 
-				declaration = declaration; 
-				identification = if (annotations.empty && holder.types.contains(`NamedAnnotation`)) 
-				then Identification(NamedAnnotation(declaration.name)) 
-				else Identification(*annotations);
-				
+			if (!name exists) {
+				switch (declaration)
+				case (is ClassDeclaration) {
+					assert(exists value first = declaration.name.first?.lowercased);
+					if (declaration.name.empty) {
+						value newName = String({ first,
+							*declaration.name.rest });
+						name = NamedAnnotation(newName);
+					} else {
+						name = NamedAnnotation(declaration.name);
+					}
+				}
+				case (is CallableConstructorDeclaration) {
+					assert(exists value first = declaration.container.name.first?.lowercased);
+					if (declaration.name.empty) {
+						value newName = String({ first,
+							 *declaration.container.name.rest });
+						name = NamedAnnotation(newName);
+					} else {
+						name = NamedAnnotation(declaration.name);
+					}
+				}
+				else {
+					name = NamedAnnotation(declaration.name);
+				}
+			}
+			assert (exists namedAnnotation = name);
+			value definition = Dependency.Definition {
+				declaration = declaration;
+				identification = Identification(namedAnnotation);
 			};
 			log.debug("[Created Definition]: ``definition``, for declaration: ``declaration``");
 			return definition;
 		}
 		throw Exception("``declaration`` not supported");
 	}
-	
 }
