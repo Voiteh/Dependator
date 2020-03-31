@@ -38,7 +38,7 @@ shared class ScannerSunnyTest(){
 		value result=scanner.subtypeDependencies(`interface Scannable`,{`module`},{`class Excluded`});
 		assert(result.size==1);
 	}
-	shared test void whenScannedInSearchOfClassExteingDeclarations_shouldFind2Classes(){
+	shared test void whenScannedInSearchOfClassExtendigDeclarations_shouldFind2Classes(){
 		value result=scanner.subtypeDependencies(`class Scanned`,{`module`},{`class Excluded`});
 		assert(result.size==2);
 	}

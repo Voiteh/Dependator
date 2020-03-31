@@ -1,7 +1,8 @@
 import ceylon.language.meta.declaration {
 	FunctionOrValueDeclaration,
 	NestableDeclaration,
-	ClassDeclaration
+	ClassDeclaration,
+	Declaration
 }
 
 import herd.depin.core.internal {
@@ -15,9 +16,11 @@ import herd.depin.core.internal {
 	NotificationManager
 }
 
-
+shared class FactorizationError(Declaration declaration,String message,Throwable? cause=null) 
+		extends Exception("[``declaration``] ``message``",cause){}
 
 "Main entry point for this framework to operate. "
+throws(`class FactorizationError`,"Can't create given dependency from provided declaration")
 shared class Depin {
 	"Notification state used by [[Handler]]s to allocate resources whenver [[Depin]] finishes initialization"
 	shared static abstract class State() of ready{}

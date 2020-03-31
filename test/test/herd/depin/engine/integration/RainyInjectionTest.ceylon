@@ -84,4 +84,7 @@ shared class RainyInjectionTest() {
 				Depin({ `value nested` }).extract<String>(`value name`))
 			.hasType(isResolutionError);
 	}
+	
+	
+	
 }
