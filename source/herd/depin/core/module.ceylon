@@ -51,7 +51,7 @@
    		assert(topLevelValue.size==result);
    }
    ```
-   ## Dependency extraction (from 0.1.0)
+   ## Dependency extraction (since 0.1.0)
    To provide easier interoperation with frameworks where programmer has no control, over creating objects such as Android SDK, `Depin.extract` functionality has been introduced. It allows to provide resolved dependencies into the caller. So going with example of Android SDK, in `Activity.onCreate`, dependencies can be obtained by using correct naming and typing. Then they can be bounded to `late` or `variable` fields and used in life-cycle of `Activity`. Be aware that `Depin` does not provide any ability for disposing of these dependencies. Although this can be achieved using dependency decorators and event handlers, notified through `Depin.notify` method. It would vary by use-case, as each framework uses different interface for disposing. 
    
    Example:
@@ -179,6 +179,30 @@
 		   }
    } 
    ```
+   
+   ## Subtype collector (since 0.2.0)
+   It is sometimes usefull to retreive whole set of object beign subtype of given type. [[subtype]] annotation has been introduced for this case.
+   Whenver declaring injection with [[Collector]] parameter, annotated with [[subtype]] annotation, [[Depin]] will know that You want all dependencies subtyping type parameter [[Collector<Collecting>]] and try to inject them.
+   Union types and Intersection types are also taken in consideration. Results includes exact types of [[Collector]] type parameter. 
+   
+   Example:
+   ```
+   dependency Integer one=1;
+   dependency Integer two=2;
+   dependency String str="abc";
+   dependency Float float=1.3;
+   void assertSubtypeCollectorInjection(subtype Collector<Object?> namingDoesntMatters){
+   	assert(namingDoesntMatters.collected.containsEvery({one,two,str,float}));
+   }
+   
+   shared void run(){
+   	Depin{
+   		scanner.dependencies({`package`});
+   	}.inject(`assertSubtypeCollectorInjection`);
+   }
+
+   ```
+   
    # Interoperation with java
    Because of Java type-system definition, where generics are not part of the type declaration, `Depin` usage can be a bit of pain. For cases, where there are not type parameters dependency injection should function without issues, but whenever generics are in place `<out Anything>`, type parameter declaration must be used.  
    

@@ -31,7 +31,8 @@ import test.herd.depin.engine.integration.injection {
 	DefaultParametersConstructor,
 	Nesting,
 	DataSource,
-	Person
+	Person,
+	SubtypeCollectedInjection
 }
 
 testExtension (`class LoggingTestExtension`)
@@ -84,7 +85,14 @@ shared class RainyInjectionTest() {
 				Depin({ `value nested` }).extract<String>(`value name`))
 			.hasType(isResolutionError);
 	}
-	
-	
-	
+
+	shared test
+	void whenProvidedSupertypeDependencies_shouldNotInjectThemIntoCollector() {
+	assertThatException(() => Depin({
+						`value fixture.dependencies.collector.collectable.one`,
+						`value fixture.dependencies.collector.collectable.two`
+					}).inject(`SubtypeCollectedInjection`)
+		)
+			.hasType(isInjectionError);
+	}
 }

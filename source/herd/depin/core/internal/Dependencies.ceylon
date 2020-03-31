@@ -3,7 +3,12 @@ import ceylon.collection {
 	HashMap
 }
 import ceylon.language.meta.declaration {
-	OpenType
+	OpenType,
+	OpenClassOrInterfaceType,
+	OpenTypeVariable,
+	OpenUnion,
+	OpenIntersection,
+	nothingType
 }
 
 
@@ -15,6 +20,10 @@ import herd.depin.core {
 
 	log,
 	Dependency
+}
+import herd.type.support {
+
+	flat
 }
 shared class Branch(MutableMap<Dependency.Definition,Dependency> map=HashMap<Dependency.Definition, Dependency>()) {
 	shared variable Dependency? fallback=null;
@@ -90,6 +99,28 @@ shared class Dependencies(shared MutableMap<OpenType,Branch> branches= HashMap<O
 	
 	shared {Dependency*} all=> branches.flatMap((OpenType elementKey -> Branch elementItem) => elementItem.all);
 	
+	shared {Dependency*} getSubTypeOf(OpenType target) {
+		Boolean filter(OpenType -> Branch item);
+		switch(target)
+		case (is OpenUnion) {
+			filter=(OpenType key-> Branch item)=>flat.openTypes(key).containsAny(target.caseTypes);
+		}
+		case (is OpenIntersection){
+			filter=(OpenType key-> Branch item)=>flat.openTypes(key).containsEvery(target.satisfiedTypes);
+		}
+		else{
+			filter=(OpenType key-> Branch item)=>flat.openTypes(key).contains(target);
+		}
+		return branches.filter(
+			(OpenType key -> Branch item)=> filter(key->item)
+		).flatMap((OpenType key -> Branch item) => item.all);
+		
+	}
+			
+	
+	
+	
 	string => branches.fold("")((String initial, OpenType type -> Branch register) => initial + "``type``: ``register``\n\r" );
+	
 	
 }

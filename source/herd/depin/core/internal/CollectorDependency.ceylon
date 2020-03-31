@@ -9,13 +9,15 @@ import ceylon.language.meta.declaration {
 }
 import ceylon.language.meta.model {
 	Class,
-	MemberClass
+	MemberClass,
+	Type
 }
 
 import herd.depin.core {
 	log,
 	Collector,
-	Dependency
+	Dependency,
+	SubtypeAnnotation
 }
 
 class CollectorDependency(Dependency.Definition definition,Dependencies tree) extends Dependency(definition){
@@ -32,31 +34,41 @@ class CollectorDependency(Dependency.Definition definition,Dependencies tree) ex
 		assert(is ValueDeclaration declaration=definition.declaration);
 		assert(is OpenClassType collectorOpenType=declaration.openType);
 		assert(exists OpenType collectedOpenType=collectorOpenType.typeArgumentList.first);
-		value collecting = tree.getByType(collectedOpenType);
-		log.trace("Collecting ``collecting``, by type ``collectedOpenType``");
+		{Dependency*} collecting;
+		log.trace("Collecting, by type ``collectedOpenType``");
+		if(declaration.annotated<SubtypeAnnotation>()){
+			collecting=tree.getSubTypeOf(collectedOpenType);
+		}else{
+			collecting = tree.getByType(collectedOpenType);
+			
+		}
+		log.trace("Resolving ``collecting``, by type ``collectedOpenType``");
 		value collected = collecting.collect((Dependency element) => element.resolve);
 		log.debug("Collected ``collected``, by type ``collectedOpenType``");
-		
-		if(exists first=collected.first){
-			value closedType=type(first);
+		value closedType = collected.reduce((Anything partial, Anything element) {
+			value elementType=type(element);
+			if(is Type<>partial){
+				return partial.union(elementType);
+			}else{
+				return type(partial).union(elementType);
+			}
+		});
+		if(is Type<> closedType){
 			value tuple=collectingTuple(collected.first, collected.rest);
 			switch(closedType)
-			case (is Class<Object,Nothing>) {
-				assert(is Class<Object> collectorType = `class Collector`.apply<>(closedType));
-				return collectorType.apply(tuple);
-			}
-			else case (is MemberClass<Object,Nothing>) {
-				value clazz=closedType.bind(first);
+			case (is MemberClass<Object,Nothing>) {
+				value clazz=closedType.bind(collected.first);
 				assert(is Class<Object> collectorType = `class Collector`.apply<>(clazz));
 				return collectorType.apply(tuple);
 				
-			}
+			}		
 			else{
-				throw Exception("Unhandled collected type ``closedType``");
+				assert(is Class<Object> collectorType = `class Collector`.apply<>(closedType));
+				return collectorType.apply(tuple);
 			}
 			
 		}
-		throw Exception("No dependency for collection of ``collectedOpenType``");
+		throw Exception("There was no dependecy to be collected for ``declaration``");
 	}
 	
 }
