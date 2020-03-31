@@ -1,6 +1,8 @@
 import ceylon.language.meta.declaration {
 	FunctionOrValueDeclaration,
-	NestableDeclaration
+	NestableDeclaration,
+	ClassDeclaration,
+	Declaration
 }
 
 import herd.depin.core.internal {
@@ -14,9 +16,11 @@ import herd.depin.core.internal {
 	NotificationManager
 }
 
-
+shared class FactorizationError(Declaration declaration,String message,Throwable? cause=null) 
+		extends Exception("[``declaration``] ``message``",cause){}
 
 "Main entry point for this framework to operate. "
+throws(`class FactorizationError`,"Can't create given dependency from provided declaration")
 shared class Depin {
 	"Notification state used by [[Handler]]s to allocate resources whenver [[Depin]] finishes initialization"
 	shared static abstract class State() of ready{}
@@ -39,11 +43,11 @@ shared class Depin {
 	"Transforms given declarations into dependencies allowing for further injection."
 	shared new(
 		"Declarations transformed into [[Dependencies]]"
-		{FunctionOrValueDeclaration*} declarations={}
+		{ClassDeclaration|FunctionOrValueDeclaration*} declarations={}
 	){
 		tree=Dependencies();
 		value handlers=Handlers();
-		definitionFactory=DefinitionFactory(Identification.Holder([`NamedAnnotation`]));
+		definitionFactory=DefinitionFactory();
 		
 		value targetSelector=TargetSelector();
 		dependencyFactory=DependencyFactory(definitionFactory,targetSelector,tree);
@@ -51,7 +55,7 @@ shared class Depin {
 		notificationManager=NotificationManager(handlers);
 		factory=InjectionFactory(dependencyFactory,targetSelector);
 		
-		value dependencies = declarations.collect((FunctionOrValueDeclaration element) => dependencyFactory.create(element,false));
+		value dependencies = declarations.collect((ClassDeclaration|FunctionOrValueDeclaration element) => dependencyFactory.create(element,false));
 		validate(dependencies);	
 		dependencies.map(decorationManager.decorate)
 		.each((Dependency|Dependency.Decorated element)  {

@@ -1,0 +1,1 @@
+class Satisfing() satisfies Scannable{}

@@ -85,7 +85,7 @@ shared class RainyInjectionTest() {
 				Depin({ `value nested` }).extract<String>(`value name`))
 			.hasType(isResolutionError);
 	}
-	
+
 	shared test
 	void whenProvidedSupertypeDependencies_shouldNotInjectThemIntoCollector() {
 	assertThatException(() => Depin({

@@ -5,7 +5,6 @@ import ceylon.language.meta.declaration {
 	ValueConstructorDeclaration,
 	ClassDeclaration,
 	FunctionalDeclaration,
-	Declaration,
 	FunctionOrValueDeclaration,
 	OpenClassType
 }
@@ -13,7 +12,8 @@ import ceylon.language.meta.declaration {
 import herd.depin.core {
 	log,
 	Collector,
-	Dependency
+	Dependency,
+	FactorizationError
 }
 
 
@@ -60,7 +60,10 @@ shared class DependencyFactory(DefinitionFactory definitionFactory,TargetSelecto
 	
 			}
 			else case (is ClassDeclaration) {
-				if (exists anonymousObjectDeclaration = declaration.objectValue) {
+				if(declaration.abstract){
+					throw FactorizationError(declaration,"Can't create dependency out of abstract class");
+				}
+				else if (exists anonymousObjectDeclaration = declaration.objectValue) {
 					Dependency.Definition definition =  definitionFactory.create(anonymousObjectDeclaration);
 					dependency= ValueDependency(definition,containerDependency) ;
 				} else { 
@@ -85,6 +88,5 @@ shared class DependencyFactory(DefinitionFactory definitionFactory,TargetSelecto
 		return dependency;
 	}
 	
-	shared class FactorizationError(Declaration declaration,String message,Throwable? cause=null) 
-			extends Exception("[``declaration``] ``message``",cause){}
+	
 }

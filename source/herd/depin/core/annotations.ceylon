@@ -1,12 +1,10 @@
 import ceylon.language.meta.declaration {
 	FunctionOrValueDeclaration,
 	ConstructorDeclaration,
+	ClassDeclaration,
 	ValueDeclaration
 }
 import ceylon.language.meta.model {
-
-	Attribute,
-	Value,
 	ValueModel
 }
 
@@ -81,7 +79,7 @@ shared final annotation class TargetAnnotation() satisfies OptionalAnnotation<Ta
 shared annotation TargetAnnotation target() => TargetAnnotation();
 
 see(`function named`)
-shared annotation final class NamedAnnotation(String name) satisfies OptionalAnnotation<NamedAnnotation,FunctionOrValueDeclaration>{
+shared annotation final class NamedAnnotation(String name) satisfies OptionalAnnotation<NamedAnnotation,FunctionOrValueDeclaration|ClassDeclaration>{
 	
 
 	shared actual Boolean equals(Object that) {
@@ -108,4 +106,4 @@ shared annotation final class SubtypeAnnotation() satisfies OptionalAnnotation
 }
 "Annotation used for defining wheter collected dependencies should be also subtype of given type parameter of [[Collector]]"
 shared annotation SubtypeAnnotation subtype()=> SubtypeAnnotation();
-	
+
