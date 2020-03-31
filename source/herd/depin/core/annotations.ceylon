@@ -1,6 +1,13 @@
 import ceylon.language.meta.declaration {
 	FunctionOrValueDeclaration,
-	ConstructorDeclaration
+	ConstructorDeclaration,
+	ValueDeclaration
+}
+import ceylon.language.meta.model {
+
+	Attribute,
+	Value,
+	ValueModel
 }
 
 
@@ -16,7 +23,6 @@ shared annotation FallbackDecorator fallback() => FallbackDecorator();
 
 
 
-see(`function singleton`)
 see(`function eager`)
 shared final annotation class EagerDecorator() satisfies Dependency.Decorator &
 		OptionalAnnotation<EagerDecorator,FunctionOrValueDeclaration>{
@@ -93,3 +99,13 @@ shared annotation final class NamedAnnotation(String name) satisfies OptionalAnn
 }
 "Annotation allowing to rename dependency, which will be used for injection"
 shared annotation NamedAnnotation named(String name) => NamedAnnotation(name);
+
+see(`function subtype`)
+shared annotation final class SubtypeAnnotation() satisfies OptionalAnnotation
+		<SubtypeAnnotation,ValueDeclaration,ValueModel<Collector<Anything>>>
+{
+	string => "subtype";
+}
+"Annotation used for defining wheter collected dependencies should be also subtype of given type parameter of [[Collector]]"
+shared annotation SubtypeAnnotation subtype()=> SubtypeAnnotation();
+	
