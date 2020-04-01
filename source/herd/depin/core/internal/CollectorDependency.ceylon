@@ -3,9 +3,9 @@ import ceylon.language.meta {
 	type
 }
 import ceylon.language.meta.declaration {
-	ValueDeclaration,
 	OpenClassType,
-	OpenType
+	OpenType,
+	FunctionOrValueDeclaration
 }
 import ceylon.language.meta.model {
 	Class,
@@ -20,7 +20,7 @@ import herd.depin.core {
 	SubtypeAnnotation
 }
 
-class CollectorDependency(Dependency.Definition definition,Dependencies tree) extends Dependency(definition){
+class CollectorDependency(FunctionOrValueDeclaration declaration, Dependency.Definition definition,Dependencies tree) extends Dependency(declaration,definition){
 
 	[Object*] collectingTuple(Anything first,Anything[] rest){
 		if(exists first){
@@ -31,7 +31,6 @@ class CollectorDependency(Dependency.Definition definition,Dependencies tree) ex
 
 
 	shared actual Anything resolve {
-		assert(is ValueDeclaration declaration=definition.declaration);
 		assert(is OpenClassType collectorOpenType=declaration.openType);
 		assert(exists OpenType collectedOpenType=collectorOpenType.typeArgumentList.first);
 		{Dependency*} collecting;

@@ -28,12 +28,12 @@ shared class DependencyFactory(DefinitionFactory definitionFactory,TargetSelecto
 			Dependency.Definition definition =  definitionFactory.create(declaration);
 			assert(is FunctionOrValueDeclaration declaration);
 			if(is OpenClassType declarationOpenType=declaration.openType,declarationOpenType.declaration==`class Collector`){
-				dependency=CollectorDependency(definition, tree);					
+				dependency=CollectorDependency(declaration,definition, tree);					
 			}
 			else if(declaration.defaulted){
-				dependency= DefaultedParameterDependency(definition, tree);
+				dependency= DefaultedParameterDependency(declaration,definition, tree);
 			}else{
-				dependency=ParameterDependency(definition, tree);
+				dependency=ParameterDependency(declaration,definition, tree);
 			}
 		}
 		else{
@@ -51,12 +51,12 @@ shared class DependencyFactory(DefinitionFactory definitionFactory,TargetSelecto
 				Dependency.Definition definition =  definitionFactory.create(declaration);
 				value parameterDependencies = declaration.parameterDeclarations
  						.collect((FunctionOrValueDeclaration element) => create(element,true));
-				dependency= FunctionalDependency( definition, containerDependency, parameterDependencies);
+				dependency= FunctionalDependency(declaration, definition, containerDependency, parameterDependencies);
 				
 			}
 			else case (is ValueDeclaration) {
 				Dependency.Definition definition =  definitionFactory.create(declaration);
-				dependency= ValueDependency(definition, containerDependency);
+				dependency= GettableDependency(declaration,definition, containerDependency);
 	
 			}
 			else case (is ClassDeclaration) {
@@ -65,19 +65,23 @@ shared class DependencyFactory(DefinitionFactory definitionFactory,TargetSelecto
 				}
 				else if (exists anonymousObjectDeclaration = declaration.objectValue) {
 					Dependency.Definition definition =  definitionFactory.create(anonymousObjectDeclaration);
-					dependency= ValueDependency(definition,containerDependency) ;
+					dependency= GettableDependency(anonymousObjectDeclaration,definition,containerDependency) ;
 				} else { 
+					
 					value constructor = targetSelector.select(declaration);
-					Dependency.Definition definition =  definitionFactory.create(constructor);
+					Dependency.Definition constructorDefinition =  definitionFactory.create(constructor);
+					Dependency constructorDependency;
 					switch(constructor) 
 					case(is CallableConstructorDeclaration ){
 						value parameterDependencies = constructor.parameterDeclarations
-								.collect((FunctionOrValueDeclaration element) => ParameterDependency(definitionFactory.create(element), tree));
-						dependency= FunctionalDependency( definition, containerDependency, parameterDependencies);
+								.collect((FunctionOrValueDeclaration element) => ParameterDependency(constructor,definitionFactory.create(element), tree));
+						constructorDependency= FunctionalDependency(constructor, constructorDefinition, containerDependency, parameterDependencies);
 					}
 					case(is ValueConstructorDeclaration){
-						dependency= ValueDependency(definition,containerDependency) ;
+						constructorDependency= GettableDependency(constructor,constructorDefinition,containerDependency) ;
 					}
+					value classDefinitnion=definitionFactory.create(declaration);
+					dependency=ClassDependency(declaration, classDefinitnion, constructorDependency);
 				}
 			}
 			else {

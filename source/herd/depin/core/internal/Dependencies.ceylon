@@ -22,8 +22,11 @@ import herd.type.support {
 
 	flat
 }
-shared class Branch(MutableMap<Dependency.Definition,Dependency> map=HashMap<Dependency.Definition, Dependency>()) {
+shared class Branch(
+	MutableMap<Dependency.Definition,Dependency> map=HashMap<Dependency.Definition, Dependency>()
+) {
 	shared variable Dependency? fallback=null;
+	
 	shared Dependency? add(Dependency dependency) {
 		log.trace("Adding dependency to old branch ``dependency``");
 		value replaced = map.put(dependency.definition,dependency);
@@ -47,40 +50,42 @@ shared class Branch(MutableMap<Dependency.Definition,Dependency> map=HashMap<Dep
 		});
 
 	}
-	string=> map.fold("")((String initial, Dependency.Definition dependency -> Dependency injectable) => initial + ",``dependency.identification``" )	;
+	string=> map.fold("\t")((String initial, Dependency.Definition definition -> Dependency dependency) => initial + ",``definition.string``" )	;
 }
-shared class Dependencies(shared MutableMap<OpenType,Branch> branches= HashMap<OpenType,Branch>()) {
+shared class Dependencies(
+	shared MutableMap<OpenType[],Branch> branches= HashMap<OpenType[],Branch>()
+) {
 	Logger log=createLogger(`module`);
 	shared Dependency? get(Dependency.Definition definition) {
 		log.trace("Getting dependency for definition: ``definition``");
-		value dependency= branches.get(definition.declaration.openType)?.get(definition);
+		value dependency= branches.get(definition.types)?.get(definition);
 		log.trace("In branch found dependency ``dependency else "null"`` for definition: ``definition``");
 		return dependency;
 	}
 	shared Dependency? getFallback(Dependency.Definition definition){
 		log.trace("Getting fallback dependency for definition: ``definition``");
-		value dependency = branches.get(definition.declaration.openType)?.fallback;
+		value dependency = branches.get(definition.types)?.fallback;
 		log.trace("In branch found fallback dependency ``dependency else "null"`` for definition: ``definition``");
 		return dependency;
 	}
 	shared void addFallback(Dependency dependency){
-		value get = branches.get(dependency.definition.declaration.openType);
+		value get = branches.get(dependency.definition.types);
 		if (exists get) {
 			get.fallback=dependency;
 		}
 		value branch=Branch();
-		branches.put(dependency.definition.declaration.openType,branch);
+		branches.put(dependency.definition.types,branch);
 		branch.fallback=dependency;
 	}
 	shared Dependency? add(Dependency dependency) {
-		value get = branches.get(dependency.definition.declaration.openType);
+		value get = branches.get(dependency.definition.types);
 		if (exists get) {
 			log.trace("Adding dependency to old branch ``dependency``");
 			return get.add(dependency);
 		}
 		log.trace("Adding dependency to new branch ``dependency``");
 		value branch=Branch();
-		branches.put(dependency.definition.declaration.openType,branch);
+		branches.put(dependency.definition.types,branch);
 		return branch.add(dependency);
 	}
 	
@@ -91,10 +96,10 @@ shared class Dependencies(shared MutableMap<OpenType,Branch> branches= HashMap<O
 		});
 	}
 	shared {Dependency*} getByType(OpenType type){
-		return branches.get(type)?.all else empty;
+		return branches.get([type])?.all else empty;
 	}
 	
-	shared {Dependency*} all=> branches.flatMap((OpenType elementKey -> Branch elementItem) => elementItem.all);
+	shared {Dependency*} all=> branches.flatMap((OpenType[] elementKey -> Branch elementItem) => elementItem.all);
 	
 	shared {Dependency*} getSubTypeOf(OpenType target) {
 		Boolean filter(OpenType -> Branch item);
@@ -108,8 +113,12 @@ shared class Dependencies(shared MutableMap<OpenType,Branch> branches= HashMap<O
 		else{
 			filter=(OpenType key-> Branch item)=>flat.openTypes(key).contains(target);
 		}
-		return branches.filter(
-			(OpenType key -> Branch item)=> filter(key->item)
+		return branches
+				.filter((OpenType[] key -> Branch item)=>key.size==1)
+				.map((OpenType[] key -> Branch item){
+			assert(exists first= key.first);
+			return first -> item;
+		}).filter((OpenType key -> Branch item)=> filter(key->item)
 		).flatMap((OpenType key -> Branch item) => item.all);
 		
 	}
@@ -117,7 +126,7 @@ shared class Dependencies(shared MutableMap<OpenType,Branch> branches= HashMap<O
 	
 	
 	
-	string => branches.fold("")((String initial, OpenType type -> Branch register) => initial + "``type``: ``register``\n\r" );
+	string => branches.fold("")((String initial, OpenType[] type -> Branch register) => initial + "``type``: ``register``\n\r" );
 	
 	
 }
