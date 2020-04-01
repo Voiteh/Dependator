@@ -57,16 +57,26 @@
    Example:
    ```ceylon
    class UnaccesibleDependencyContainer(){
-	   suppressWarnings("unusedDeclaration")
-	   dependency String name="abc";
+     suppressWarnings("unusedDeclaration")
+     dependency String name="abc";
    }
    
-   late String name;
-   shared void onCreate(){
-	   value dependencies = scanner.dependencies({`package`});
-	   name = Depin(dependencies).extract<String>(`value name`);
-	   assert(name=="abc");
-	   print(name);
+   
+   
+   class Activity(){
+     late String name;
+   
+     shared void onCreate(){
+       //Used because can't obtain metamodel reference to local declaration: name value
+       assert(exists nameReference = `class Activity`.getDeclaredMemberDeclaration<ValueDeclaration>("name"));
+       value dependencies = scanner.dependencies({`package`});
+       name = Depin(dependencies).extract<String>(nameReference);
+       assert(name=="abc");
+       print(name);
+     }	
+   }
+   shared void run(){
+     Activity().onCreate();
    }
    
    ```
@@ -249,8 +259,7 @@
    }
    ```   
    """
-module herd.depin.core "0.1.0" {
-	
+module herd.depin.core "0.2.0-SNAPSHOT" {
 	shared import ceylon.logging "1.3.3";
 	shared import ceylon.collection "1.3.3";
 	import herd.type.support "0.2.0";
