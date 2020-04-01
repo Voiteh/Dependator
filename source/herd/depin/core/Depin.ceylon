@@ -13,7 +13,8 @@ import herd.depin.core.internal {
 	Dependencies,
 	DependencyFactory,
 	Handlers,
-	NotificationManager
+	NotificationManager,
+	Exposing
 }
 
 shared class FactorizationError(Declaration declaration,String message,Throwable? cause=null) 
@@ -62,6 +63,9 @@ shared class Depin {
 			tree.add(element);
 			if(is Dependency.Decorated element, element.decorators.narrow<FallbackDecorator>().first exists){
 				tree.addFallback(element);
+			}
+			if(is Exposing element ){
+				tree.add(element.exposed);
 			}
 		});
 		notificationManager.notify(ready);

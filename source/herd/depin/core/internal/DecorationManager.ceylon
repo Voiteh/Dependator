@@ -32,7 +32,7 @@ shared class DecorationManager(Handlers handlers) {
 	shared Dependency|Dependency.Decorated decorate(Dependency dependency) {
 		log.trace("decorating ``dependency``");
 		
-		Dependency|Dependency.Decorated decorated = decorators(dependency.definition.declaration).fold(dependency)
+		Dependency|Dependency.Decorated decorated = decorators(dependency.declaration).fold(dependency)
 		((Dependency subject, Dependency.Decorator decorator) {
 			Dependency.Decorated result=decorator.decorate(subject);
 			log.debug("[Decorated]: ``dependency``, with ``decorator``");

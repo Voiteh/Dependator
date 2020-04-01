@@ -9,11 +9,16 @@ import herd.depin.core.internal.util {
 	invoke,
 	safe
 }
+import ceylon.language.meta.declaration {
+	FunctionalDeclaration,
+	NestableDeclaration
+}
 class FunctionalDependency(
+	FunctionalDeclaration&NestableDeclaration declaration,
 	Dependency.Definition definition,
 	Dependency? container,
 	{Dependency*} parameters
-) extends Dependency(definition,container,parameters){
+) extends Dependency(declaration,definition,container,parameters){
 	
 	shared actual Anything resolve{
 		log.trace("Resolving functional dependency: ``definition``");
@@ -23,7 +28,7 @@ class FunctionalDependency(
 		log.trace("[Resolved] functional parameters:``resolvedParameters`` for definition: ``definition``");
 		value resolvedContainer=safe(()=>container?.resolve)
 		((Throwable error) => ResolutionError("Error durring container resolution for: ``container else "null"`` in ``this``",error));
-		value it = safe(()=> invoke(definition.declaration,resolvedContainer,resolvedParameters))
+		value it = safe(()=> invoke(declaration,resolvedContainer,resolvedParameters))
 		((Throwable error)=>ResolutionError("Invocation for dependency ``definition`` failed for container ``resolvedContainer else "null"`` and parameters ``resolvedParameters``",error));
 		log.debug("[Resolved] functional dependency ``it else "null"``, for definition: ``definition``");
 		 return it;
