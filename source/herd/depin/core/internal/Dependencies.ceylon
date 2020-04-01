@@ -4,11 +4,8 @@ import ceylon.collection {
 }
 import ceylon.language.meta.declaration {
 	OpenType,
-	OpenClassOrInterfaceType,
-	OpenTypeVariable,
 	OpenUnion,
-	OpenIntersection,
-	nothingType
+	OpenIntersection
 }
 
 
