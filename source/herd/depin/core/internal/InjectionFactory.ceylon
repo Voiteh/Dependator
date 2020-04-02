@@ -18,6 +18,11 @@ import herd.depin.core {
 	Injectable,
 	Injection
 }
+import herd.depin.core.internal.injection {
+	FunctionModelInjection,
+	ValueModelInjection
+}
+
 
 shared class InjectionFactory(DependencyFactory dependencyFactory, TargetSelector selector) {
 	shared Injection create(Injectable<Anything> injectable) {

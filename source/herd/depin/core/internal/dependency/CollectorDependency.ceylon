@@ -3,7 +3,6 @@ import ceylon.language.meta {
 	type
 }
 import ceylon.language.meta.declaration {
-	OpenClassType,
 	OpenType,
 	FunctionOrValueDeclaration
 }
@@ -20,7 +19,11 @@ import herd.depin.core {
 	SubtypeAnnotation
 }
 
-class CollectorDependency(FunctionOrValueDeclaration declaration, Dependency.Definition definition,Dependencies tree) extends Dependency(declaration,definition){
+shared class CollectorDependency(
+	FunctionOrValueDeclaration declaration, 
+	TypeIdentifier types,
+	TypeIdentifier collectedTypes,
+	Tree tree) extends Dependency(declaration,types){
 
 	[Object*] collectingTuple(Anything first,Anything[] rest){
 		if(exists first){
@@ -31,19 +34,19 @@ class CollectorDependency(FunctionOrValueDeclaration declaration, Dependency.Def
 
 
 	shared actual Anything resolve {
-		assert(is OpenClassType collectorOpenType=declaration.openType);
-		assert(exists OpenType collectedOpenType=collectorOpenType.typeArgumentList.first);
+		
 		{Dependency*} collecting;
-		log.trace("Collecting, by type ``collectedOpenType``");
+		log.trace("Collecting, by type ``collectedTypes``");
 		if(declaration.annotated<SubtypeAnnotation>()){
-			collecting=tree.getSubTypeOf(collectedOpenType);
+			assert(is OpenType collectedTypes);
+			collecting=tree.getSubTypeOf(collectedTypes);
 		}else{
-			collecting = tree.getByType(collectedOpenType);
+			collecting = tree.getAllByIdentifier(collectedTypes);
 			
 		}
-		log.trace("Resolving ``collecting``, by type ``collectedOpenType``");
+		log.trace("Resolving ``collecting``, by type ``collectedTypes``");
 		value collected = collecting.collect((Dependency element) => element.resolve);
-		log.debug("Collected ``collected``, by type ``collectedOpenType``");
+		log.debug("Collected ``collected``, by type ``collectedTypes``");
 		value closedType = collected.reduce((Anything partial, Anything element) {
 			value elementType=type(element);
 			if(is Type<>partial){

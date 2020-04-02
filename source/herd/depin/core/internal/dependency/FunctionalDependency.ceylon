@@ -13,24 +13,27 @@ import ceylon.language.meta.declaration {
 	FunctionalDeclaration,
 	NestableDeclaration
 }
-class FunctionalDependency(
+import herd.depin.core.internal {
+	Defaulted
+}
+shared class FunctionalDependency(
 	FunctionalDeclaration&NestableDeclaration declaration,
-	Dependency.Definition definition,
+	FunctionalOpenType identifier,
 	Dependency? container,
 	{Dependency*} parameters
-) extends Dependency(declaration,definition,container,parameters){
+) extends Dependency(declaration,identifier,container,parameters){
 	
 	shared actual Anything resolve{
-		log.trace("Resolving functional dependency: ``definition``");
+		log.trace("Resolving functional dependency: ``identifier``");
 		value resolvedParameters = parameters.collect((Dependency element) => safe(()=> element.resolve)
 			((Throwable error) => ResolutionError("Error durring parameter resolution for: ``element`` in ``this``",error)))
 				.filter((Anything element) =>!element is Defaulted).sequence();
-		log.trace("[Resolved] functional parameters:``resolvedParameters`` for definition: ``definition``");
+		log.trace("[Resolved] functional parameters:``resolvedParameters`` for definition: ``identifier``");
 		value resolvedContainer=safe(()=>container?.resolve)
 		((Throwable error) => ResolutionError("Error durring container resolution for: ``container else "null"`` in ``this``",error));
 		value it = safe(()=> invoke(declaration,resolvedContainer,resolvedParameters))
-		((Throwable error)=>ResolutionError("Invocation for dependency ``definition`` failed for container ``resolvedContainer else "null"`` and parameters ``resolvedParameters``",error));
-		log.debug("[Resolved] functional dependency ``it else "null"``, for definition: ``definition``");
+		((Throwable error)=>ResolutionError("Invocation for dependency ``identifier`` failed for container ``resolvedContainer else "null"`` and parameters ``resolvedParameters``",error));
+		log.debug("[Resolved] functional dependency ``it else "null"``, for definition: ``identifier``");
 		 return it;
 	}
 	

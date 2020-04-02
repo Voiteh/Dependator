@@ -17,7 +17,7 @@ import herd.depin.core {
 	Dependency,
 	Injection
 }
-class ValueModelInjection(ValueModel<> model,Dependency? container) extends Injection(model,container) {
+shared class ValueModelInjection(ValueModel<> model,Dependency? container) extends Injection(model,container) {
 	shared actual Anything inject {
 		switch(model)
 		case (is Qualified<>) {

@@ -15,7 +15,10 @@ import herd.depin.core.internal.util {
 	apply,
 	safe
 }
-class FunctionModelInjection(FunctionModel<> model,Dependency? container,{Dependency*} parameters) extends Injection(model,container,parameters){
+import herd.depin.core.internal {
+	Defaulted
+}
+shared class FunctionModelInjection(FunctionModel<> model,Dependency? container,{Dependency*} parameters) extends Injection(model,container,parameters){
 	shared actual Anything inject {
 		log.debug("[Injecting] into: ``model`` ``if (!parameters.empty) then ", parameters: ``parameters``" else ""`` ``if(exists container) then ", for container ``container``" else ""``");
 		value resolvedContainer= if(exists container ) then safe(()=>container.resolve )
