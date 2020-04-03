@@ -8,13 +8,12 @@ import herd.depin.core.internal.util {
 }
 import ceylon.language.meta.declaration {
 	GettableDeclaration,
-	NestableDeclaration,
-	OpenType
+	NestableDeclaration
 }
 
 shared class GettableDependency(
 	GettableDeclaration&NestableDeclaration declaration,
-	OpenType identifier,
+	TypeIdentifier identifier,
 	Dependency? container
 ) extends Dependency(declaration,identifier, container, empty) {
 	

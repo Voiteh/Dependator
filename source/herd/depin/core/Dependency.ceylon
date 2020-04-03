@@ -14,14 +14,14 @@ shared abstract class Dependency {
 	
 	"Used for creating of decorated dependency, reduces runtime errors with missing decorator passed as parameters."
 	shared static
-	abstract class Decorated(Dependency dependency, Decorator decorator) extends Dependency.decorated(dependency) {
-		shared Decorator[] decorators = if (is Decorated dependency) then dependency.decorators.withTrailing(decorator) else [decorator];
+	abstract class Decoration(Dependency dependency, Decorator decorator) extends Dependency.decorated(dependency) {
+		shared Decorator[] decorators = if (is Decoration dependency) then dependency.decorators.withTrailing(decorator) else [decorator];
 	}
 	"Depdency decorated with annotation implementing this interface, will change [[Dependency.resolve]] function works depending on implementation. "
 	shared static
 	interface Decorator {
 		"Instantiates decorated dependency"
-		shared formal Decorated decorate(Dependency dependency);
+		shared formal Decoration decorate(Dependency dependency);
 	}
 	
 	

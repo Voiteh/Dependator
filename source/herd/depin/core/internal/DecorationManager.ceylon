@@ -29,12 +29,12 @@ shared class DecorationManager(Handlers handlers) {
 				.narrow<Dependency.Decorator>();
 	}
 
-	shared Dependency|Dependency.Decorated decorate(Dependency dependency) {
+	shared Dependency|Dependency.Decoration decorate(Dependency dependency) {
 		log.trace("decorating ``dependency``");
 		
-		Dependency|Dependency.Decorated decorated = decorators(dependency.declaration).fold(dependency)
+		Dependency|Dependency.Decoration decorated = decorators(dependency.declaration).fold(dependency)
 		((Dependency subject, Dependency.Decorator decorator) {
-			Dependency.Decorated result=decorator.decorate(subject);
+			Dependency.Decoration result=decorator.decorate(subject);
 			log.debug("[Decorated]: ``dependency``, with ``decorator``");
 			if(is Handler<> result){
 				register(result);

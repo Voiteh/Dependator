@@ -27,7 +27,7 @@ import herd.depin.core.internal.injection {
 shared class InjectionFactory(DependencyFactory dependencyFactory, TargetSelector selector) {
 	shared Injection create(Injectable<Anything> injectable) {
 		Dependency? container = if (is NestableDeclaration containerDeclaration = injectable.declaration.container)
-		then dependencyFactory.create(containerDeclaration, false)
+		then dependencyFactory.create(containerDeclaration)
 		else null;
 		Injection injection;
 		switch (injectable)
@@ -58,13 +58,13 @@ shared class InjectionFactory(DependencyFactory dependencyFactory, TargetSelecto
 				} else {
 					constructor = constructorDeclaration.apply<Object>(*injectable.typeArgumentList);
 				}
-				{Dependency*} parameters = constructor.declaration.parameterDeclarations.collect((FunctionOrValueDeclaration element) => dependencyFactory.create(element, true));
+				{Dependency*} parameters = constructor.declaration.parameterDeclarations.collect((FunctionOrValueDeclaration element) => dependencyFactory.create(element));
 				injection = FunctionModelInjection(constructor, container, parameters);
 				log.debug("[Created constructor model injection]: ``injection`` for ``injection``");
 			}
 		}
 		case (is FunctionModel<Anything,Nothing>) {
-			Dependency[] parameters = injectable.declaration.parameterDeclarations.collect((FunctionOrValueDeclaration element) => dependencyFactory.create(element, true));
+			Dependency[] parameters = injectable.declaration.parameterDeclarations.collect((FunctionOrValueDeclaration element) => dependencyFactory.create(element));
 			injection = FunctionModelInjection(injectable, container, parameters);
 			log.debug("[Created function model injection]: ``injection`` for ``injectable``");
 		}

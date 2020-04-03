@@ -1,6 +1,5 @@
 import ceylon.language.meta.declaration {
 	FunctionOrValueDeclaration,
-	NestableDeclaration,
 	ClassDeclaration,
 	Declaration
 }
@@ -60,12 +59,12 @@ shared class Depin {
 		notificationManager=NotificationManager(handlers);
 		factory=InjectionFactory(dependencyFactory,targetSelector);
 		
-		value dependencies = declarations.collect((ClassDeclaration|FunctionOrValueDeclaration element) => dependencyFactory.create(element,false));
+		value dependencies = declarations.collect((ClassDeclaration|FunctionOrValueDeclaration element) => dependencyFactory.create(element));
 		validate(dependencies);	
 		dependencies.map(decorationManager.decorate)
-		.each((Dependency|Dependency.Decorated element)  {
+		.each((Dependency|Dependency.Decoration element)  {
 			tree.add(element);
-			if(is Dependency.Decorated element, element.decorators.narrow<FallbackDecorator>().first exists){
+			if(is Dependency.Decoration element, element.decorators.narrow<FallbackDecorator>().first exists){
 				tree.addFallback(element);
 			}
 			if(is Exposing element ){
@@ -76,10 +75,10 @@ shared class Depin {
 	}
 	"Support entry point, for retreiving results of dependency resolution. 
 	 Usable in frameworks like Android SDK or libgdx, where there is no possiblity to nicely create,
-	  new instance of given model but [[late]] attributes, needs to be provided manually in onCreate"
+	  new instance of given model but [[late]] attributes, needs to be provided manually in onCreate, see examples"
 	throws(`class Dependency.ResolutionError`, "Dependency can't be find for given declaration")
-	shared Result extract<Result>(NestableDeclaration declaration){
-		value dependency=dependencyFactory.create(declaration, true);
+	shared Result extract<Result>(FunctionOrValueDeclaration declaration){
+		value dependency=dependencyFactory.createParameter(declaration);
 		assert(is Result result= dependency.resolve);
 		return result;
 	}
@@ -89,8 +88,8 @@ shared class Depin {
 	 Be aware that for [[ceylon.language.meta.model:ValueModel]], [[inject]] always create new instance of given model. 
 	 For [[ceylon.language.meta.model:FunctionModel]] result depends on implementation of function."
 	throws(`class Injection.Error`,"One of dependencies fails to resolve")
-	shared  Type inject<Type>(Injectable<Type> model){
-		assert(is Type result= factory.create(model).inject);
+	shared  Result inject<Result>(Injectable<Result> model){
+		assert(is Result result= factory.create(model).inject);
 		log.debug("Injection into ``model `` succesfull, with result: ``result else "null"``");
 		return result;
 	}

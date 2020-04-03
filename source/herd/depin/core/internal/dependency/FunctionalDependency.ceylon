@@ -18,7 +18,7 @@ import herd.depin.core.internal {
 }
 shared class FunctionalDependency(
 	FunctionalDeclaration&NestableDeclaration declaration,
-	FunctionalOpenType identifier,
+	TypeIdentifier identifier,
 	Dependency? container,
 	{Dependency*} parameters
 ) extends Dependency(declaration,identifier,container,parameters){
