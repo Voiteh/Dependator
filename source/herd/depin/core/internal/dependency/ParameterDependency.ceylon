@@ -12,15 +12,17 @@ import herd.depin.core.internal.util {
 	safe
 }
 
-class ParameterDependency(
+
+shared class ParameterDependency(
 	<FunctionalDeclaration&NestableDeclaration|GettableDeclaration&NestableDeclaration> declaration,
-	Dependency.Definition definition,
-	Dependencies tree)
-		extends Dependency(declaration, definition) {
+	TypeIdentifier identifier,
+	Tree tree
+)
+		extends Dependency(declaration, identifier) {
 	shared default Dependency? provide {
-		if (exists shadow = tree.get(definition)) {
+		if (exists shadow = tree.get(identifier,name)) {
 			return shadow;
-		} else if (exists fallback = tree.getFallback(definition)) {
+		} else if (exists fallback = tree.getFallback(identifier)) {
 			return fallback;
 		}
 		return null;
@@ -34,15 +36,14 @@ class ParameterDependency(
 		}
 	}
 	
-	shared actual default Anything resolve {
-		Dependency? dependency = provide;
+	shared actual default Anything resolve {		Dependency? dependency = provide;
 		Anything resolve;
 		if (exists dependency) {
 			resolve = doResolve(dependency);
 		} else {
-			throw Dependency.ResolutionError("Couldn't find dependency for definition ``definition``", null);
+			throw Dependency.ResolutionError("Couldn't find dependency for definition ``identifier``", null);
 		}
-		log.debug("[Resolved] parameter dependency: `` resolve else "null" ``, for definition: ``definition``");
+		log.debug("[Resolved] parameter dependency: `` resolve else "null" ``, for definition: ``identifier``");
 		return resolve;
 	}
 }

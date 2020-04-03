@@ -16,14 +16,15 @@ shared final annotation class FallbackDecorator() satisfies Dependency.Decorator
 	};
 	string => "fallback";
 }
-"Decorator annotation, used for creating a [[Dependency]], which will be taken in consideration, whenever any other [[Dependency]] of declared type, can't be found, for injection"
+"Decorator annotation, used for creating a [[Dependency]], which will be taken in consideration,
+  whenever any other [[Dependency]] of declared type, can't be found, for injection"
 shared annotation FallbackDecorator fallback() => FallbackDecorator();
 
 
 
 see(`function eager`)
 shared final annotation class EagerDecorator() satisfies Dependency.Decorator &
-		OptionalAnnotation<EagerDecorator,FunctionOrValueDeclaration>{
+		OptionalAnnotation<EagerDecorator,ValueDeclaration>{
 	shared actual Dependency.Decorated decorate(Dependency dependency) => object extends Dependency.Decorated(dependency,outer){
 		Anything data=dependency.resolve;
 		shared actual Anything resolve=> data;
@@ -36,7 +37,7 @@ shared annotation EagerDecorator eager() => EagerDecorator();
 
 see(`function singleton`)
 shared final annotation class SingletonDecorator() satisfies Dependency.Decorator &
-	OptionalAnnotation<SingletonDecorator,FunctionOrValueDeclaration>{
+	OptionalAnnotation<SingletonDecorator,ValueDeclaration>{
 
 	shared actual Dependency.Decorated decorate(Dependency dependency) => object extends Dependency.Decorated(dependency,outer){
 		

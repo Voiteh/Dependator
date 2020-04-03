@@ -9,12 +9,15 @@ import herd.depin.core.internal {
 	InjectionFactory,
 	TargetSelector,
 	DecorationManager,
-	DefinitionFactory,
-	Dependencies,
-	DependencyFactory,
+	TypesFactory,
 	Handlers,
 	NotificationManager,
-	Exposing
+	DependencyFactory
+}
+import herd.depin.core.internal.dependency {
+	Tree,
+	Exposing,
+	TypeIdentifier
 }
 
 shared class FactorizationError(Declaration declaration,String message,Throwable? cause=null) 
@@ -29,29 +32,30 @@ shared class Depin {
 	shared static object ready extends State(){}
 
 	InjectionFactory factory;
-	Dependencies tree;
-	DefinitionFactory definitionFactory;
+	Tree tree;
+	TypesFactory typesFactory;
 	DependencyFactory dependencyFactory;
 	NotificationManager notificationManager;
+	
 	void validate({Dependency*} dependencies){
-		dependencies.group((Dependency element) => element.definition)
-				.filter((Dependency.Definition elementKey -> [Dependency+] elementItem) => !elementItem.rest.empty)
-				.each((Dependency.Definition elementKey -> [Dependency+] elementItem) {
-			throw Exception("Multiple dependencies found for single definition: ``elementKey``-> ``elementItem`` ");
+		dependencies.group((Dependency element) => element.name->element.identifier)
+				.filter((String->TypeIdentifier elementKey -> [Dependency+] elementItem) => !elementItem.rest.empty)
+				.each((String->TypeIdentifier elementKey -> [Dependency+] elementItem) {
+			throw Exception("Multiple dependencies found for single name: ``elementKey``-> ``elementItem`` ");
 		});
 	}
 	
 	"Transforms given declarations into dependencies allowing for further injection."
 	shared new(
-		"Declarations transformed into [[Dependencies]]"
+		"Declarations transformed into [[Tree]]"
 		{ClassDeclaration|FunctionOrValueDeclaration*} declarations={}
 	){
-		tree=Dependencies();
+		tree=Tree();
 		value handlers=Handlers();
-		definitionFactory=DefinitionFactory();
+		typesFactory=TypesFactory();
 		
 		value targetSelector=TargetSelector();
-		dependencyFactory=DependencyFactory(definitionFactory,targetSelector,tree);
+		dependencyFactory=DependencyFactory(typesFactory,targetSelector,tree);
 		value decorationManager=DecorationManager(handlers);
 		notificationManager=NotificationManager(handlers);
 		factory=InjectionFactory(dependencyFactory,targetSelector);

@@ -35,14 +35,14 @@ shared class DecoratorIntegrationTests() {
 	}
 	
 	shared test void shouldInjectSingleton(){
-		value depin=Depin({`function singletonDependency`});
+		value depin=Depin({`value singletonDependency`});
 		assert(depin.inject(`SingletonTarget`).singletonDependency==fixture.changing.initial);
 		change=fixture.changing.final;
 		assert(depin.inject(`SingletonTarget`).singletonDependency==fixture.changing.initial);
 	}
 	
 	shared test void shouldInjectMultipleSingletons(){
-		value depin=Depin({`function singletonDependency`,`function otherSingletonDependency`});
+		value depin=Depin({`value singletonDependency`,`value otherSingletonDependency`});
 		value injected = depin.inject(`MultiSingletonTarget`);
 		assert(injected.singletonDependency==fixture.changing.initial);
 		assert(injected.otherSingletonDependency==fixture.changing.initial);
@@ -52,14 +52,14 @@ shared class DecoratorIntegrationTests() {
 	}
 	
 	shared test void shouldInjectPrototype(){
-		value depin=Depin({`function prototypeDependency`});
+		value depin=Depin({`value prototypeDependency`});
 		assert(depin.inject(`PrototypeTarget`).prototypeDependency==fixture.changing.initial);
 		change=fixture.changing.final;
 		assert(depin.inject(`PrototypeTarget`).prototypeDependency==fixture.changing.final);
 	}
 	
 	shared test void shouldInjectEager(){
-		value depin=Depin({`function eagerDependency`});
+		value depin=Depin({`value eagerDependency`});
 		change=fixture.changing.final;
 		assert(depin.inject(`EagerTarget`).eagerDependency==fixture.changing.initial);
 	}

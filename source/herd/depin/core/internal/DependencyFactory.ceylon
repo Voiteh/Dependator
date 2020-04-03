@@ -6,7 +6,8 @@ import ceylon.language.meta.declaration {
 	ClassDeclaration,
 	FunctionalDeclaration,
 	FunctionOrValueDeclaration,
-	OpenClassType
+	OpenClassType,
+	OpenType
 }
 
 import herd.depin.core {
@@ -16,24 +17,37 @@ import herd.depin.core {
 	FactorizationError
 }
 
+import herd.depin.core.internal.dependency {
+	FunctionalOpenType,
+	CollectorDependency,
+	FunctionalDependency,
+	ParameterDependency,
+	DefaultedParameterDependency,
+	Tree,
+	GettableDependency,
+	ClassDependency,
+	TypeIdentifier
+}
 
 
-shared class DependencyFactory(DefinitionFactory definitionFactory,TargetSelector targetSelector,Dependencies tree)  {
+
+shared class DependencyFactory(TypesFactory identificationFactory,TargetSelector targetSelector,Tree tree)  {
 	
 	
 	shared Dependency create(NestableDeclaration declaration,Boolean parameter) {
 		
 		Dependency dependency;
 		if(parameter){
-			Dependency.Definition definition =  definitionFactory.create(declaration);
+			TypeIdentifier types =  identificationFactory.forDeclaration(declaration);
 			assert(is FunctionOrValueDeclaration declaration);
-			if(is OpenClassType declarationOpenType=declaration.openType,declarationOpenType.declaration==`class Collector`){
-				dependency=CollectorDependency(declaration,definition, tree);					
+			if(is OpenClassType collectorType=declaration.openType,collectorType.declaration==`class Collector`){
+				assert(exists collectedType=collectorType.typeArgumentList.first);
+				dependency=CollectorDependency(declaration,types,collectedType, tree);					
 			}
 			else if(declaration.defaulted){
-				dependency= DefaultedParameterDependency(declaration,definition, tree);
+				dependency= DefaultedParameterDependency(declaration,types, tree);
 			}else{
-				dependency=ParameterDependency(declaration,definition, tree);
+				dependency=ParameterDependency(declaration,types, tree);
 			}
 		}
 		else{
@@ -48,15 +62,15 @@ shared class DependencyFactory(DefinitionFactory definitionFactory,TargetSelecto
 			}
 			switch (declaration)
 			case (is FunctionalDeclaration) {
-				Dependency.Definition definition =  definitionFactory.create(declaration);
+				FunctionalOpenType identification =  identificationFactory.forFunctionalDeclaration(declaration);
 				value parameterDependencies = declaration.parameterDeclarations
  						.collect((FunctionOrValueDeclaration element) => create(element,true));
-				dependency= FunctionalDependency(declaration, definition, containerDependency, parameterDependencies);
+				dependency= FunctionalDependency(declaration, identification, containerDependency, parameterDependencies);
 				
 			}
 			else case (is ValueDeclaration) {
-				Dependency.Definition definition =  definitionFactory.create(declaration);
-				dependency= GettableDependency(declaration,definition, containerDependency);
+				OpenType identification =  identificationFactory.forGettableDeclaration(declaration);
+				dependency= GettableDependency(declaration,identification, containerDependency);
 	
 			}
 			else case (is ClassDeclaration) {
@@ -64,23 +78,24 @@ shared class DependencyFactory(DefinitionFactory definitionFactory,TargetSelecto
 					throw FactorizationError(declaration,"Can't create dependency out of abstract class");
 				}
 				else if (exists anonymousObjectDeclaration = declaration.objectValue) {
-					Dependency.Definition definition =  definitionFactory.create(anonymousObjectDeclaration);
+					OpenType definition =  identificationFactory.forGettableDeclaration(anonymousObjectDeclaration);
 					dependency= GettableDependency(anonymousObjectDeclaration,definition,containerDependency) ;
 				} else { 
-					
 					value constructor = targetSelector.select(declaration);
-					Dependency.Definition constructorDefinition =  definitionFactory.create(constructor);
+					
 					Dependency constructorDependency;
 					switch(constructor) 
 					case(is CallableConstructorDeclaration ){
+						FunctionalOpenType constructorTypes =  identificationFactory.forFunctionalDeclaration(constructor);
 						value parameterDependencies = constructor.parameterDeclarations
-								.collect((FunctionOrValueDeclaration element) => ParameterDependency(constructor,definitionFactory.create(element), tree));
-						constructorDependency= FunctionalDependency(constructor, constructorDefinition, containerDependency, parameterDependencies);
+								.collect((FunctionOrValueDeclaration element) => create(element, true));
+						constructorDependency= FunctionalDependency(constructor, constructorTypes, containerDependency, parameterDependencies);
 					}
 					case(is ValueConstructorDeclaration){
-						constructorDependency= GettableDependency(constructor,constructorDefinition,containerDependency) ;
+						OpenType constructorTypes =  identificationFactory.forGettableDeclaration(constructor);
+						constructorDependency= GettableDependency(constructor,constructorTypes,containerDependency) ;
 					}
-					value classDefinitnion=definitionFactory.create(declaration);
+					value classDefinitnion=identificationFactory.forDeclaration(declaration);
 					dependency=ClassDependency(declaration, classDefinitnion, constructorDependency);
 				}
 			}
