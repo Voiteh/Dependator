@@ -23,6 +23,7 @@ import herd.type.support {
 	flat
 }
 shared class Branch(
+	TypeIdentifier idetifier,
 	MutableMap<String,Dependency> map=HashMap<String, Dependency>()
 ) {
 	shared variable Dependency? fallback=null;
@@ -36,7 +37,7 @@ shared class Branch(
 		return replaced;
 	}
 		
-	shared  Dependency? get(String identifier) => map.get(identifier);
+	shared  Dependency? get(String name) => map.get(name);
 	shared {Dependency*} all=> map.items;
 	
 	void logReplace(String name, Dependency old, Dependency \inew){
@@ -50,6 +51,13 @@ shared class Branch(
 		});
 
 	}
+	value fold=((String partial, String next -> Dependency dependency) => "``partial`` ``next``");
+	string=> if(exists dependency = fallback) 
+	then map.fold("``idetifier``: fallback-> ``dependency.name``,")(fold) 
+	else map.fold("``idetifier``:")(fold)
+	; 
+		
+	
 }
 shared class Tree(
 	shared MutableMap<TypeIdentifier,Branch> branches= HashMap<TypeIdentifier,Branch>()
@@ -57,9 +65,15 @@ shared class Tree(
 	Logger log=createLogger(`module`);
 	shared Dependency? get(TypeIdentifier identifier, String name) {
 		log.trace("Getting dependency for definition: ``identifier`` and name: ``name``");
-		value dependency= branches.get(identifier)?.get(name);
-		log.trace("In branch found dependency ``dependency else "null"`` for definition: ``identifier``");
-		return dependency;
+		value branch= branches.get(identifier);
+		
+		if(exists branch){
+			log.trace("Found branch for identifier ``identifier``, ``branch``");
+			value dependency=branch.get(name);
+			log.trace("In branch found dependency ``dependency else "null"`` for name: ``name``");
+			return dependency;
+		}
+		return null;
 	}
 	shared Dependency? getFallback(TypeIdentifier identifier){
 		log.trace("Getting fallback dependency for definition: ``identifier``");
@@ -72,7 +86,7 @@ shared class Tree(
 		if (exists get) {
 			get.fallback=dependency;
 		}
-		value branch=Branch();
+		value branch=Branch(dependency.identifier);
 		branches.put(dependency.identifier,branch);
 		branch.fallback=dependency;
 	}
@@ -83,7 +97,7 @@ shared class Tree(
 			return get.add(dependency);
 		}
 		log.trace("Adding dependency to new branch ``dependency``");
-		value branch=Branch();
+		value branch=Branch(dependency.identifier);
 		branches.put(dependency.identifier,branch);
 		return branch.add(dependency);
 	}
@@ -113,8 +127,11 @@ shared class Tree(
 			filter=(OpenType key-> Branch item)=>flat.openTypes(key).contains(target);
 		}
 		return branches
-				.narrow<OpenType->Branch>()
-				.filter((OpenType key -> Branch item)=> filter(key->item)
+				.filter((OpenType|FunctionalOpenType elementKey -> Branch elementItem) => elementKey is OpenType)
+				.map((OpenType|FunctionalOpenType elementKey -> Branch elementItem) {
+				assert(is OpenType elementKey );
+				return elementKey->elementItem;
+		}).filter((OpenType key -> Branch item)=> filter(key->item)
 		).flatMap((OpenType key -> Branch item) => item.all);
 		
 	}

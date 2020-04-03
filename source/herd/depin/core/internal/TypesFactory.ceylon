@@ -13,13 +13,7 @@ import herd.depin.core.internal.dependency {
 
 shared class TypesFactory() {
 	
-	shared FunctionalOpenType forType(OpenType type,TypeIdentifier[] parameters=[]){
-		return FunctionalOpenType{ 
-			returnType = type;
-			 parameters = parameters;
-			
-		};
-	}
+
 	shared FunctionalOpenType forFunctionalDeclaration(FunctionalDeclaration&NestableDeclaration declaration){
 		return FunctionalOpenType {
 			returnType = declaration.openType;

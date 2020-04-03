@@ -42,8 +42,7 @@ shared class DependencyFactory(TypesFactory identificationFactory,TargetSelector
 			assert(is FunctionOrValueDeclaration declaration);
 			if(is OpenClassType collectorType=declaration.openType,collectorType.declaration==`class Collector`){
 				assert(exists collectedType=collectorType.typeArgumentList.first);
-				value collectedTypes = identificationFactory.forType(collectedType);
-				dependency=CollectorDependency(declaration,types,collectedTypes, tree);					
+				dependency=CollectorDependency(declaration,types,collectedType, tree);					
 			}
 			else if(declaration.defaulted){
 				dependency= DefaultedParameterDependency(declaration,types, tree);
@@ -89,7 +88,7 @@ shared class DependencyFactory(TypesFactory identificationFactory,TargetSelector
 					case(is CallableConstructorDeclaration ){
 						FunctionalOpenType constructorTypes =  identificationFactory.forFunctionalDeclaration(constructor);
 						value parameterDependencies = constructor.parameterDeclarations
-								.collect((FunctionOrValueDeclaration element) => ParameterDependency(constructor,identificationFactory.forDeclaration(element), tree));
+								.collect((FunctionOrValueDeclaration element) => create(element, true));
 						constructorDependency= FunctionalDependency(constructor, constructorTypes, containerDependency, parameterDependencies);
 					}
 					case(is ValueConstructorDeclaration){
