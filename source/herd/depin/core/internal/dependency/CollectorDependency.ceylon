@@ -1,4 +1,3 @@
-
 import ceylon.language.meta {
 	type
 }
@@ -20,57 +19,46 @@ import herd.depin.core {
 }
 
 shared class CollectorDependency(
-	FunctionOrValueDeclaration declaration, 
+	FunctionOrValueDeclaration declaration,
 	TypeIdentifier types,
-	TypeIdentifier collectedTypes,
-	Tree tree) extends Dependency(declaration,types){
-
-	[Object*] collectingTuple(Anything first,Anything[] rest){
-		if(exists first){
-			return Tuple(first,collectingTuple(rest.first, rest.rest));
+	TypeIdentifier collectedType,
+	Tree tree) extends Dependency(declaration, types) {
+	
+	[Object*] collectingTuple(Anything first, Anything[] rest) {
+		if (exists first) {
+			return Tuple(first, collectingTuple(rest.first, rest.rest));
 		}
 		return empty;
 	}
-
-
+	
 	shared actual Anything resolve {
 		
 		{Dependency*} collecting;
-		log.trace("Collecting, by type ``collectedTypes``");
-		if(declaration.annotated<SubtypeAnnotation>()){
-			assert(is OpenType collectedTypes);
-			collecting=tree.getSubTypeOf(collectedTypes);
-		}else{
-			collecting = tree.getAllByIdentifier(collectedTypes);
-			
+		log.trace("Collecting, by type ``collectedType``");
+		if (declaration.annotated<SubtypeAnnotation>()) {
+			assert (is OpenType collectedType);
+			collecting = tree.getSubTypeOf(collectedType);
+		} else {
+			collecting = tree.getAllByIdentifier(collectedType);
 		}
-		log.trace("Resolving ``collecting``, by type ``collectedTypes``");
+		log.trace("Resolving ``collecting``, by type ``collectedType``");
 		value collected = collecting.collect((Dependency element) => element.resolve);
-		log.debug("Collected ``collected``, by type ``collectedTypes``");
-		value closedType = collected.reduce((Anything partial, Anything element) {
-			value elementType=type(element);
-			if(is Type<>partial){
-				return partial.union(elementType);
-			}else{
-				return type(partial).union(elementType);
-			}
-		});
-		if(is Type<> closedType){
-			value tuple=collectingTuple(collected.first, collected.rest);
-			switch(closedType)
-			case (is MemberClass<Object,Nothing>) {
-				value clazz=closedType.bind(collected.first);
-				assert(is Class<Object> collectorType = `class Collector`.apply<>(clazz));
-				return collectorType.apply(tuple);
-				
-			}		
-			else{
-				assert(is Class<Object> collectorType = `class Collector`.apply<>(closedType));
-				return collectorType.apply(tuple);
-			}
-			
+		log.debug("Collected ``collected``, by type ``collectedType``");
+		if (collected.empty) {
+			throw Exception("There was no dependecy to be collected for ``declaration``");
 		}
-		throw Exception("There was no dependecy to be collected for ``declaration``");
+		value closedType = collected.fold<Type<>>(type(collected.first))((Type<> partial, Anything current) => partial.union(type(current)));
+		log.trace("Final Collected Element type is type: `` closedType``");
+		value tuple = collectingTuple(collected.first, collected.rest);
+		switch (closedType)
+		case (is MemberClass<Object,Nothing>) {
+			value clazz = closedType.bind(collected.first);
+			assert (is Class<Object> collectorType = `class Collector`.apply<>(clazz));
+			return collectorType.apply(tuple);
+		}
+		else {
+			assert (is Class<Object> collectorType = `class Collector`.apply<>(closedType));
+			return collectorType.apply(tuple);
+		}
 	}
-	
 }
