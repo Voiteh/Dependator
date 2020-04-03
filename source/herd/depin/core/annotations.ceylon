@@ -2,7 +2,8 @@ import ceylon.language.meta.declaration {
 	FunctionOrValueDeclaration,
 	ConstructorDeclaration,
 	ClassDeclaration,
-	ValueDeclaration
+	ValueDeclaration,
+	FunctionDeclaration
 }
 import ceylon.language.meta.model {
 	ValueModel
@@ -11,7 +12,7 @@ import ceylon.language.meta.model {
 
 see(`function fallback`)
 shared final annotation class FallbackDecorator() satisfies Dependency.Decorator & OptionalAnnotation<FallbackDecorator,FunctionOrValueDeclaration>{
-	shared actual Dependency.Decorated decorate(Dependency dependency) => object extends Dependency.Decorated(dependency,outer){
+	shared actual Dependency.Decoration decorate(Dependency dependency) => object extends Dependency.Decoration(dependency,outer){
 		shared actual Anything resolve => dependency.resolve;
 	};
 	string => "fallback";
@@ -25,7 +26,7 @@ shared annotation FallbackDecorator fallback() => FallbackDecorator();
 see(`function eager`)
 shared final annotation class EagerDecorator() satisfies Dependency.Decorator &
 		OptionalAnnotation<EagerDecorator,ValueDeclaration>{
-	shared actual Dependency.Decorated decorate(Dependency dependency) => object extends Dependency.Decorated(dependency,outer){
+	shared actual Dependency.Decoration decorate(Dependency dependency) => object extends Dependency.Decoration(dependency,outer){
 		Anything data=dependency.resolve;
 		shared actual Anything resolve=> data;
 	
@@ -39,7 +40,7 @@ see(`function singleton`)
 shared final annotation class SingletonDecorator() satisfies Dependency.Decorator &
 	OptionalAnnotation<SingletonDecorator,ValueDeclaration>{
 
-	shared actual Dependency.Decorated decorate(Dependency dependency) => object extends Dependency.Decorated(dependency,outer){
+	shared actual Dependency.Decoration decorate(Dependency dependency) => object extends Dependency.Decoration(dependency,outer){
 		
 		late Anything data;
 		
@@ -81,21 +82,9 @@ shared annotation TargetAnnotation target() => TargetAnnotation();
 
 see(`function named`)
 shared annotation final class NamedAnnotation(
-	"Renaming of declarataion"
+	"New name of dependency"
 	shared String name
 ) satisfies OptionalAnnotation<NamedAnnotation,FunctionOrValueDeclaration|ClassDeclaration>{
-	
-
-	shared actual Boolean equals(Object that) {
-		if (is NamedAnnotation that) {
-			return name==that.name;
-		}
-		else {
-			return false;
-		}
-	}
-	
-	shared actual Integer hash => name.hash;
 	
 	string => name;
 }
@@ -108,6 +97,16 @@ shared annotation final class SubtypeAnnotation() satisfies OptionalAnnotation
 {
 	string => "subtype";
 }
-"Annotation used for defining wheter collected dependencies should be also subtype of given type parameter of [[Collector]]"
+"Annotation used for defining wheter collected dependencies should be subtype of given type parameter of [[Collector]]"
 shared annotation SubtypeAnnotation subtype()=> SubtypeAnnotation();
+
+
+see(`function factory`)
+shared annotation final class FactoryAnnotation() satisfies OptionalAnnotation<FactoryAnnotation, FunctionDeclaration>{
+	string => "factory";
+}
+
+"Annotation to mark functions as factory methods. They are not injectable as function but only as a result of factorization (value)"
+shared annotation FactoryAnnotation factory() => FactoryAnnotation();
+
 

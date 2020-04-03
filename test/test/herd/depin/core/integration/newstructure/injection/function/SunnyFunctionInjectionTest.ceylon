@@ -7,14 +7,16 @@ import depin.test.extension {
 }
 import test.herd.depin.core.integration.newstructure.injection.\ifunction.dependency {
 	topLevelFunction,
-	topLevelFunctionWithParameter
+	topLevelFunctionWithParameter,
+	someString
 }
 import herd.depin.core {
 	Depin
 }
 import test.herd.depin.core.integration.newstructure.injection.\ifunction.injection {
 	topLevelInjection,
-	topLevelInjectionForFunctionWithParameter
+	topLevelInjectionForFunctionWithParameter,
+	factoryInjection
 }
 
 testExtension (`class LoggingTestExtension`)
@@ -28,4 +30,8 @@ shared class SunnyFunctionInjectionTest() {
 		Depin({`function topLevelFunctionWithParameter`}).inject(`topLevelInjectionForFunctionWithParameter`);
 		
 	}	
+	
+	shared test void whenProvidedFactoryFunction_then_shouldInjectItsResult(){
+		Depin({`function someString`}).inject(`factoryInjection`);
+	}
 }

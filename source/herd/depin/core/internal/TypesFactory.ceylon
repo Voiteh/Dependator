@@ -2,32 +2,44 @@ import ceylon.language.meta.declaration {
 	NestableDeclaration,
 	FunctionalDeclaration,
 	FunctionOrValueDeclaration,
-	OpenType,
-	GettableDeclaration
+	FunctionDeclaration,
+	ValueDeclaration
 }
 
 import herd.depin.core.internal.dependency {
 	FunctionalOpenType,
 	TypeIdentifier
 }
+import herd.depin.core {
+	FactoryAnnotation
+}
 
 shared class TypesFactory() {
 	
-
-	shared FunctionalOpenType forFunctionalDeclaration(FunctionalDeclaration&NestableDeclaration declaration){
-		return FunctionalOpenType {
-			returnType = declaration.openType;
-			parameters = declaration.parameterDeclarations.map((FunctionOrValueDeclaration parameter) => forDeclaration(parameter)).sequence();
-		};
-	}
-	shared OpenType forGettableDeclaration(GettableDeclaration&NestableDeclaration declaration){
-		return declaration.openType;
-	}
-	shared TypeIdentifier forDeclaration(NestableDeclaration declaration) {
-		
-		if (is FunctionalDeclaration declaration) {
-			return forFunctionalDeclaration(declaration);
+	shared TypeIdentifier create(NestableDeclaration declaration) {
+		if (is FunctionOrValueDeclaration declaration, declaration.parameter) {
+			switch (declaration)
+			case (is FunctionDeclaration) {
+				return FunctionalOpenType {
+					returnType = declaration.openType;
+					parameters = declaration.parameterDeclarations.collect((FunctionOrValueDeclaration element) => create(element));
+				};
+			}
+			case (is ValueDeclaration) {
+				return declaration.openType;
+			}
+		} else if (declaration.annotated<FactoryAnnotation>()) {
+			return declaration.openType;
 		}
-		return declaration.openType;
+		switch (declaration)
+		case (is FunctionalDeclaration) {
+			return FunctionalOpenType {
+				returnType = declaration.openType;
+				parameters = declaration.parameterDeclarations.collect((FunctionOrValueDeclaration element) => create(element));
+			};
+		}
+		else {
+			return declaration.openType;
+		}
 	}
 }

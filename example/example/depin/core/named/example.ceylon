@@ -10,7 +10,7 @@ import herd.depin.core {
 dependency Integer[] summable =[1,2,3];
 class DependencyHolder(named("summable") Integer[] numbers){
 	named("integerSum") dependency 
-	Integer? sum = numbers.reduce((Integer partial, Integer element) => partial+element);
+	shared Integer? sum = numbers.reduce((Integer partial, Integer element) => partial+element);
 }
 
 void printInjection(Integer? integerSum){
