@@ -4,9 +4,7 @@ import herd.depin.core {
 }
 import ceylon.language.meta.declaration {
 	FunctionDeclaration,
-	FunctionalDeclaration,
-	GettableDeclaration,
-	NestableDeclaration
+	FunctionOrValueDeclaration
 }
 import herd.depin.core.internal.util {
 	safe
@@ -14,11 +12,11 @@ import herd.depin.core.internal.util {
 
 
 shared class ParameterDependency(
-	<FunctionalDeclaration&NestableDeclaration|GettableDeclaration&NestableDeclaration> declaration,
+	String name,
 	TypeIdentifier identifier,
+	FunctionOrValueDeclaration declaration,
 	Tree tree
-)
-		extends Dependency(declaration, identifier) {
+) extends Dependency(name, identifier,declaration) {
 	shared default Dependency? provide {
 		if (exists shadow = tree.get(identifier,name)) {
 			return shadow;

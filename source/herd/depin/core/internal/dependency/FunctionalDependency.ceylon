@@ -17,11 +17,12 @@ import herd.depin.core.internal {
 	Defaulted
 }
 shared class FunctionalDependency(
-	FunctionalDeclaration&NestableDeclaration declaration,
+	String name,
 	TypeIdentifier identifier,
-	Dependency? container,
+	FunctionalDeclaration&NestableDeclaration declaration,
+	 Dependency? container,
 	{Dependency*} parameters
-) extends Dependency(declaration,identifier,container,parameters){
+) extends ContainableDependency(name,identifier,declaration,container) {
 	
 	shared actual Anything resolve{
 		log.trace("Resolving functional dependency: ``identifier``");

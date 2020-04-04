@@ -12,10 +12,11 @@ import ceylon.language.meta.declaration {
 }
 
 shared class GettableDependency(
-	GettableDeclaration&NestableDeclaration declaration,
+	String name,
 	TypeIdentifier identifier,
+	GettableDeclaration&NestableDeclaration declaration,
 	Dependency? container
-) extends Dependency(declaration,identifier, container, empty) {
+) extends ContainableDependency(name,identifier,declaration,container) {
 	
 	shared actual Anything resolve {
 		if (exists container, exists resolved = container.resolve) {

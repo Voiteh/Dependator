@@ -7,10 +7,11 @@ import ceylon.language.meta.declaration {
 
 
 shared class ClassDependency(
-	ClassDeclaration declaration,
+	String name,
 	TypeIdentifier identification,
+	ClassDeclaration declaration,
 	Dependency constructorDependency
-) extends Dependency(declaration,identification) satisfies Exposing{
+) extends Dependency(name,identification,declaration) satisfies Exposing{
 	shared actual Anything resolve => constructorDependency.resolve;
 	
 	shared actual Dependency exposed = constructorDependency;
