@@ -14,14 +14,29 @@ shared abstract class Dependency {
 	
 	"Used for creating of decorated dependency, reduces runtime errors with missing decorator passed as parameters."
 	shared static
-	abstract class Decoration(Dependency dependency, Decorator decorator) extends Dependency.decorated(dependency) {
+	abstract class Decoration(
+		"Dependency to be decorated with this decoration"
+		Dependency dependency,
+		"Decorator which is decorating [[dependency]]"
+		Decorator decorator
+	) extends Dependency.decorated(dependency) {
+		
+		"Decorators decorating [[dependency]]"
 		shared Decorator[] decorators = if (is Decoration dependency) then dependency.decorators.withTrailing(decorator) else [decorator];
 	}
 	"Depdency decorated with annotation implementing this interface, will change [[Dependency.resolve]] function works depending on implementation. "
 	shared static
 	interface Decorator {
+		
+		shared class Error(String description, Throwable? cause) extends Exception(description,cause) {}
+		
+		
 		"Instantiates decorated dependency"
-		shared formal Decoration decorate(Dependency dependency);
+		throws(`class Error`,"Whenver decoration is not possible")
+		shared formal Decoration decorate(Dependency dependency) ;
+		
+		
+		
 	}
 	
 	
@@ -32,14 +47,14 @@ shared abstract class Dependency {
 		Throwable? cause) extends Exception(description, cause) {}
 	
 	
-	"Definition of this dependency"
+	"Identifies type providing ability to easly retreive instance of dependency."
 	shared TypeIdentifier identifier;
 	
 	//TODO remove this from dependency provide all required data
 	"Declaration of this dependency"
 	shared NestableDeclaration declaration;
 	
-	"Parameters of this function dependency"
+	"Parameters of this functional dependency"
 	shared {Dependency*} parameters;
 	"Container of this nested dependecy"
 	shared Dependency? container;
@@ -65,8 +80,6 @@ shared abstract class Dependency {
 	"Resolve given [[Dependency]] declaration to object or null, which this depedency represents"
 	throws (`class ResolutionError`)
 	shared formal Anything resolve;
-	
-	 
 	
 	shared String name {
 		variable String? result;
@@ -105,5 +118,5 @@ shared abstract class Dependency {
 		return shadow;
 	}
 	
-	shared actual String string = if(exists container) then "``container``$``identifier`` ``name`` " else "``identifier`` ``name`` ";
+	shared actual String string = if (exists container) then "``container``$``identifier`` ``name`` " else "``identifier`` ``name`` ";
 }

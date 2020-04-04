@@ -82,14 +82,17 @@ shared annotation TargetAnnotation target() => TargetAnnotation();
 
 see(`function named`)
 shared annotation final class NamedAnnotation(
-	"New name of dependency"
+
 	shared String name
 ) satisfies OptionalAnnotation<NamedAnnotation,FunctionOrValueDeclaration|ClassDeclaration>{
 	
 	string => name;
 }
 "Annotation allowing to rename dependency, which will be used for injection"
-shared annotation NamedAnnotation named(String name) => NamedAnnotation(name);
+shared annotation NamedAnnotation named(
+	"New name of dependency"
+	String name
+) => NamedAnnotation(name);
 
 see(`function subtype`)
 shared annotation final class SubtypeAnnotation() satisfies OptionalAnnotation
