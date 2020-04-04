@@ -4,9 +4,7 @@ import herd.depin.core {
 	Dependency
 }
 import ceylon.language.meta.declaration {
-	FunctionalDeclaration,
-	NestableDeclaration,
-	GettableDeclaration
+	FunctionOrValueDeclaration
 }
 import herd.depin.core.internal {
 	defaulted
@@ -16,10 +14,11 @@ import herd.depin.core.internal {
 
 
 shared class DefaultedParameterDependency(
- 	FunctionalDeclaration&NestableDeclaration|GettableDeclaration&NestableDeclaration  declaration,
- 	TypeIdentifier types,
+	String name,
+	TypeIdentifier types,
+ 	FunctionOrValueDeclaration  declaration,
  	Tree tree
- ) extends ParameterDependency(declaration,types, tree){
+ ) extends ParameterDependency(name,types,declaration,tree){
 		
 	shared actual Anything resolve{
 		log.trace("Resolving defaulted parameter dependency: ``types``");

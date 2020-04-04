@@ -11,9 +11,10 @@ import herd.depin.core {
 	Dependency,
 	Handler
 }
-shared final annotation class NotifiedAnnotation() satisfies OptionalAnnotation<NotifiedAnnotation, ValueDeclaration, Value<Boolean>> 
-		& Dependency.Decorator{
+shared final annotation class NotifiedAnnotation() 
+		satisfies Dependency.Decorator & OptionalAnnotation<NotifiedAnnotation, ValueDeclaration, Value<Boolean>>  {
 	shared actual Dependency.Decoration decorate(Dependency dependency) => object extends Dependency.Decoration(dependency,outer) satisfies Handler<Boolean>{
+
 		late Boolean notified;
 		shared actual Anything resolve { 
 			try{ 
@@ -29,7 +30,6 @@ shared final annotation class NotifiedAnnotation() satisfies OptionalAnnotation<
 		
 		
 	};
-	
 	
 }
 

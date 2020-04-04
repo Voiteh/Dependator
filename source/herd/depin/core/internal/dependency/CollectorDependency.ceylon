@@ -19,10 +19,12 @@ import herd.depin.core {
 }
 
 shared class CollectorDependency(
-	FunctionOrValueDeclaration declaration,
+	String name,
 	TypeIdentifier types,
+	FunctionOrValueDeclaration declaration,
 	TypeIdentifier collectedType,
-	Tree tree) extends Dependency(declaration, types) {
+	Tree tree
+) extends Dependency(name, types,declaration) {
 	
 	[Object*] collectingTuple(Anything first, Anything[] rest) {
 		if (exists first) {
