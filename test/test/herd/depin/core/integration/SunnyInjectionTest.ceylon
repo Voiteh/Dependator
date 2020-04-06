@@ -26,9 +26,8 @@ import test.herd.depin.core.integration.dependency {
 import test.herd.depin.core.integration.injection {
 	Person,
 	DataSource,
-	DefaultParametersConstructor,
-	DefaultedParameterFunction,
-	TargetWithTwoCallableConstructors,
+	ClassWithDefaultedInitializerParameter,
+	ClassWithDefaultedParameterFunctionInjection,
 	Nesting,
 	AnonymousObjectTarget,
 	ExposedTarget,
@@ -40,34 +39,20 @@ import test.herd.depin.core.integration.injection {
 	SubtypeUnionCollectedInjection,
 	SubtypeIntersectionCollectedInjection
 }
+import test.herd.depin.core.integration.newstructure.injection.clazz.injection {
+
+	ClassWithTargetConstructorInjection
+}
 
 
 testExtension (`class LoggingTestExtension`)
 shared class SunnyInjectionTest() {
 	
 		
-	shared test void shouldInjectJohnPerson(){
-			assert(Depin({`value name`,`value age`}).inject(`Person`)==fixture.person.john);
-	}
 	
-	shared test void shouldInjectMysqlDataSource(){
-		value select = `class DataSourceConfiguration`.memberDeclarations<ValueDeclaration>()
-				.select((ValueDeclaration element) => element.annotated<DependencyAnnotation>());
-		assert(Depin(select).inject(`DataSource`)==fixture.dataSouce.mysqlDataSource);
-	}
-	shared test void shouldInjectNonDefaultParameters(){
-		assert(Depin({`value nonDefault`}).inject(`DefaultParametersConstructor`)
-			==fixture.defaultParameter.instance);
-	}
+
 	
-	shared test void shouldInjectDefaultedParameterClassFunction(){
-		assert(Depin().inject(`DefaultedParameterFunction`).defaultedFunction()
-			==fixture.defaultedParameterFunction.param);
-	}
-	shared test void shouldInjectTargetedConstructor(){
-		assert(Depin({`value something`}).inject(`TargetWithTwoCallableConstructors`).something
-			==fixture.targetWithTwoCallableConstructors.param.reversed);
-	}
+
 	
 	shared test void shouldInjectNestedClass(){
 		assert(Depin({`value nesting`,`value nested`}).inject(`Nesting.Nested`)==fixture.nesting.instance);

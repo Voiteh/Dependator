@@ -1,7 +1,6 @@
 import test.herd.depin.core.integration.injection {
 	Nesting,
-	TargetWithTwoCallableConstructors,
-	DefaultParametersConstructor,
+	ClassWithDefaultedInitializerParameter,
 	DataSource,
 	Person
 }
@@ -47,7 +46,7 @@ shared object fixture {
 	shared object defaultParameter {
 		shared String nonDefault = "Abc";
 		shared String text = "abc";
-		shared DefaultParametersConstructor instance = DefaultParametersConstructor(nonDefault, text);
+		shared ClassWithDefaultedInitializerParameter instance = ClassWithDefaultedInitializerParameter(nonDefault, text);
 	}
 	shared object defaultedParameterByFunction {
 		shared String param = "abc";
@@ -55,10 +54,6 @@ shared object fixture {
 	}
 	shared object defaultedParameterFunction {
 		shared String param = "abc";
-	}
-	shared object targetWithTwoCallableConstructors {
-		shared String param = "abc";
-		shared TargetWithTwoCallableConstructors instance = TargetWithTwoCallableConstructors(param);
 	}
 	shared object nesting {
 		shared Integer nesting = 4;

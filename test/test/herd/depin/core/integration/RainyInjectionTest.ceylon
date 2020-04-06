@@ -28,7 +28,7 @@ import test.herd.depin.core.integration.dependency {
 	InterfaceDependency
 }
 import test.herd.depin.core.integration.injection {
-	DefaultParametersConstructor,
+	ClassWithDefaultedInitializerParameter,
 	Nesting,
 	DataSource,
 	Person,
@@ -68,7 +68,7 @@ shared class RainyInjectionTest() {
 	shared test
 	void whenMissingNonDefaultParameter_shouldThrowInjectionError() {
 		assertThatException(() =>
-				Depin().inject(`DefaultParametersConstructor`))
+				Depin().inject(`ClassWithDefaultedInitializerParameter`))
 			.hasType(isInjectionError);
 	}
 	

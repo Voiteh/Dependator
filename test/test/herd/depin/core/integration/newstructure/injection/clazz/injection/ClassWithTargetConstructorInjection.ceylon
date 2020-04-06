@@ -5,7 +5,7 @@ import herd.depin.core {
 	named,
 	target
 }
-shared class TargetWithTwoCallableConstructors {
+shared class ClassWithTargetConstructorInjection {
 	
 	shared String something;
 	shared new (String something){
