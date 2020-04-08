@@ -6,26 +6,14 @@ import depin.test.extension {
 
 	LoggingTestExtension
 }
-import test.herd.depin.core.integration.newstructure.injection.clazz.injection {
-
-	NestedClassInjection,
-	ClassWithTargetConstructorInjection
-}
-import test.herd.depin.core.integration.newstructure.injection.clazz.dependency {
-	DerivedClassDependency,
-	something,
-	nonDefault
-}
+import test.herd.depin.core.integration.newstructure.injection.clazz.injection {...}
+import test.herd.depin.core.integration.newstructure.injection.clazz.dependency {...}
 import herd.depin.core {
 
 	Depin
 }
 
-import test.herd.depin.core.integration.injection {
 
-	ClassWithDefaultedInitializerParameter,
-	ClassWithDefaultedParameterFunctionInjection
-}
 testExtension (`class LoggingTestExtension`)
 shared class SunnyClassInjectionTest() {
 	
@@ -37,7 +25,7 @@ shared class SunnyClassInjectionTest() {
 		assert(inject.derivedClassDependency.classParam==fixture.classParam);		
 	}
 	shared test void whenProvidedNonDefaultParameterDependency_then_shouldInjectItIntoClassWithDefaultedParameter(){
-			value result = Depin({`value nonDefault`}).inject(`ClassWithDefaultedInitializerParameter`);
+			value result = Depin({`value nonDefault`}).inject(`ClassWithDefaultedInitializerParameterInjection`);
 			assert(result.defaultedParameter ==fixture.defaultParameter.text);
 			assert(result.nonDefault ==fixture.defaultParameter.nonDefault);
 		
@@ -50,5 +38,8 @@ shared class SunnyClassInjectionTest() {
 	shared test void whenProvidedDependency_shouldInjectTargetedConstructorToClassWithTwoConstructors(){
 		assert(Depin({`value something`}).inject(`ClassWithTargetConstructorInjection`).something
 			==fixture.targetWithTwoCallableConstructors.param.reversed);
+	}
+	shared test void whenProvidedDependencyToParentAndMemberClass_then_shouldInjectRequiredDependenciesIntoParentAndMemberClass(){
+		assert(Depin({`value nesting`,`value nested`}).inject(`ClassWithMemberClassInjection.MemberClass`).sum==fixture.memberClass.nested+fixture.memberClass.nesting);
 	}
 }

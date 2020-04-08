@@ -22,17 +22,10 @@ import herd.depin.core {
 }
 
 import test.herd.depin.core.integration.dependency {
-	nested,
-	name,
-	DataSourceConfiguration,
-	InterfaceDependency
+	...
 }
 import test.herd.depin.core.integration.injection {
-	ClassWithDefaultedInitializerParameter,
-	Nesting,
-	DataSource,
-	Person,
-	SubtypeCollectedInjection
+	...
 }
 
 testExtension (`class LoggingTestExtension`)
@@ -44,6 +37,7 @@ shared class RainyInjectionTest() {
 	Boolean isResolutionError(ClassModel<Throwable> error) {
 		return error == `Dependency.ResolutionError`;
 	}
+	
 	shared test
 	void whenProvidedFormalDepenedency_then_shouldThrowException() {
 		assertThatException(() => Depin({ `value InterfaceDependency.formalValue` })).hasType(`Exception`);
@@ -72,19 +66,9 @@ shared class RainyInjectionTest() {
 			.hasType(isInjectionError);
 	}
 	
-	shared test
-	void whenMissingNestingClass_shouldThrowInjectionError() {
-		assertThatException(() =>
-				Depin({ `value nested` }).inject(`Nesting.Nested`))
-			.hasType(isInjectionError);
-	}
+
 	
-	shared test
-	void whenMissingDependency_shouldThrowDependencyResolutionError_onExtraction() {
-		assertThatException(() =>
-				Depin({ `value nested` }).extract<String>(`value name`))
-			.hasType(isResolutionError);
-	}
+
 
 	shared test
 	void whenProvidedSupertypeDependencies_shouldNotInjectThemIntoCollector() {

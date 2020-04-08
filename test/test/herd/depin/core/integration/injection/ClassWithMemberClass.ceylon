@@ -1,13 +1,13 @@
-shared class Nesting(Integer nesting) {
+shared class ClassWithMemberClass(Integer nesting) {
 	
 	
-	shared class Nested(Integer nested){
+	shared class MemberClass(Integer nested){
 		
 		shared Integer sum=nesting+nested;
 		
 
 		shared actual Boolean equals(Object that) {
-			if (is Nested that) {
+			if (is MemberClass that) {
 				return nested==that.nested && 
 					sum==that.sum;
 			}

@@ -9,11 +9,18 @@ import depin.test.extension {
 	LoggingTestExtension
 }
 import test.herd.depin.core.integration.newstructure.injection.clazz.dependency {
-	AbstractClassDependency
+	AbstractClassDependency,
+	nested
+	
+}
+import test.herd.depin.core.integration.newstructure.injection.clazz.injection {
+	ClassWithMemberClassInjection
+	
 }
 import herd.depin.core {
 	Depin,
-	FactorizationError
+	FactorizationError,
+	Injection
 }
 import ceylon.language.meta.model {
 	ClassModel
@@ -26,10 +33,19 @@ shared class RainyClassInjectionTest() {
 		return error == `FactorizationError`;
 	}
 	
+	Boolean isInjectionError(ClassModel<Throwable> error) {
+		return error == `Injection.Error`;
+	}
 	shared test void whenProvidedAbstractClassDeclarationAsDependency_then_shouldFailFast(){
 		assertThatException(()=>Depin({`class AbstractClassDependency`}))
 				.hasType(factorizationError);
 	}
 	
+	shared test
+	void whenMissingParentClassDependency_then_shouldThrowInjectionError() {
+		assertThatException(() =>
+			Depin({ `value nested` }).inject(`ClassWithMemberClassInjection.MemberClass`))
+				.hasType(isInjectionError);
+	}
 	
 }

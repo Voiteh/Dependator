@@ -1,5 +1,5 @@
 import test.herd.depin.core.integration.injection {
-	Nesting,
+	ClassWithMemberClass,
 	ClassWithDefaultedInitializerParameter,
 	DataSource,
 	Person
@@ -54,11 +54,6 @@ shared object fixture {
 	}
 	shared object defaultedParameterFunction {
 		shared String param = "abc";
-	}
-	shared object nesting {
-		shared Integer nesting = 4;
-		shared Integer nested = 5;
-		shared Nesting.Nested instance = Nesting(nesting).Nested(nested);
 	}
 	shared object objectDependencies {
 		shared String innerObjectDependency = "abc";

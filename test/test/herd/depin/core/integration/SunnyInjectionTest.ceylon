@@ -28,7 +28,7 @@ import test.herd.depin.core.integration.injection {
 	DataSource,
 	ClassWithDefaultedInitializerParameter,
 	ClassWithDefaultedParameterFunctionInjection,
-	Nesting,
+	ClassWithMemberClass,
 	AnonymousObjectTarget,
 	ExposedTarget,
 	functionInjection,
@@ -54,9 +54,7 @@ shared class SunnyInjectionTest() {
 	
 
 	
-	shared test void shouldInjectNestedClass(){
-		assert(Depin({`value nesting`,`value nested`}).inject(`Nesting.Nested`)==fixture.nesting.instance);
-	}
+
 	shared test void shouldInjectObjectContainedDependencies(){
 		value select = `class dependencyHolder`.memberDeclarations<FunctionOrValueDeclaration>()
 				.select((FunctionOrValueDeclaration element) => element.annotated<DependencyAnnotation>());
@@ -81,20 +79,6 @@ shared class SunnyInjectionTest() {
 	shared test void shouldInjectFallbackDependency(){
 		assert(Depin({`value fallbackDependency`})
 			.inject(`fallbackInjection`)==fixture.dependencies.fallback);
-	}
-	shared test void shouldInjectCollectedDependencies(){
-		value depin=Depin({
-			`value fixture.dependencies.collector.one`,
-			`value fixture.dependencies.collector.two`,
-			`value fixture.dependencies.collector.three`
-		});
-		value collector=depin.inject(`CollectorInjection`).collector;
-		assert(collector.collected.containsEvery({
-			fixture.dependencies.collector.one,
-			fixture.dependencies.collector.two,
-			fixture.dependencies.collector.three
-		}));
-		
 	}
 	shared test void shouldExtractNameDependency(){
 		value extractedName=Depin({
