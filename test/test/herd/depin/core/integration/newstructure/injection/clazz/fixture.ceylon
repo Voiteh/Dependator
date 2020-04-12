@@ -19,4 +19,10 @@ shared object fixture {
 		shared Integer nesting = 4;
 		shared Integer nested = 5;
 	}
+	shared object objectDependencies {
+		shared String innerObjectDependency = "abc";
+	}
+	shared object unshared {
+		shared String exposed = "expooooseeed";
+	}
 }

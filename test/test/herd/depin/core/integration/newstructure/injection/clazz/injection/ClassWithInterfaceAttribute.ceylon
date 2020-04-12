@@ -1,0 +1,1 @@
+shared class ClassWithInterfaceAttribute(shared Interface exposing) {}

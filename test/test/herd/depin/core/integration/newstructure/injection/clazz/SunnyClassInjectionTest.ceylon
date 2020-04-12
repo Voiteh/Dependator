@@ -10,7 +10,17 @@ import test.herd.depin.core.integration.newstructure.injection.clazz.injection {
 import test.herd.depin.core.integration.newstructure.injection.clazz.dependency {...}
 import herd.depin.core {
 
-	Depin
+	Depin,
+	DependencyAnnotation,
+	scanner
+}
+import test.herd.depin.core.integration.dependency {
+
+	dependencyHolder
+}
+import ceylon.language.meta.declaration {
+
+	FunctionOrValueDeclaration
 }
 
 
@@ -42,4 +52,17 @@ shared class SunnyClassInjectionTest() {
 	shared test void whenProvidedDependencyToParentAndMemberClass_then_shouldInjectRequiredDependenciesIntoParentAndMemberClass(){
 		assert(Depin({`value nesting`,`value nested`}).inject(`ClassWithMemberClassInjection.MemberClass`).sum==fixture.memberClass.nested+fixture.memberClass.nesting);
 	}
+	
+	shared test void whenProvidedObjectContainedDependencies_then_shouldInjectThemIntoClass(){
+		value select = `class dependencyHolder`.memberDeclarations<FunctionOrValueDeclaration>()
+				.select((FunctionOrValueDeclaration element) => element.annotated<DependencyAnnotation>());
+		assert(Depin(select).inject(`AnonymousObjectTarget`).innerObjectDependency
+			==fixture.objectDependencies.innerObjectDependency);
+	}
+	
+	shared test void whenProvidedUnsharedDependencies_then_shouldInjectImplementedInterface(){
+		value declarations=scanner.dependencies({`package test.herd.depin.core.integration.newstructure.injection.clazz.dependency.unshared`});
+		assert(Depin(declarations).inject(`ClassWithInterfaceAttribute`).exposing.exposed==fixture.unshared.exposed);
+	}
+	
 }

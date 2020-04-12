@@ -1,0 +1,1 @@
+shared class AnonymousObjectTarget(shared String innerObjectDependency) {}
