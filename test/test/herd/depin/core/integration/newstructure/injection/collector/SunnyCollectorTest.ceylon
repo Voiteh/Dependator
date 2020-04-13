@@ -15,11 +15,6 @@ import test.herd.depin.core.integration.newstructure.injection.collector.depende
 import test.herd.depin.core.integration.newstructure.injection.collector.injection {
 	...
 }
-import test.herd.depin.core.integration.injection {
-
-	SubtypeIntersectionCollectedInjection
-}
-
 
 testExtension (`class LoggingTestExtension`)
 shared class SunnyCollectorTest() {

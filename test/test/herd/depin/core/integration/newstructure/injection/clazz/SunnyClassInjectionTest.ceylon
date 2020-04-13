@@ -14,10 +14,6 @@ import herd.depin.core {
 	DependencyAnnotation,
 	scanner
 }
-import test.herd.depin.core.integration.dependency {
-
-	dependencyHolder
-}
 import ceylon.language.meta.declaration {
 
 	FunctionOrValueDeclaration
@@ -54,9 +50,9 @@ shared class SunnyClassInjectionTest() {
 	}
 	
 	shared test void whenProvidedObjectContainedDependencies_then_shouldInjectThemIntoClass(){
-		value select = `class dependencyHolder`.memberDeclarations<FunctionOrValueDeclaration>()
-				.select((FunctionOrValueDeclaration element) => element.annotated<DependencyAnnotation>());
-		assert(Depin(select).inject(`AnonymousObjectTarget`).innerObjectDependency
+		assert(Depin({
+			`value dependencyHolder.innerObjectDependency`
+		}).inject(`AnonymousObjectTarget`).innerObjectDependency
 			==fixture.objectDependencies.innerObjectDependency);
 	}
 	

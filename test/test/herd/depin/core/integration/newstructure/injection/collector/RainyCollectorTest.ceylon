@@ -8,14 +8,15 @@ import herd.depin.core {
 
 	Depin
 }
-import test.herd.depin.core.integration.newstructure {
-	BaseRainyInjectionTest
-}
+
 import test.herd.depin.core.integration.newstructure.injection.collector.injection {
 ...
 }
 import test.herd.depin.core.integration.newstructure.injection.collector.dependency {
 	...
+}
+import test.herd.depin.core.integration.newstructure.injection {
+	BaseRainyInjectionTest
 }
 
 

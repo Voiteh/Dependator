@@ -18,7 +18,9 @@ import test.herd.depin.core.integration.newstructure.injection.clazz.injection {
 import herd.depin.core {
 	Depin
 }
-import test.herd.depin.core.integration.newstructure {
+
+import test.herd.depin.core.integration.newstructure.injection {
+
 	BaseRainyInjectionTest
 }
 
