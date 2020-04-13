@@ -64,6 +64,7 @@ shared class DependencyFactory(TypesFactory identificationFactory,TargetSelector
 		return dependency;
 	}
 	
+	throws(`class FactorizationError`,"Could not create dependency")
 	shared Dependency create(NestableDeclaration declaration) {
 		Dependency dependency;
 		String name=dependencyName(declaration);
@@ -73,7 +74,7 @@ shared class DependencyFactory(TypesFactory identificationFactory,TargetSelector
 		else{
 			Dependency? containerDependency ;
 			if(declaration.formal){
-				throw Exception("Formal declarations not allowed: ``declaration```");
+				throw FactorizationError(declaration,"Can't create dependency out of formal declaration");
 			}
 			if (is NestableDeclaration containerDeclaration = declaration.container) {
 				 containerDependency=create(containerDeclaration);

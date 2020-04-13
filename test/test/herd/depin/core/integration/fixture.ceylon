@@ -1,5 +1,4 @@
 import test.herd.depin.core.integration.injection {
-	ClassWithMemberClass,
 	ClassWithDefaultedInitializerParameter,
 	DataSource,
 	Person

@@ -5,7 +5,6 @@ import test.herd.depin.core.integration {
 }
 import herd.depin.core {
 
-	fallback,
-	dependency
+	fallback
 }
 shared fallback String fallbackDependency=fixture.dependencies.fallback;

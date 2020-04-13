@@ -9,42 +9,35 @@ import depin.test.extension {
 	LoggingTestExtension
 }
 import test.herd.depin.core.integration.newstructure.injection.clazz.dependency {
-	AbstractClassDependency,
-	nested
+	...
 	
 }
 import test.herd.depin.core.integration.newstructure.injection.clazz.injection {
-	ClassWithMemberClassInjection
-	
+	...
 }
 import herd.depin.core {
-	Depin,
-	FactorizationError,
-	Injection
+	Depin
 }
-import ceylon.language.meta.model {
-	ClassModel
+import test.herd.depin.core.integration.newstructure {
+	BaseRainyInjectionTest
 }
 
 testExtension (`class LoggingTestExtension`)
-shared class RainyClassInjectionTest() {
+shared class RainyClassInjectionTest() extends BaseRainyInjectionTest(){
 	
-	Boolean factorizationError(ClassModel<Throwable> error) {
-		return error == `FactorizationError`;
-	}
 	
-	Boolean isInjectionError(ClassModel<Throwable> error) {
-		return error == `Injection.Error`;
-	}
-	shared test void whenProvidedAbstractClassDeclarationAsDependency_then_shouldFailFast(){
-		assertThatException(()=>Depin({`class AbstractClassDependency`}))
-				.hasType(factorizationError);
-	}
+	
 	
 	shared test
 	void whenMissingParentClassDependency_then_shouldThrowInjectionError() {
 		assertThatException(() =>
 			Depin({ `value nested` }).inject(`ClassWithMemberClassInjection.MemberClass`))
+				.hasType(isInjectionError);
+	}
+	shared test
+	void whenMissingNonDefaultParameter_then_shouldThrowInjectionError() {
+		assertThatException(() =>
+			Depin().inject(`ClassWithMemberClassInjection`))
 				.hasType(isInjectionError);
 	}
 	

@@ -12,7 +12,6 @@ import depin.test.extension {
 import herd.depin.core {
 
 	Depin,
-	Injection,
 	Dependency
 }
 import ceylon.language.meta.model {
@@ -23,9 +22,6 @@ late String name;
 testExtension (`class LoggingTestExtension`)
 shared class RainyExtractionTest() {
 	
-	Boolean isInjectionError(ClassModel<Throwable> error) {
-		return error == `Injection.Error`;
-	}
 	Boolean isResolutionError(ClassModel<Throwable> error) {
 		return error == `Dependency.ResolutionError`;
 	}
