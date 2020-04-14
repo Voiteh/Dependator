@@ -34,14 +34,15 @@ shared class ParameterDependency(
 		}
 	}
 	
-	shared actual default Anything resolve {		Dependency? dependency = provide;
+	shared actual default Anything resolve {		
+		Dependency? dependency = provide;
 		Anything resolve;
 		if (exists dependency) {
 			resolve = doResolve(dependency);
 		} else {
-			throw Dependency.ResolutionError("Couldn't find dependency for definition ``identifier``", null);
+			throw Dependency.ResolutionError("Couldn't find dependency for definition ``identifier`` ``name``", null);
 		}
-		log.debug("[Resolved] parameter dependency: `` resolve else "null" ``, for definition: ``identifier``");
+		log.debug("[Resolved] parameter dependency: `` resolve else "null" ``, for definition: ``identifier`` ``name``");
 		return resolve;
 	}
 }
