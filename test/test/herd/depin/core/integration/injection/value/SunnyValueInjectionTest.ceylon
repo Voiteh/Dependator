@@ -14,7 +14,6 @@ import herd.depin.core {
 import test.herd.depin.core.integration.injection.\ivalue.injection {
 	abstractClassValueInjection
 }
-testExtension (`class LoggingTestExtension`)
 shared class SunnyInjectionTest() {
 	
 	shared test void whenProvidedConcreteAbstractDependency_then_shouldInjectIt(){

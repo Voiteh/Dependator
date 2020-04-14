@@ -4,5 +4,4 @@ import ceylon.test {
 import depin.test.extension {
 	LoggingTestExtension
 }
-testExtension (`class LoggingTestExtension`)
 shared class RainyValueInjectionTest() {}

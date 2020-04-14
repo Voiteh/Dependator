@@ -16,7 +16,6 @@ import test.herd.depin.core.integration.injection.collector.injection {
 	...
 }
 
-testExtension (`class LoggingTestExtension`)
 shared class SunnyCollectorTest() {
 	
 	shared test

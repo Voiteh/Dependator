@@ -20,7 +20,6 @@ import test.herd.depin.core.integration.injection.decorated.injection{
 }
 
 
-testExtension (`class LoggingTestExtension`)
 shared class SunnyDecoratedInjectionTest() {
 	
 	shared beforeTest void reset(){

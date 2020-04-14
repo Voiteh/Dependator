@@ -16,7 +16,6 @@ import test.herd.depin.core.integration.extraction.dependency{
 	...
 }
 
-testExtension (`class LoggingTestExtension`)
 shared class SunnyExtractionTest() {
 	
 	shared test void whenDependencyProvided_then_shouldExtractIt(){

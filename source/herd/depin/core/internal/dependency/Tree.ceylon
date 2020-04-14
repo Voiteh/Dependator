@@ -23,16 +23,15 @@ import herd.type.support {
 	flat
 }
 shared class Branch(
-	TypeIdentifier idetifier,
+	shared TypeIdentifier identifier,
 	MutableMap<String,Dependency> map=HashMap<String, Dependency>()
 ) {
 	shared variable Dependency? fallback=null;
 	
 	shared Dependency? add(Dependency dependency) {
-		log.trace("Adding dependency to old branch ``dependency``");
 		value replaced = map.put(dependency.name,dependency);
 		if(exists replaced){
-			log.trace("Replaced dependency when adding ``replaced`` with ``dependency``");
+			log.warn("Replaced dependency when adding ``replaced`` with ``dependency`` for ``identifier``");
 		}
 		return replaced;
 	}
@@ -53,8 +52,8 @@ shared class Branch(
 	}
 	value fold=((String partial, String next -> Dependency dependency) => "``partial`` ``next``");
 	string=> if(exists dependency = fallback) 
-	then map.fold("``idetifier``: fallback-> ``dependency.name``,")(fold) 
-	else map.fold("``idetifier``:")(fold)
+	then map.fold("``identifier``: fallback -> ``dependency.name``,")(fold) 
+	else map.fold("``identifier``:")(fold)
 	; 
 		
 	
@@ -64,26 +63,31 @@ shared class Tree(
 ) {
 	Logger log=createLogger(`module`);
 	shared Dependency? get(TypeIdentifier identifier, String name) {
-		log.trace("Getting dependency for definition: ``identifier`` and name: ``name``");
+		log.debug("[Getting dependency] ``name`` for type identifier: ``identifier``");
 		value branch= branches.get(identifier);
 		
 		if(exists branch){
-			log.trace("Found branch for identifier ``identifier``, ``branch``");
+			log.trace("Found branch for type identifier ``identifier``, ``branch``");
 			value dependency=branch.get(name);
-			log.trace("In branch found dependency ``dependency else "null"`` for name: ``name``");
+			log.trace("In branch ``identifier`` found dependency ``name``");
 			return dependency;
 		}
 		return null;
 	}
 	shared Dependency? getFallback(TypeIdentifier identifier){
-		log.trace("Getting fallback dependency for definition: ``identifier``");
+		log.debug("[Getting fallback dependency] for type identifier: ``identifier``");
 		value dependency = branches.get(identifier)?.fallback;
-		log.trace("In branch found fallback dependency ``dependency else "null"`` for definition: ``identifier``");
+		log.trace("In branch ``identifier`` found fallback dependency ``dependency?.name else "null"``");
 		return dependency;
 	}
 	shared void addFallback(Dependency dependency){
+		log.debug("[Adding fallback dependency] ``dependency.name`` for type identifier: ``dependency.identifier``");
 		value get = branches.get(dependency.identifier);
 		if (exists get) {
+			log.trace("Found branch for type identifier ``get.identifier``, ``get``");
+			if(exists oldFallback=get.fallback){
+				log.warn("[Replacing fallback dependency] ``oldFallback.name`` with ``dependency.name`` for type identifier: ``get.identifier``");
+			}
 			get.fallback=dependency;
 		}
 		value branch=Branch(dependency.identifier);
@@ -93,7 +97,7 @@ shared class Tree(
 	shared Dependency? add(Dependency dependency) {
 		value get = branches.get(dependency.identifier);
 		if (exists get) {
-			log.trace("Adding dependency to old branch ``dependency``");
+			log.trace("Adding dependency ``dependency.name`` to ``get.identifier`` branch");
 			return get.add(dependency);
 		}
 		log.trace("Adding dependency to new branch ``dependency``");

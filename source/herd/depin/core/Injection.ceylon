@@ -5,9 +5,8 @@ shared abstract class Injection {
 	shared static
 	class Error(Throwable cause, shared Injectable<Anything> injectable, shared Anything container = null, shared {Anything*} parameters = empty)
 			extends Exception(
-				"Injection failed for ``injectable`` `` if (exists container) then ", with container:``container`` " else ""`` `` if (!parameters.empty) then ", parameters: ``parameters``" else "" ``"
-				, cause
-			) {}
+		"Injection failed for ``injectable`` `` if (exists container) then ", with container:``container`` " else "" `` `` if (!parameters.empty) then ", parameters: ``parameters``" else "" ``", cause
+	) {}
 	
 	Injectable<Anything> injectable;
 	Dependency? container;

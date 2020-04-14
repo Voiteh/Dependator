@@ -25,7 +25,7 @@ shared object scanner {
 		}
 		case (is FunctionOrValueDeclaration) {
 			if (scope.annotated<DependencyAnnotation>()) {
-				log.debug("Included ``scope``");
+				log.debug("[Included scope] ``scope``");
 				return { scope };
 			} else {
 				return empty;

@@ -20,7 +20,6 @@ import ceylon.language.meta.declaration {
 }
 
 
-testExtension (`class LoggingTestExtension`)
 shared class SunnyClassInjectionTest() {
 	
 	

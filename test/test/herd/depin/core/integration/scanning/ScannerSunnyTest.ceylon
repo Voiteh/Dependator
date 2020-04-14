@@ -22,7 +22,6 @@ import test.herd.depin.core.integration.scanning.dependency.excluded {
 	Excluded
 }
 
-testExtension (`class LoggingTestExtension`)
 shared class ScannerSunnyTest(){
 	
 	

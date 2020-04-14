@@ -15,7 +15,6 @@ import test.herd.depin.core.integration.injection.\ifunction.injection {
 	...
 }
 
-testExtension (`class LoggingTestExtension`)
 shared class SunnyFunctionInjectionTest() {
 	
 	shared test void whenProvidedTopLevelFunction_then_shouldInjectItToInjection(){

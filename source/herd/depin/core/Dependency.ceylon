@@ -75,5 +75,5 @@ shared abstract class Dependency {
 	throws (`class ResolutionError`, "Thrown whenver [[Dependency.resolve]] failes to complete succesfully")
 	shared formal Anything resolve;
 	
-	shared actual default String string = "``identifier`` ``name`` ";
+	shared actual default String string = "``identifier`` ``name``";
 }
