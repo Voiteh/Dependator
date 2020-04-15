@@ -40,7 +40,7 @@ shared class Depin {
 		dependencies.group((Dependency element) => element.name->element.identifier)
 				.filter((String->TypeIdentifier elementKey -> [Dependency+] elementItem) => !elementItem.rest.empty)
 				.each((String->TypeIdentifier elementKey -> [Dependency+] elementItem) {
-			throw Exception("Multiple dependencies found for single name: ``elementKey``-> ``elementItem`` ");
+			throw Exception("Multiple dependencies found for ``elementKey`` and single name: ``elementItem`` ");
 		});
 	}
 	
