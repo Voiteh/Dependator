@@ -10,7 +10,7 @@
    # Introduction 
    Whole concept of this framework, is based on [[Dependency]] and [[Injection]] abstract classes. 
    Both are tightly coupled together. 
-   The [[Dependency]] class is different view on ceylon declaration. 
+   The [[Dependency]] class is different view on Ceylon declaration. 
    Dependencies are identified by name and declaration type. Functional dependency type identification contains:
    - return type of function 
    - parameter types (parameter names doesn't matter).
