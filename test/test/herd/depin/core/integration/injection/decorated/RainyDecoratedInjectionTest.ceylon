@@ -6,5 +6,4 @@ import depin.test.extension {
 
 	LoggingTestExtension
 }
-testExtension (`class LoggingTestExtension`)
 shared class RainyDecoratedInjectionTest() {}

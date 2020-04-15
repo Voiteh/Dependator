@@ -24,7 +24,6 @@ import test.herd.depin.core.integration.injection {
 	BaseRainyInjectionTest
 }
 
-testExtension (`class LoggingTestExtension`)
 shared class RainyClassInjectionTest() extends BaseRainyInjectionTest(){
 	
 	

@@ -51,7 +51,7 @@ shared class DependencyFactory(TypesFactory identificationFactory,TargetSelector
 		 	dependency=if(declaration.defaulted) then DefaultedParameterDependency{ 
 				name=name;
 				declaration = declaration; 
-				types = types; 
+				identifier = types; 
 				tree = tree;
 				
 			} else ParameterDependency{ 

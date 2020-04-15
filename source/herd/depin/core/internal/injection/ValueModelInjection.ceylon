@@ -30,7 +30,7 @@ shared class ValueModelInjection(ValueModel<> model,Dependency? container) exten
 			((Throwable error)=>Error(error,model,resolvedContainer));
 		}
 		else case (is Gettable<>) {
-			log.debug("[Injecting] into: ``model`` ");
+			log.debug("[Injecting] into: ``model``");
 			return safe(() => apply(model))
 			((Throwable error)=>Error(error,model));
 		}

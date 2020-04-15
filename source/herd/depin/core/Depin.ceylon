@@ -40,7 +40,7 @@ shared class Depin {
 		dependencies.group((Dependency element) => element.name->element.identifier)
 				.filter((String->TypeIdentifier elementKey -> [Dependency+] elementItem) => !elementItem.rest.empty)
 				.each((String->TypeIdentifier elementKey -> [Dependency+] elementItem) {
-			throw Exception("Multiple dependencies found for single name: ``elementKey``-> ``elementItem`` ");
+			throw Exception("Multiple dependencies found for ``elementKey`` and single name: ``elementItem`` ");
 		});
 	}
 	
@@ -90,7 +90,7 @@ shared class Depin {
 	throws(`class Injection.Error`,"One of dependencies fails to resolve")
 	shared  Result inject<Result>(Injectable<Result> model){
 		assert(is Result result= factory.create(model).inject);
-		log.debug("Injection into ``model `` succesfull, with result: ``result else "null"``");
+		log.debug("[Injection] of ``model `` succesfull, with result: ``result else "null"``");
 		return result;
 	}
 	"Allows notification of [[Dependency.Decorator]] [[Handler]]s, with given [[event]]. This method honors type hierarchies so subtype events, will notify supertype [[Handler]]s,

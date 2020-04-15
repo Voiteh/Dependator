@@ -19,7 +19,6 @@ import ceylon.language.meta.model {
 	ClassModel
 }
 late String name;
-testExtension (`class LoggingTestExtension`)
 shared class RainyExtractionTest() {
 	
 	Boolean isResolutionError(ClassModel<Throwable> error) {
