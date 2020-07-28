@@ -24,13 +24,13 @@ shared class FunctionalDependency(
 	{Dependency*} parameters
 ) extends ContainableDependency(name,identifier,declaration,container) {
 	
-	shared actual Anything resolve{
+	shared actual Anything resolve(Anything context) {
 		log.trace("Resolving functional dependency: ``identifier``");
-		value resolvedParameters = parameters.collect((Dependency element) => safe(()=> element.resolve)
+		value resolvedParameters = parameters.collect((Dependency element) => safe(()=> element.resolve(context))
 			((Throwable error) => ResolutionError("Error durring parameter resolution for: ``element`` in ``this``",error)))
 				.filter((Anything element) =>!element is Defaulted).sequence();
 		log.trace("[Resolved functional parameters]:``resolvedParameters`` for type identifier: ``identifier`` and name ``name``");
-		value resolvedContainer=safe(()=>container?.resolve)
+		value resolvedContainer=safe(()=>container?.resolve(context))
 		((Throwable error) => ResolutionError("Error durring container resolution for: ``container else "null"`` in ``this``",error));
 		value it = safe(()=> invoke(declaration,resolvedContainer,resolvedParameters))
 		((Throwable error)=>ResolutionError("Invocation for dependency ``identifier`` failed for container ``resolvedContainer else "null"`` and parameters ``resolvedParameters``",error));

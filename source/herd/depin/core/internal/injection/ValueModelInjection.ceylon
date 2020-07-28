@@ -18,12 +18,12 @@ import herd.depin.core {
 	Injection
 }
 shared class ValueModelInjection(ValueModel<> model,Dependency? container) extends Injection(model,container) {
-	shared actual Anything inject {
+	shared actual Anything inject(Anything context) {
 		switch(model)
 		case (is Qualified<>) {
 			assert(exists container);
 			log.debug("[Injecting] into : ``model`` with container: ``container``");
-			value resolvedContainer = safe(()=> container.resolve)
+			value resolvedContainer = safe(()=> container.resolve(context))
 			((Throwable cause) => Error(cause,model,container));
 			log.trace("Resolved container: ``resolvedContainer else "null"`` for injecting into: ``model`` ");
 			return safe(()=>apply(model,resolvedContainer))

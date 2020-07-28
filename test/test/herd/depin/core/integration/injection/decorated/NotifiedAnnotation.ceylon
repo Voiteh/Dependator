@@ -16,7 +16,7 @@ shared final annotation class NotifiedAnnotation()
 	shared actual Dependency.Decoration decorate(Dependency dependency) => object extends Dependency.Decoration(dependency,outer) satisfies Handler<Boolean>{
 
 		late Boolean notified;
-		shared actual Anything resolve { 
+		shared actual Anything resolve(Anything context) { 
 			try{ 
 				return notified;
 			} catch(InitializationError x){

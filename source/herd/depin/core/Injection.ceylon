@@ -8,17 +8,22 @@ shared abstract class Injection {
 		"Injection failed for ``injectable`` `` if (exists container) then ", with container:``container`` " else "" `` `` if (!parameters.empty) then ", parameters: ``parameters``" else "" ``", cause
 	) {}
 	
-	Injectable<Anything> injectable;
+	Injectable<> injectable;
 	Dependency? container;
 	{Dependency*} parameters;
-	shared new (Injectable<Anything> injectable, Dependency? container, {Dependency*} parameters = empty) {
+	shared new (
+		Injectable<> injectable,
+	  	Dependency? container,
+	  	{Dependency*} parameters = empty
+	  	
+	) {
 		this.parameters = parameters;
 		this.container = container;
 		this.injectable = injectable;
 	}
 	"Injects given parameters and container into injectable"
 	throws (`class Error`)
-	shared formal Anything inject;
+	shared formal Anything inject(Anything context) ;
 	
 	shared actual String string {
 		if (exists container) {

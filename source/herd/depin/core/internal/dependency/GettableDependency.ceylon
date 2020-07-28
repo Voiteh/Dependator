@@ -18,8 +18,8 @@ shared class GettableDependency(
 	Dependency? container
 ) extends ContainableDependency(name,identifier,declaration,container) {
 	
-	shared actual Anything resolve {
-		if (exists container, exists resolved = container.resolve) {
+	shared actual Anything resolve(Anything context){
+		if (exists container, exists resolved = container.resolve(context)) {
 			value result = safe(() => invoke(declaration, resolved))((Throwable error) => 
 				ResolutionError("Resolution failed for ``identifier`` with container ``container``",error));
 			log.debug("[Resolved value member dependency] `` result else "null" `` for type identifier ``identifier``, name:``name`` and container ``container``");

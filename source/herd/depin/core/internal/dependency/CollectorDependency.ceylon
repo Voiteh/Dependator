@@ -33,7 +33,7 @@ shared class CollectorDependency(
 		return empty;
 	}
 	
-	shared actual Anything resolve {
+	shared actual Anything resolve(Anything context) {
 		
 		{Dependency*} collecting;
 		log.trace("Collecting, by type ``collectedType``");
@@ -44,7 +44,7 @@ shared class CollectorDependency(
 			collecting = tree.getAllByIdentifier(collectedType);
 		}
 		log.trace("Resolving ``collecting``, by type ``collectedType``");
-		value collected = collecting.collect((Dependency element) => element.resolve);
+		value collected = collecting.collect((Dependency element) => element.resolve(context));
 		log.debug("Collected ``collected``, by type ``collectedType``");
 		if (collected.empty) {
 			throw Exception("There was no dependecy to be collected for ``declaration``");

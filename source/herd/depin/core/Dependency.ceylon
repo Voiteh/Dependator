@@ -29,6 +29,8 @@ shared abstract class Dependency {
 		
 		"Decorators decorating [[dependency]]"
 		shared Decorator[] decorators = if (is Decoration dependency) then dependency.decorators.withTrailing(decorator) else [decorator];
+		
+		
 	}
 
 	"Thrown whenver [[Dependency.resolve]] failes to complete succesfully"
@@ -73,7 +75,7 @@ shared abstract class Dependency {
 	
 	"Resolve given [[Dependency]] declaration to object or null, which this depedency represents"
 	throws (`class ResolutionError`, "Thrown whenver [[Dependency.resolve]] failes to complete succesfully")
-	shared formal Anything resolve;
+	shared formal Anything resolve(Anything context);
 	
 	shared actual default String string = "``identifier`` ``name``";
 }

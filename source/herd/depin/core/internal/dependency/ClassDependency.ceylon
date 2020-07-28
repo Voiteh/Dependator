@@ -12,7 +12,7 @@ shared class ClassDependency(
 	ClassDeclaration declaration,
 	Dependency constructorDependency
 ) extends Dependency(name,identification,declaration) satisfies Exposing{
-	shared actual Anything resolve => constructorDependency.resolve;
+	shared actual Anything resolve(Anything context) => constructorDependency.resolve(context);
 	
 	shared actual Dependency exposed = constructorDependency;
 	

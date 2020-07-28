@@ -15,6 +15,7 @@ shared class ParameterDependency(
 	TypeIdentifier identifier,
 	FunctionOrValueDeclaration declaration,
 	Tree tree) extends Dependency(name, identifier, declaration) {
+	
 	shared default Dependency? provide {
 		if (exists shadow = tree.get(identifier, name)) {
 			return shadow;
@@ -24,15 +25,15 @@ shared class ParameterDependency(
 		return null;
 	}
 	
-	shared Anything doResolve(Dependency dependency) {
+	shared Anything doResolve<Context> (Dependency dependency,Context? context=null) given Context satisfies Object{
 		if (is FunctionDeclaration declaration, is FunctionDeclaration dependencyDeclaration = dependency.declaration) {
 			return safe(() => dependencyDeclaration.apply<>())((Throwable error) => ResolutionError("Type parameters are not supported for dependencies yet", error));
 		} else {
-			return dependency.resolve;
+			return dependency.resolve(context);
 		}
 	}
 	
-	shared actual default Anything resolve {
+	shared actual default Anything resolve(Anything context) {
 		Dependency? dependency = provide;
 		Anything resolve;
 		if (exists dependency) {

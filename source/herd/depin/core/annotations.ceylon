@@ -13,7 +13,9 @@ import ceylon.language.meta.model {
 see(`function fallback`)
 shared final annotation class FallbackDecorator() satisfies Dependency.Decorator & OptionalAnnotation<FallbackDecorator,FunctionOrValueDeclaration>{
 	shared actual Dependency.Decoration decorate(Dependency dependency) => object extends Dependency.Decoration(dependency,outer){
-		shared actual Anything resolve => dependency.resolve;
+		shared actual Anything resolve(Anything context) => dependency.resolve(null);
+		
+		
 	};
 	string => "fallback";
 }
@@ -27,8 +29,9 @@ see(`function eager`)
 shared final annotation class EagerDecorator() satisfies Dependency.Decorator &
 		OptionalAnnotation<EagerDecorator,ValueDeclaration>{
 	shared actual Dependency.Decoration decorate(Dependency dependency) => object extends Dependency.Decoration(dependency,outer){
-		Anything data=dependency.resolve;
-		shared actual Anything resolve=> data;
+		Anything data=dependency.resolve(null);
+		shared actual Anything resolve(Anything context) => data;
+		
 	
 	};
 	string => "eager";
@@ -43,15 +46,17 @@ shared final annotation class SingletonDecorator() satisfies Dependency.Decorato
 	shared actual Dependency.Decoration decorate(Dependency dependency) => object extends Dependency.Decoration(dependency,outer){
 		
 		late Anything data;
-		
-		shared actual Anything resolve {
+		shared actual Anything resolve(Anything context){
 			try{
 				return data;
 			}catch(InitializationError ignored){
-				data=dependency.resolve;
+				data=dependency.resolve(null);
 				return data;
 			}
 		}
+		
+		
+		
 		
 		
 	};
@@ -111,5 +116,13 @@ shared annotation final class FactoryAnnotation() satisfies OptionalAnnotation<F
 
 "Annotation to mark functions as factory methods. They are not injectable as function but only as a result of factorization (value)"
 shared annotation FactoryAnnotation factory() => FactoryAnnotation();
+
+see(`function contextual`)
+shared annotation final class ContextualAnnotation() satisfies OptionalAnnotation<ContextualAnnotation,FunctionOrValueDeclaration>{
+	
+}
+
+"Annotation to mark given parameter as provided from context of given injection"
+shared annotation ContextualAnnotation contextual() => ContextualAnnotation();
 
 

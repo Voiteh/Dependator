@@ -14,7 +14,8 @@ import herd.depin.core {
 	Collector,
 	Dependency,
 	FactorizationError,
-	NamedAnnotation
+	NamedAnnotation,
+	ContextualAnnotation
 }
 
 import herd.depin.core.internal.dependency {
@@ -25,7 +26,8 @@ import herd.depin.core.internal.dependency {
 	Tree,
 	GettableDependency,
 	ClassDependency,
-	TypeIdentifier
+	TypeIdentifier,
+	ContextualDependency
 }
 
 
@@ -46,6 +48,7 @@ shared class DependencyFactory(TypesFactory identificationFactory,TargetSelector
 				
 			};					
 		}
+		
 		else{
 			String name=dependencyName(declaration);
 		 	dependency=if(declaration.defaulted) then DefaultedParameterDependency{ 
@@ -69,7 +72,20 @@ shared class DependencyFactory(TypesFactory identificationFactory,TargetSelector
 		Dependency dependency;
 		String name=dependencyName(declaration);
 		if(is FunctionOrValueDeclaration declaration, declaration.parameter){
-			dependency=createParameter(declaration);
+			value parameter=createParameter(declaration);
+			if(declaration.annotated<ContextualAnnotation>()){
+				if(is ParameterDependency parameter){
+					dependency=ContextualDependency{
+						parameter = parameter;
+						identificationFactory = identificationFactory.create; 
+					};
+					
+				}else{
+					throw FactorizationError(declaration, "Can't use both `` `class ContextualAnnotation` `` with Collector");
+				}
+			}else{
+				dependency=parameter;
+			}
 		}
 		else{
 			Dependency? containerDependency ;

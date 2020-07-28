@@ -20,7 +20,7 @@ shared class DefaultedParameterDependency(
  	Tree tree
  ) extends ParameterDependency(name,identifier,declaration,tree){
 		
-	shared actual Anything resolve{
+	shared actual Anything resolve(Anything context){
 		log.trace("Resolving defaulted parameter dependency: ``identifier``");
 		Dependency? dependency=provide;
 		if(exists dependency){

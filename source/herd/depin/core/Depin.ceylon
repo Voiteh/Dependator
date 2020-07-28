@@ -79,7 +79,7 @@ shared class Depin {
 	throws(`class Dependency.ResolutionError`, "Dependency can't be find for given declaration")
 	shared Result extract<Result>(FunctionOrValueDeclaration declaration){
 		value dependency=dependencyFactory.createParameter(declaration);
-		assert(is Result result= dependency.resolve);
+		assert(is Result result= dependency.resolve(null));
 		return result;
 	}
 
@@ -88,8 +88,8 @@ shared class Depin {
 	 Be aware that for [[ceylon.language.meta.model:ValueModel]], [[inject]] always create new instance of given model. 
 	 For [[ceylon.language.meta.model:FunctionModel]] result depends on implementation of function."
 	throws(`class Injection.Error`,"One of dependencies fails to resolve")
-	shared  Result inject<Result>(Injectable<Result> model){
-		assert(is Result result= factory.create(model).inject);
+	shared  Result inject<Result>(Injectable<Result> model,Anything context=null){
+		assert(is Result result= factory.create(model).inject(context));
 		log.debug("[Injection] of ``model `` succesfull, with result: ``result else "null"``");
 		return result;
 	}
