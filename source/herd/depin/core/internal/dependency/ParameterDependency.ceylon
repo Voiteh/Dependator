@@ -25,7 +25,7 @@ shared class ParameterDependency(
 		return null;
 	}
 	
-	shared Anything doResolve<Context> (Dependency dependency,Context? context=null) given Context satisfies Object{
+	shared Anything doResolve (Dependency dependency,Anything context) {
 		if (is FunctionDeclaration declaration, is FunctionDeclaration dependencyDeclaration = dependency.declaration) {
 			return safe(() => dependencyDeclaration.apply<>())((Throwable error) => ResolutionError("Type parameters are not supported for dependencies yet", error));
 		} else {
@@ -37,7 +37,7 @@ shared class ParameterDependency(
 		Dependency? dependency = provide;
 		Anything resolve;
 		if (exists dependency) {
-			resolve = doResolve(dependency);
+			resolve = doResolve(dependency,context);
 		} else {
 			throw Dependency.ResolutionError("Couldn't find dependency ``name`` with type identifier:``identifier`` ", null);
 		}

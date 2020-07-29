@@ -6,14 +6,16 @@ import depin.test.extension {
 	LoggingTestExtension
 }
 import test.herd.depin.core.integration.injection.\ivalue.dependency {
-	concreteAbstractClassValue
+	concreteAbstractClassValue,
+	extractingContextualDependency
 }
 import herd.depin.core {
 	Depin
 }
 import test.herd.depin.core.integration.injection.\ivalue.injection {
 	abstractClassValueInjection,
-	contextualValueInjection
+	contextualValueInjection,
+	contextualExtractingInjection
 }
 shared class SunnyInjectionTest() {
 	
@@ -26,5 +28,11 @@ shared class SunnyInjectionTest() {
 	shared test void whenInjectionParameterIsContextual_then_shouldInjectItWithContext(){
 		String result = Depin({}).inject(`contextualValueInjection`, fixture.contextual.parameter);
 		assert(result==fixture.contextual.parameter);
+	}
+	
+	shared test void whenProvidedRequiredContextualDependency_then_should_injectItUsingContext(){
+		Integer result=Depin({`function extractingContextualDependency`})
+				.inject(`contextualExtractingInjection`,fixture.contextual.parameter);
+		assert(result==fixture.contextual.parameter.size);
 	}
 }

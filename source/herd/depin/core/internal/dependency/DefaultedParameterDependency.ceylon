@@ -24,7 +24,7 @@ shared class DefaultedParameterDependency(
 		log.trace("Resolving defaulted parameter dependency: ``identifier``");
 		Dependency? dependency=provide;
 		if(exists dependency){
-			Anything resolve=doResolve(dependency);
+			Anything resolve=doResolve(dependency,context);
 			log.debug("[Resolved defaulted parameter dependency]: `` resolve else "null" ``, for type identifier: ``identifier`` and name: ``name``");
 			return resolve;
 		}

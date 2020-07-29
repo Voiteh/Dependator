@@ -7,3 +7,6 @@ import herd.depin.core {
 shared String contextualValueInjection(contextual String context){
 	return context;
 }
+shared Integer contextualExtractingInjection(Integer extractingContextualDependency){
+	return extractingContextualDependency;
+}
