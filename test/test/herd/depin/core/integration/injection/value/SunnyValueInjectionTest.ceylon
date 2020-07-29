@@ -30,9 +30,11 @@ shared class SunnyInjectionTest() {
 		assert(result==fixture.contextual.parameter);
 	}
 	
-	shared test void whenProvidedRequiredContextualDependency_then_should_injectItUsingContext(){
+	shared test void whenProvidedRequiredContextualDependency_then_shouldInjectItUsingContext(){
 		Integer result=Depin({`function extractingContextualDependency`})
 				.inject(`contextualExtractingInjection`,fixture.contextual.parameter);
 		assert(result==fixture.contextual.parameter.size);
 	}
+	
+	
 }

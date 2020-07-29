@@ -89,9 +89,13 @@ shared class Depin {
 	 For [[ceylon.language.meta.model:FunctionModel]] result depends on implementation of function."
 	throws(`class Injection.Error`,"One of dependencies fails to resolve")
 	shared  Result inject<Result>(Injectable<Result> model,Anything context=null){
-		assert(is Result result= factory.create(model).inject(context));
-		log.debug("[Injection] of ``model `` succesfull, with result: ``result else "null"``");
-		return result;
+		try{
+			assert(is Result result= factory.create(model).inject(context));
+			log.debug("[Injection] of ``model `` succesfull, with result: ``result else "null"``");
+			return result;
+		}catch(FactorizationError error){
+			throw Injection.Error(error,model);
+		}
 	}
 	"Allows notification of [[Dependency.Decorator]] [[Handler]]s, with given [[event]]. This method honors type hierarchies so subtype events, will notify supertype [[Handler]]s,
 	 this also includes interfaces." 

@@ -1,6 +1,7 @@
 import herd.depin.core {
 
-	contextual
+	contextual,
+	Collector
 }
 
 
@@ -10,3 +11,6 @@ shared String contextualValueInjection(contextual String context){
 shared Integer contextualExtractingInjection(Integer extractingContextualDependency){
 	return extractingContextualDependency;
 }
+
+
+shared void contextualCollectorInjection(contextual Collector<Integer> collector){}
