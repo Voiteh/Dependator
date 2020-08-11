@@ -13,7 +13,7 @@ import ceylon.language.meta.model {
 see(`function fallback`)
 shared final annotation class FallbackDecorator() satisfies Dependency.Decorator & OptionalAnnotation<FallbackDecorator,FunctionOrValueDeclaration>{
 	shared actual Dependency.Decoration decorate(Dependency dependency) => object extends Dependency.Decoration(dependency,outer){
-		shared actual Anything resolve(Anything context) => dependency.resolve(null);
+		shared actual Anything resolve(Anything context) => dependency.resolve(context);
 		
 		
 	};
@@ -50,7 +50,7 @@ shared final annotation class SingletonDecorator() satisfies Dependency.Decorato
 			try{
 				return data;
 			}catch(InitializationError ignored){
-				data=dependency.resolve(null);
+				data=dependency.resolve(context);
 				return data;
 			}
 		}
@@ -118,7 +118,7 @@ shared annotation final class FactoryAnnotation() satisfies OptionalAnnotation<F
 shared annotation FactoryAnnotation factory() => FactoryAnnotation();
 
 see(`function contextual`)
-shared annotation final class ContextualAnnotation() satisfies OptionalAnnotation<ContextualAnnotation,FunctionOrValueDeclaration>{
+shared annotation final class ContextualAnnotation() satisfies OptionalAnnotation<ContextualAnnotation,ValueDeclaration>{
 	
 }
 

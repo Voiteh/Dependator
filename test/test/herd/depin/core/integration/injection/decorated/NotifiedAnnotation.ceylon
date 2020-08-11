@@ -20,7 +20,7 @@ shared final annotation class NotifiedAnnotation()
 			try{ 
 				return notified;
 			} catch(InitializationError x){
-				return dependency.resolve;
+				return dependency.resolve(context);
 			}
 	
 		}

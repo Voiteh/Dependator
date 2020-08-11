@@ -64,7 +64,10 @@ shared class InjectionFactory(DependencyFactory dependencyFactory, TargetSelecto
 			}
 		}
 		case (is FunctionModel<Anything,Nothing>) {
-			Dependency[] parameters = injectable.declaration.parameterDeclarations.collect((FunctionOrValueDeclaration element) => dependencyFactory.create(element));
+			Dependency[] parameters = injectable.declaration.parameterDeclarations
+					.collect((FunctionOrValueDeclaration element) => dependencyFactory.create(element))
+					.collect((Dependency parameter) => dependencyFactory.wrapContextual(parameter));
+			
 			injection = FunctionModelInjection(injectable, container, parameters);
 			log.debug("[Created function model injection]: ``injection`` for ``injectable``");
 		}

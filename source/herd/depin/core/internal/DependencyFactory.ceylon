@@ -66,26 +66,30 @@ shared class DependencyFactory(TypesFactory identificationFactory,TargetSelector
 		}
 		return dependency;
 	}
+	throws(`class FactorizationError`,"When trying to use invalid dependency with contextual wrapper")
+	shared Dependency wrapContextual(Dependency dependency){
+		//FIXME We get error from MetamodelUtils.getJavaAnnotatedElement when parameter is a function we cant get it's annotations.  
+		if(dependency.declaration is ValueDeclaration,dependency.declaration.annotated<ContextualAnnotation>()){
+			if(is CollectorDependency dependency){
+				throw FactorizationError(dependency.declaration, "Can't use both `` `class ContextualAnnotation` `` with Collector");
+			}
+			else if(is ParameterDependency dependency){
+				return ContextualDependency{
+					parameter = dependency;
+					identificationFactory = identificationFactory.create; 
+				};	
+			}
+			
+		}
+			return dependency;
+	}
 	
 	throws(`class FactorizationError`,"Could not create dependency")
 	shared Dependency create(NestableDeclaration declaration) {
 		Dependency dependency;
 		String name=dependencyName(declaration);
 		if(is FunctionOrValueDeclaration declaration, declaration.parameter){
-			value parameter=createParameter(declaration);
-			if(declaration.annotated<ContextualAnnotation>()){
-				if(is ParameterDependency parameter){
-					dependency=ContextualDependency{
-						parameter = parameter;
-						identificationFactory = identificationFactory.create; 
-					};
-					
-				}else{
-					throw FactorizationError(declaration, "Can't use both `` `class ContextualAnnotation` `` with Collector");
-				}
-			}else{
-				dependency=parameter;
-			}
+			dependency=createParameter(declaration);
 		}
 		else{
 			Dependency? containerDependency ;
@@ -101,7 +105,9 @@ shared class DependencyFactory(TypesFactory identificationFactory,TargetSelector
 			case (is FunctionalDeclaration) {
 				TypeIdentifier identification =  identificationFactory.create(declaration);
 				value parameterDependencies = declaration.parameterDeclarations
- 						.collect((FunctionOrValueDeclaration element) => create(element));
+ 						.collect((FunctionOrValueDeclaration element) => create(element))
+						.collect((Dependency parameter) => wrapContextual(parameter));
+				
 				dependency= FunctionalDependency{ 
 					name = name; 
 					identifier = identification; 

@@ -25,11 +25,14 @@ shared class FunctionModelInjection(FunctionModel<> model, Dependency? container
 		value resolvedContainer = if (exists container) then safe(() => container.resolve(context))((Throwable cause) => Error(cause, model, container, parameters))
 		else null;
 		log.trace("Resolved container: `` resolvedContainer else "null" `` for injecting into: ``model`` ");
-		value resolvedParameters = safe(() => parameters.map((Dependency element) => element.resolve(context)).select((Anything element) => !element is Defaulted))((Throwable cause) => Error(cause, model, container, parameters));
+		value resolvedParameters = safe(() => parameters.map((Dependency element) => element.resolve(context))
+			.select((Anything element) => !element is Defaulted))
+		((Throwable cause) => Error(cause, model, container, parameters));
 		log.trace("Resolved parameters: ``resolvedParameters`` for injecting into:``model`` ");
 		switch (model)
 		case (is Function<>|CallableConstructor<>|Method<>|MemberClassCallableConstructor<>) {
-			return safe(() => apply(model, resolvedContainer, resolvedParameters))((Throwable error) => Error(error, model, resolvedContainer, resolvedParameters));
+			return safe(() => apply(model, resolvedContainer, resolvedParameters))
+			((Throwable error) => Error(error, model, resolvedContainer, resolvedParameters));
 		}
 		else {
 			throw Error(Exception("Unhandled model type ``model`` for container `` container else "null" ``, parameters: ``parameters``"), model, resolvedContainer, resolvedParameters);

@@ -27,7 +27,8 @@ shared class ParameterDependency(
 	
 	shared Anything doResolve (Dependency dependency,Anything context) {
 		if (is FunctionDeclaration declaration, is FunctionDeclaration dependencyDeclaration = dependency.declaration) {
-			return safe(() => dependencyDeclaration.apply<>())((Throwable error) => ResolutionError("Type parameters are not supported for dependencies yet", error));
+			return safe(() => dependencyDeclaration.apply<>())
+			((Throwable error) => ResolutionError("Type parameters are not supported for dependencies yet", error));
 		} else {
 			return dependency.resolve(context);
 		}
